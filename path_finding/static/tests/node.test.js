@@ -27,27 +27,70 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
     });
 
-    test('setAsStartNode sets class list to "node start"', () => {
-        node.element.className = 'blah random stuff';
+    test('addEventListener adds event listener to dom element', () => {
+        const fn = jest.fn();
+        node.addEventListener('click', fn);
 
-        node.setAsStartNode();
+        node.element.click();
 
-        expect(node.element.className).toBe('node start');
+        expect(fn).toHaveBeenCalledTimes(1);
     });
 
-    test('setAsEndNode sets class list to "node end"', () => {
-        node.element.className = 'blah random stuff';
+    test('isWallNode returns true when node has been set as a wall node', () => {
+        node.setAsWallNode();
 
-        node.setAsEndNode();
-
-        expect(node.element.className).toBe('node end');
+        expect(node.isWallNode()).toBe(true);
     });
 
-    test('setAsEmptyNode sets class list to "node empty"', () => {
-        node.element.className = 'blah random stuff';
-
+    test('isWallNode returns false when node is not set as a wall node', () => {
         node.setAsEmptyNode();
 
-        expect(node.element.className).toBe('node empty');
+        expect(node.isWallNode()).toBe(false);
+    });
+
+    test('toggleNodeType switches node type from empty to wall', () => {
+        node.setAsEmptyNode();
+
+        node.toggleNodeType();
+
+        expect(node.isWallNode()).toBe(true);
+    });
+
+    test('toggleNodeType switches node type from wall to empty', () => {
+        node.setAsWallNode();
+
+        node.toggleNodeType();
+
+        expect(node.isWallNode()).toBe(false);
+    });
+
+    describe('test node type setter methods', () => {
+        beforeEach(() => {
+            node.element.className = 'blah random stuff';
+        });
+
+        test('setAsStartNode sets class list to "node start"', () => {
+            node.setAsStartNode();
+
+            expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsEndNode sets class list to "node end"', () => {
+            node.setAsEndNode();
+
+            expect(node.element.className).toBe('node end');
+        });
+
+        test('setAsEmptyNode sets class list to "node empty"', () => {
+            node.setAsEmptyNode();
+
+            expect(node.element.className).toBe('node empty');
+        });
+
+        test('setAsWallNode sets class list to "node wall"', () => {
+            node.setAsWallNode();
+
+            expect(node.element.className).toBe('node wall');
+        });
     });
 });

@@ -160,4 +160,38 @@ describe('TestGrid', () => {
 
         expect(document.getElementById('grid')).toBeNull();
     });
+
+    test('_handleMouseOver calls setColor if isMouseDown is true', () => {
+        const node = new Node();
+        grid.isMouseDown = true;
+        grid.setNodeType = 'setAsWallNode';
+
+        grid._handleMouseOver(node);
+
+        expect(node[grid.setNodeType]).toHaveBeenCalled();
+    });
+
+    test('_handleClick calls toggleNodeType', () => {
+        const node = new Node();
+
+        grid._handleClick(node);
+
+        expect(node.toggleNodeType).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMouseDown sets isMouseDown to true', () => {
+        grid.isMouseDown = false;
+
+        grid._handleMouseDown();
+
+        expect(grid.isMouseDown).toBe(true);
+    });
+
+    test('_handleMouseUp sets isMouseDown to false', () => {
+        grid.isMouseDown = true;
+
+        grid._handleMouseUp();
+
+        expect(grid.isMouseDown).toBe(false);
+    });
 });

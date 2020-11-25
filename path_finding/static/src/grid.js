@@ -8,6 +8,8 @@ class Grid {
         this.startCol = startCol;
         this.endRow = endRow;
         this.endCol = endCol;
+        this.isMouseDown = false;
+        this.setNodeType = 'setAsWallNode';
         this.nodes = [];
     }
 
@@ -26,10 +28,16 @@ class Grid {
                     node.setAsStartNode();
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
+                } else {
+                    node.addEventListener('mouseover', () => this._handleMouseOver(node));
+                    node.addEventListener('click', () => this._handleClick(node));
                 }
                 this.nodes.push(node);
             }
         }
+
+        grid.addEventListener('mousedown', () => this._handleMouseDown());
+        grid.addEventListener('mouseup', () => this._handleMouseUp());
 
         document.body.appendChild(grid);
     }
@@ -74,6 +82,24 @@ class Grid {
         node.className = 'node';
         node.id = `n${row * this.nCols + col}`;
         return node;
+    }
+
+    _handleMouseOver(node) {
+        if (this.isMouseDown) {
+            node[this.setNodeType]();
+        }
+    }
+
+    _handleClick(node) {
+        node.toggleNodeType();
+    }
+
+    _handleMouseDown() {
+        this.isMouseDown = true;
+    }
+
+    _handleMouseUp() {
+        this.isMouseDown = false;
     }
 }
 

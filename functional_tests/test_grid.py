@@ -111,26 +111,26 @@ class TestGrid:
         )
 
         # The user then clicks on an empty box in the grid and immediately sees it turn black.
-        element = self.browser.get_element_by_id(self.make_node_id(5, 5, num_cols))
-        ActionChains(self.browser).move_to_element(element).click().perform()
-        self.wait_for_assert(lambda: element.props.style.backgroundColor == 'rgb(0,0,0)')
+        element = self.browser.find_element_by_id(self.make_node_id(5, 5, num_cols))
+        ActionChains(self.browser).move_to_element(element).click(element).perform()
+        self.wait_for_assert(lambda: element.get_attribute('class') == 'node wall')
 
         # The user then clicks and holds down on an empty box in the grid and drags their mouse across multiple
         # boxes which causes each box to turn black
-        elements = [self.browser.get_element_by_id(self.make_node_id(i, 4, num_cols)) for i in range(10)]
+        elements = [self.browser.find_element_by_id(self.make_node_id(i, 4, num_cols)) for i in range(10)]
         ActionChains(self.browser).move_to_element(elements[0]).click_and_hold(
         ).move_to_element(elements[-1]).release().perform()
         for element in elements:
-            self.wait_for_assert(lambda: element.props.style.backgroundColor == 'rgb(0,0,0)')
+            self.wait_for_assert(lambda: element.get_attribute('class') == 'node wall')
 
         # The user then clicks on a black box and sees it go back to white
-        element = self.browser.get_element_by_id(self.make_node_id(5, 5, num_cols))
+        element = self.browser.find_element_by_id(self.make_node_id(5, 5, num_cols))
         ActionChains(self.browser).move_to_element(element).click().perform()
-        self.wait_for_assert(lambda: element.props.style.backgroundColor == 'rgb(255,255,255)')
+        self.wait_for_assert(lambda: element.get_attribute('class') == 'node empty')
 
         # The user clicks and holds down on a black box and drags their mouse across more black boxes which then turn
         # back to white
         ActionChains(self.browser).move_to_element(elements[0]).click_and_hold(
         ).move_to_element(elements[-1]).release().perform()
         for element in elements:
-            self.wait_for_assert(lambda: element.props.style.backgroundColor == 'rgb(255,255,255)')
+            self.wait_for_assert(lambda: element.get_attribute('class') == 'node empty')
