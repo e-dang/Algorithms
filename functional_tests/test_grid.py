@@ -1,4 +1,4 @@
-from time import time
+import time
 
 import pytest
 from selenium import webdriver
@@ -38,7 +38,7 @@ class TestGrid:
 
     @wait
     def wait_for_row_in_grid_info_table(self, row_text, browser):
-        table = browser.find_element_by_id('id_list_table')
+        table = browser.find_element_by_id('gridInfo')
         rows = table.find_elements_by_tag_name('tr')
         assert row_text in [row.text for row in rows]
 
@@ -64,10 +64,10 @@ class TestGrid:
 
         # A grid is visible on the page along with information about its dimensions and where the start and end
         # nodes are
-        grid = browser.find_element_by_id('grid')
-        self.wait_for_row_in_grid_info_table('Dimensions', browser)
-        self.wait_for_row_in_grid_info_table('Start', browser)
-        self.wait_for_row_in_grid_info_table('End', browser)
+        grid = browser.find_element_by_class_name('grid')
+        self.wait_for_row_in_grid_info_table('Dimensions:', browser)
+        self.wait_for_row_in_grid_info_table('Start:', browser)
+        self.wait_for_row_in_grid_info_table('End:', browser)
 
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized
         row_input = browser.find_element_by_id('rowInput')
@@ -92,15 +92,15 @@ class TestGrid:
         ActionChains(browser).move_to_element(submit_button).click().perform()
 
         self.wait_for_assert(
-            lambda: len(browser.find_elements_by_class('.node')) == num_rows * num_cols
+            lambda: len(browser.find_element_by_class_name('.node')) == num_rows * num_cols
         )
         self.wait_for_assert(
-            lambda: browser.get_element_by_class('.startNode').id == self.make_node_id(
+            lambda: browser.find_element_by_class_name('.startNode').id == self.make_node_id(
                 start_row, start_col, num_cols
             )
         )
         self.wait_for_assert(
-            lambda: browser.get_element_by_class('.endNode').id == self.make_node_id(
+            lambda: browser.find_element_by_class_name('.endNode').id == self.make_node_id(
                 end_row, end_col, num_cols
             )
         )
