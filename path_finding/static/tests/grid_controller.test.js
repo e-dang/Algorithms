@@ -1,4 +1,4 @@
-const GridController = require('../grid_controller');
+const GridController = require('../src/grid_controller');
 
 describe('GridControllerTest', () => {
     const nRows = 10;

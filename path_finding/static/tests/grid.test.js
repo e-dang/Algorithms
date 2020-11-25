@@ -1,4 +1,4 @@
-const Grid = require('../grid');
+const Grid = require('../src/grid');
 
 describe('TestGrid', () => {
     const nRows = 10;
