@@ -22,6 +22,7 @@ def wait(fn):
     return modified_fn
 
 
+@pytest.mark.functional
 class TestGrid:
     @pytest.fixture(autouse=True)
     def url(self):
