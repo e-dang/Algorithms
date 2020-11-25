@@ -10,16 +10,35 @@
 <body>
     <h1>Path Finding Algorithms</h1>
     <table id="gridInfo">
-        <tr><td>Dimensions: </td></tr>
-        <tr><td>Start: </td></tr>
-        <tr><td>End: </td></tr>
+        <tr>
+            <th></th>
+            <th>Row</th>
+            <th>Column</th>
+        </tr>
+        <tr>
+            <td>Start Node</td>
+            <td>{{ start_row }}</td>
+            <td>{{ start_col }}</td>
+        </tr>
+        <tr>
+            <td>End Node</td>
+            <td>{{ end_row }}</td>
+            <td>{{ end_col }}</td>
+        </tr>
+        <tr>
+            <td>Dimensions</td>
+            <td id="rows">{{ num_rows }}</td>
+            <td id="cols">{{ num_cols }}</td>
+        </tr>
     </table>
 
 </body>
 
 <script src="/static/grid.js"></script>
 <script>
-    const grid = new Grid(10, 10);
+    const rows = parseInt(document.getElementById('rows').textContent);
+    const cols = parseInt(document.getElementById('cols').textContent)
+    const grid = new Grid(rows, cols);
     grid.draw();
 </script>
 
