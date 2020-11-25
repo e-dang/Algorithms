@@ -16,7 +16,7 @@ describe('GridControllerTest', () => {
 
     test('_parseInput splits string at comma and returns two ints', () => {
         const input = document.createElement('input');
-        input.textContent = '10,11';
+        input.value = '10,11';
 
         const [first, second] = controller._parseInput(input);
 
@@ -49,9 +49,9 @@ describe('GridControllerTest', () => {
             dimInput.id = 'dimensionsInput';
             startNodeInput.id = 'startNodeInput';
             endNodeInput.id = 'endNodeInput';
-            dimInput.textContent = '20,20';
-            startNodeInput.textContent = '15,15';
-            endNodeInput.textContent = '10,9';
+            dimInput.value = '20,20';
+            startNodeInput.value = '15,15';
+            endNodeInput.value = '10,9';
             document.body.appendChild(dimInput);
             document.body.appendChild(startNodeInput);
             document.body.appendChild(endNodeInput);

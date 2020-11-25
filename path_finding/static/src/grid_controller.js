@@ -8,7 +8,7 @@ class GridController {
     }
 
     addUpdateGridEventListener() {
-        document.getElementById('submitButton').addEventListener('click', this._handleUpdateGrid);
+        document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
     }
 
     _handleUpdateGrid() {
@@ -20,7 +20,7 @@ class GridController {
     }
 
     _parseInput(element) {
-        return element.textContent.split(',').map((value) => parseInt(value));
+        return element.value.split(',').map((value) => parseInt(value));
     }
 }
 
