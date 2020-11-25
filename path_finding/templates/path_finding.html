@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Path Finding Algorithms</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
+
 <body>
     <h1>Path Finding Algorithms</h1>
+    <table id="gridInfo">
+        <tr><td>Dimensions: </td></tr>
+        <tr><td>Start: </td></tr>
+        <tr><td>End: </td></tr>
+    </table>
 
 </body>
+
+<script src="/static/grid.js"></script>
+<script>
+    const grid = new Grid(10, 10);
+    grid.draw();
+</script>
+
 </html>
