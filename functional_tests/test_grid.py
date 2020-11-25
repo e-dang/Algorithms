@@ -77,37 +77,35 @@ class TestGrid:
         assert 'End Node {} {}'.format(grid_params['end_row'], grid_params['end_col']) in row_text
 
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized
-        row_input = self.browser.find_element_by_id('rowInput')
-        col_input = self.browser.find_element_by_id('colInput')
-        start_row_input = self.browser.find_element_by_id('startRowInput')
-        start_col_input = self.browser.find_element_by_id('startColInput')
-        end_row_input = self.browser.find_element_by_id('endRowInput')
-        end_col_input = self.browser.find_element_by_id('endColInput')
+        dims_input = self.browser.find_element_by_id('dimensionsInput')
+        start_node_input = self.browser.find_element_by_id('startNodeInput')
+        end_node_input = self.browser.find_element_by_id('endNodeInput')
         submit_button = self.browser.find_element_by_id('submitButton')
+        assert 'e.g. 50,50' in dims_input.get_attribute('placeholder')
+        assert 'e.g. 10,10' in start_node_input.get_attribute('placeholder')
+        assert 'e.g. 40,40' in end_node_input.get_attribute('placeholder')
 
         # The user enters a new grid size, start, and end points and submits the form. A new grid appears with the
         # correct dimensions, start, and end points
         num_rows, num_cols = 10, 10
         start_row, start_col = 2, 2
         end_row, end_col = 8, 8
-        row_input.send_keys(str(num_rows))
-        col_input.send_keys(str(num_cols))
-        start_row_input.send_keys(str(start_row))
-        start_col_input.send_keys(str(start_col))
-        end_row_input.send_keys(str(end_row))
-        end_col_input.send_keys(str(end_col))
-        ActionChains(self.browser).move_to_element(submit_button).click().perform()
+        dims_input.send_keys(f'{num_rows},{num_cols}')
+        start_node_input.send_keys(f'{start_row},{start_col}')
+        end_node_input.send_keys(f'{end_row},{end_col}')
+        ActionChains(self.browser).move_to_element(submit_button).click(submit_button).perform()
 
+        grid = self.browser.find_element_by_id('grid')
         self.wait_for_assert(
-            lambda: len(self.browser.find_element_by_class_name('.node')) == num_rows * num_cols
+            lambda: len(grid.find_elements_by_class_name('node')) == num_rows * num_cols
         )
         self.wait_for_assert(
-            lambda: self.browser.find_element_by_class_name('.startNode').id == self.make_node_id(
+            lambda: grid.find_element_by_class_name('node.start').get_attribute('id') == self.make_node_id(
                 start_row, start_col, num_cols
             )
         )
         self.wait_for_assert(
-            lambda: self.browser.find_element_by_class_name('.endNode').id == self.make_node_id(
+            lambda: grid.find_element_by_class_name('node.end').get_attribute('id') == self.make_node_id(
                 end_row, end_col, num_cols
             )
         )
