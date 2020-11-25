@@ -3,19 +3,23 @@ const Grid = require('../src/grid');
 describe('TestGrid', () => {
     const nRows = 10;
     const nCols = 20;
+    const startRow = 1;
+    const startCol = 1;
     let grid;
 
     beforeEach(() => {
-        grid = new Grid(nRows, nCols);
+        grid = new Grid(nRows, nCols, startRow, startCol);
     });
 
     afterEach(() => {
         document.getElementsByTagName('html')[0].innerHTML = '';
     });
 
-    test('grid constructor sets nRows and nCols properties', () => {
+    test('grid constructor sets nRows, nCols, startRow, startCol properties', () => {
         expect(grid.nRows).toBe(nRows);
         expect(grid.nCols).toBe(nCols);
+        expect(grid.startRow).toBe(startRow);
+        expect(grid.startCol).toBe(startCol);
     });
 
     test('draw adds grid element to body of the document with correct dimensions', () => {

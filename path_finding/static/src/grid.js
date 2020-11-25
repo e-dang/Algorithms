@@ -1,7 +1,9 @@
 class Grid {
-    constructor(nRows, nCols) {
+    constructor(nRows, nCols, startRow, startCol) {
         this.nRows = nRows;
         this.nCols = nCols;
+        this.startRow = startRow;
+        this.startCol = startCol;
     }
 
     draw() {
@@ -47,6 +49,8 @@ class Grid {
 
     _createNode(row, col) {
         const node = document.createElement('div');
+        node.style.width = '8px';
+        node.style.height = '8px';
         node.className = 'node';
         node.id = `n${row * this.nCols + col}`;
         return node;
