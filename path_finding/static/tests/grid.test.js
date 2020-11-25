@@ -9,6 +9,10 @@ describe('TestGrid', () => {
         grid = new Grid(nRows, nCols);
     });
 
+    afterEach(() => {
+        document.getElementsByTagName('html')[0].innerHTML = '';
+    });
+
     test('grid constructor sets nRows and nCols properties', () => {
         expect(grid.nRows).toBe(nRows);
         expect(grid.nCols).toBe(nCols);
@@ -34,5 +38,60 @@ describe('TestGrid', () => {
         const node = grid._createNode(row, col);
 
         expect(node.id).toBe(`n${row * nCols + col}`);
+    });
+
+    test('setDimensions sets nRows and nCols', () => {
+        const rows = 1;
+        const cols = 2;
+
+        grid.setDimensions(rows, cols);
+
+        expect(grid.nRows).toBe(rows);
+        expect(grid.nCols).toBe(cols);
+    });
+
+    test('setStartNode sets startRow and startCol', () => {
+        const row = 10;
+        const col = 9;
+
+        grid.setStartNode(row, col);
+
+        expect(grid.startRow).toBe(row);
+        expect(grid.startCol).toBe(col);
+    });
+
+    test('setEndNode sets endRow and endCol', () => {
+        const row = 10;
+        const col = 9;
+
+        grid.setEndNode(row, col);
+
+        expect(grid.endRow).toBe(row);
+        expect(grid.endCol).toBe(col);
+    });
+
+    test('reset calls setDimensions, setStartNode, setEndNode, and draw with right args', () => {
+        grid.setDimensions = jest.fn();
+        grid.setStartNode = jest.fn();
+        grid.setEndNode = jest.fn();
+        grid.clear = jest.fn();
+        grid.draw = jest.fn();
+        const [rows, cols, startRow, startCol, endRow, endCol] = [15, 15, 10, 8, 1, 2];
+
+        grid.reset(rows, cols, startRow, startCol, endRow, endCol);
+
+        expect(grid.setDimensions).toHaveBeenCalledWith(rows, cols);
+        expect(grid.setStartNode).toHaveBeenCalledWith(startRow, startCol);
+        expect(grid.setEndNode).toHaveBeenCalledWith(endRow, endCol);
+        expect(grid.clear).toHaveBeenCalledTimes(1);
+        expect(grid.draw).toHaveBeenCalledTimes(1);
+    });
+
+    test('clear removes the grid element', () => {
+        grid.draw();
+
+        grid.clear();
+
+        expect(document.getElementById('grid')).toBeNull();
     });
 });

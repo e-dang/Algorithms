@@ -18,6 +18,33 @@ class Grid {
         document.body.appendChild(grid);
     }
 
+    reset(nRows, nCols, startRow, startCol, endRow, endCol) {
+        this.setDimensions(nRows, nCols);
+        this.setStartNode(startRow, startCol);
+        this.setEndNode(endRow, endCol);
+        this.clear();
+        this.draw();
+    }
+
+    clear() {
+        document.getElementById('grid').remove();
+    }
+
+    setDimensions(rows, cols) {
+        this.nRows = rows;
+        this.nCols = cols;
+    }
+
+    setStartNode(row, col) {
+        this.startRow = row;
+        this.startCol = col;
+    }
+
+    setEndNode(row, col) {
+        this.endRow = row;
+        this.endCol = col;
+    }
+
     _createNode(row, col) {
         const node = document.createElement('div');
         node.className = 'node';
