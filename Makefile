@@ -1,5 +1,8 @@
 mkfile_path := `dirname $(abspath $(MAKEFILE_LIST))`
 
+build:
+	cd $(mkfile_path)/path_finding/static && yarn build
+
 test_js:
 	cd $(mkfile_path)/path_finding/static/tests && yarn test
 
