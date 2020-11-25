@@ -1,9 +1,12 @@
+const Node = require('./node');
+
 class Grid {
     constructor(nRows, nCols, startRow, startCol) {
         this.nRows = nRows;
         this.nCols = nCols;
         this.startRow = startRow;
         this.startCol = startCol;
+        this.nodes = [];
     }
 
     draw() {
@@ -11,9 +14,16 @@ class Grid {
         grid.id = 'grid';
         grid.className = 'grid';
 
+        grid.style.width = '800px';
+        grid.style.height = '800px';
+
         for (let row = 0; row < this.nRows; row++) {
             for (let col = 0; col < this.nCols; col++) {
-                grid.appendChild(this._createNode(row, col));
+                let node = new Node(grid);
+                if (row == this.startRow && col == this.startCol) {
+                    node.setAsStartNode();
+                }
+                this.nodes.push(node);
             }
         }
 
@@ -32,6 +42,10 @@ class Grid {
         document.getElementById('grid').remove();
     }
 
+    getNode(row, col) {
+        return this.nodes[row * this.nCols + col];
+    }
+
     setDimensions(rows, cols) {
         this.nRows = rows;
         this.nCols = cols;
@@ -40,6 +54,7 @@ class Grid {
     setStartNode(row, col) {
         this.startRow = row;
         this.startCol = col;
+        this.getNode(row, col).setAsStartNode();
     }
 
     setEndNode(row, col) {

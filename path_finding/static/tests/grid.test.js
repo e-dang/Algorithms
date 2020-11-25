@@ -1,4 +1,7 @@
 const Grid = require('../src/grid');
+const Node = require('../src/node');
+
+jest.mock('../src/node');
 
 describe('TestGrid', () => {
     const nRows = 10;
@@ -22,11 +25,20 @@ describe('TestGrid', () => {
         expect(grid.startCol).toBe(startCol);
     });
 
-    test('draw adds grid element to body of the document with correct dimensions', () => {
+    test('draw constructs a grid element and constructs nRows * nCols Nodes with it', () => {
         grid.draw();
 
         expect(document.getElementById('grid')).toBeTruthy();
-        expect(document.getElementById('grid').children.length).toBe(nRows * nCols);
+        expect(Node).toHaveBeenCalledTimes(nRows * nCols);
+        expect(Node).toHaveBeenCalledWith(document.getElementById('grid'));
+    });
+
+    test('draw push nRows * nCols Nodes to node property', () => {
+        grid.nodes.push = jest.fn();
+
+        grid.draw();
+
+        expect(grid.nodes.push).toHaveBeenCalledTimes(nRows * nCols);
     });
 
     test('_createNode creates a node with className "node"', () => {
@@ -44,6 +56,24 @@ describe('TestGrid', () => {
         expect(node.id).toBe(`n${row * nCols + col}`);
     });
 
+    test('getNode returns the correct node', () => {
+        const row = 1;
+        const col = 4;
+        let node;
+        const div = document.createElement('div');
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < nCols; j++) {
+                let newNode = new Node(div);
+                grid.nodes.push(newNode);
+                if (i == row && j == col) {
+                    node = newNode;
+                }
+            }
+        }
+
+        expect(grid.getNode(row, col)).toBe(node);
+    });
+
     test('setDimensions sets nRows and nCols', () => {
         const rows = 1;
         const cols = 2;
@@ -57,11 +87,24 @@ describe('TestGrid', () => {
     test('setStartNode sets startRow and startCol', () => {
         const row = 10;
         const col = 9;
-
+        grid.getNode = jest.fn();
+        grid.getNode.mockReturnValueOnce(new Node());
         grid.setStartNode(row, col);
 
         expect(grid.startRow).toBe(row);
         expect(grid.startCol).toBe(col);
+    });
+
+    test('setStartNode calls setAsStartNode on correct node', () => {
+        const row = 0;
+        const col = 6;
+        for (let i = 0; i < 10; i++) {
+            grid.nodes.push(new Node());
+        }
+
+        grid.setStartNode(row, col);
+
+        expect(grid.getNode(row, col).setAsStartNode).toHaveBeenCalledTimes(1);
     });
 
     test('setEndNode sets endRow and endCol', () => {
