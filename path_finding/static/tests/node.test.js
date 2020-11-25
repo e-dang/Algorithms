@@ -15,8 +15,8 @@ describe('NodeTest', () => {
         document.getElementsByTagName('html')[0].innerHTML = '';
     });
 
-    test('constructor initializes dom element', () => {
-        expect(node.element.className).toBe('node');
+    test('constructor initializes dom element to be an empty node', () => {
+        expect(node.element.className).toBe('node empty');
     });
 
     test('constructor sets dom element as child of grid', () => {
@@ -27,9 +27,27 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
     });
 
-    test('setAsStartNode adds .start to className', () => {
+    test('setAsStartNode sets class list to "node start"', () => {
+        node.element.className = 'blah random stuff';
+
         node.setAsStartNode();
 
-        expect(node.element.className).toContain('node start');
+        expect(node.element.className).toBe('node start');
+    });
+
+    test('setAsEndNode sets class list to "node end"', () => {
+        node.element.className = 'blah random stuff';
+
+        node.setAsEndNode();
+
+        expect(node.element.className).toBe('node end');
+    });
+
+    test('setAsEmptyNode sets class list to "node empty"', () => {
+        node.element.className = 'blah random stuff';
+
+        node.setAsEmptyNode();
+
+        expect(node.element.className).toBe('node empty');
     });
 });

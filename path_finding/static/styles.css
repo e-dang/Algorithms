@@ -9,6 +9,10 @@
     float: left;
 }
 
+.node.empty {
+    background-color: white;
+}
+
 .node.start {
     background-color: green;
 }

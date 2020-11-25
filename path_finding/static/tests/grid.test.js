@@ -8,21 +8,25 @@ describe('TestGrid', () => {
     const nCols = 20;
     const startRow = 1;
     const startCol = 1;
+    const endRow = 8;
+    const endCol = 15;
     let grid;
 
     beforeEach(() => {
-        grid = new Grid(nRows, nCols, startRow, startCol);
+        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
     });
 
     afterEach(() => {
         document.getElementsByTagName('html')[0].innerHTML = '';
     });
 
-    test('grid constructor sets nRows, nCols, startRow, startCol properties', () => {
+    test('constructor sets nRows, nCols, startRow, startCol, endRow, endCol properties', () => {
         expect(grid.nRows).toBe(nRows);
         expect(grid.nCols).toBe(nCols);
         expect(grid.startRow).toBe(startRow);
         expect(grid.startCol).toBe(startCol);
+        expect(grid.endRow).toBe(endRow);
+        expect(grid.endCol).toBe(endCol);
     });
 
     test('draw constructs a grid element and constructs nRows * nCols Nodes with it', () => {
@@ -89,6 +93,7 @@ describe('TestGrid', () => {
         const col = 9;
         grid.getNode = jest.fn();
         grid.getNode.mockReturnValueOnce(new Node());
+
         grid.setStartNode(row, col);
 
         expect(grid.startRow).toBe(row);
@@ -110,11 +115,25 @@ describe('TestGrid', () => {
     test('setEndNode sets endRow and endCol', () => {
         const row = 10;
         const col = 9;
+        grid.getNode = jest.fn();
+        grid.getNode.mockReturnValueOnce(new Node());
 
         grid.setEndNode(row, col);
 
         expect(grid.endRow).toBe(row);
         expect(grid.endCol).toBe(col);
+    });
+
+    test('setEndNode calls setAsEndNode on correct node', () => {
+        const row = 0;
+        const col = 6;
+        for (let i = 0; i < 10; i++) {
+            grid.nodes.push(new Node());
+        }
+
+        grid.setEndNode(row, col);
+
+        expect(grid.getNode(row, col).setAsEndNode).toHaveBeenCalledTimes(1);
     });
 
     test('reset calls setDimensions, setStartNode, setEndNode, and draw with right args', () => {

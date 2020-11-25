@@ -1,11 +1,13 @@
 const Node = require('./node');
 
 class Grid {
-    constructor(nRows, nCols, startRow, startCol) {
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
         this.nRows = nRows;
         this.nCols = nCols;
         this.startRow = startRow;
         this.startCol = startCol;
+        this.endRow = endRow;
+        this.endCol = endCol;
         this.nodes = [];
     }
 
@@ -22,6 +24,8 @@ class Grid {
                 let node = new Node(grid);
                 if (row == this.startRow && col == this.startCol) {
                     node.setAsStartNode();
+                } else if (row == this.endRow && col == this.endCol) {
+                    node.setAsEndNode();
                 }
                 this.nodes.push(node);
             }
@@ -60,6 +64,7 @@ class Grid {
     setEndNode(row, col) {
         this.endRow = row;
         this.endCol = col;
+        this.getNode(row, col).setAsEndNode();
     }
 
     _createNode(row, col) {
