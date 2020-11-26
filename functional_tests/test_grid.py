@@ -106,41 +106,33 @@ class TestGrid:
         submit_button.click()
 
         grid = self.browser.find_element_by_id('grid')
-        self.wait_for_assert(
-            lambda: len(grid.find_elements_by_class_name('node')) == num_rows * num_cols
-        )
-        self.wait_for_assert(
-            lambda: grid.find_element_by_class_name('node.start').get_attribute('id') == self.make_node_id(
-                start_row, start_col, num_cols
-            )
-        )
-        self.wait_for_assert(
-            lambda: grid.find_element_by_class_name('node.end').get_attribute('id') == self.make_node_id(
-                end_row, end_col, num_cols
-            )
-        )
+        assert len(grid.find_elements_by_class_name('node')) == num_rows * num_cols
+        assert grid.find_element_by_class_name('node.start').get_attribute('id') == self.make_node_id(
+            start_row, start_col, num_cols)
+        assert grid.find_element_by_class_name('node.end').get_attribute('id') == self.make_node_id(
+            end_row, end_col, num_cols)
 
         # The user then clicks on an empty box in the grid and immediately sees it turn black.
-        element = self.browser.find_element_by_id(self.make_node_id(5, 5, num_cols))
+        element = grid.find_element_by_id(self.make_node_id(5, 5, num_cols))
         element.click()
-        self.wait_for_assert(lambda: element.get_attribute('class') == 'node wall')
+        assert element.get_attribute('class') == 'node wall'
 
         # The user then clicks and holds down on an empty box in the grid and drags their mouse across multiple
         # boxes which causes each box to turn black
-        elements = [self.browser.find_element_by_id(self.make_node_id(i, 4, num_cols)) for i in range(10)]
+        elements = [grid.find_element_by_id(self.make_node_id(i, 4, num_cols)) for i in range(10)]
         ActionChains(self.browser).move_to_element(elements[0]).click_and_hold(
-        ).move_to_element(elements[-1]).release().perform()
+        ).move_by_offset(5, 5).move_to_element(elements[-1]).release().perform()
         for element in elements:
-            self.wait_for_assert(lambda: element.get_attribute('class') == 'node wall')
+            assert element.get_attribute('class') == 'node wall'
 
         # The user then clicks on a black box and sees it go back to white
         element = self.browser.find_element_by_id(self.make_node_id(5, 5, num_cols))
         ActionChains(self.browser).move_to_element(element).click().perform()
-        self.wait_for_assert(lambda: element.get_attribute('class') == 'node empty')
+        assert element.get_attribute('class') == 'node empty'
 
         # The user clicks and holds down on a black box and drags their mouse across more black boxes which then turn
         # back to white
         ActionChains(self.browser).move_to_element(elements[0]).click_and_hold(
-        ).move_to_element(elements[-1]).release().perform()
+        ).move_by_offset(5, 5).move_to_element(elements[-1]).release().perform()
         for element in elements:
-            self.wait_for_assert(lambda: element.get_attribute('class') == 'node empty')
+            assert element.get_attribute('class') == 'node empty'
