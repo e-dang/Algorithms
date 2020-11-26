@@ -1,4 +1,9 @@
-.grid {
+.grid-wrapper {
+    width: 500px;
+    height: 500px;
+}
+
+.algorithm-grid {
     border: 1px solid #000000;
     border-width: 1px 0 0 1px;
 }

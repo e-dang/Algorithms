@@ -13,6 +13,9 @@ describe('TestGrid', () => {
     let grid;
 
     beforeEach(() => {
+        const wrapper = document.createElement('div');
+        wrapper.id = 'gridWrapper';
+        document.body.append(wrapper);
         grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
     });
 

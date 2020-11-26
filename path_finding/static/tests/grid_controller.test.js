@@ -1,4 +1,7 @@
 const GridController = require('../src/grid_controller');
+const Grid = require('../src/grid');
+
+jest.mock('../src/grid');
 
 describe('GridControllerTest', () => {
     const nRows = 10;
@@ -9,9 +12,8 @@ describe('GridControllerTest', () => {
         controller = new GridController(nRows, nCols);
     });
 
-    test('constructor initializes a new Grid property with the passed in dimensions', () => {
-        expect(controller.grid.nRows).toBe(nRows);
-        expect(controller.grid.nCols).toBe(nCols);
+    test('constructor initializes a new Grid with the passed in dimensions', () => {
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {

@@ -57,6 +57,11 @@ class TestGrid:
     def make_node_id(self, row, col, num_cols):
         return f'n{row * num_cols + col}'
 
+    def extract_dimensions(self, element):
+        width = int(element.value_of_css_property('width')[:-2])
+        height = int(element.value_of_css_property('height')[:-2])
+        return width, height
+
     def test_user_can_customize_grid(self, url):
         # The user goes to the Path Finding Algorithm website
         self.browser.get(url)
@@ -68,9 +73,14 @@ class TestGrid:
 
         # A grid is visible on the page along with information about its dimensions and where the start and end
         # nodes are
-        grid = self.browser.find_element_by_class_name('grid')
+        grid = self.browser.find_element_by_id('grid')
         table = self.browser.find_element_by_id('gridInfo')
         row_text = [row.text for row in table.find_elements_by_tag_name('tr')]
+        g_width, g_height = self.extract_dimensions(grid)
+        nodes = grid.find_elements_by_class_name('node')
+        n_widths, n_heights = zip(*[self.extract_dimensions(node) for node in nodes])
+        assert g_width == sum(n_widths[:grid_params['num_cols']]) + grid_params['num_cols']
+        assert g_height == sum(n_heights[:grid_params['num_rows']]) + grid_params['num_rows']
         assert len(grid.find_elements_by_class_name('node')) == grid_params['num_rows'] * grid_params['num_cols']
         assert 'Dimensions {} {}'.format(grid_params['num_rows'], grid_params['num_cols']) in row_text
         assert 'Start Node {} {}'.format(grid_params['start_row'], grid_params['start_col']) in row_text
@@ -93,7 +103,7 @@ class TestGrid:
         dims_input.send_keys(f'{num_rows},{num_cols}')
         start_node_input.send_keys(f'{start_row},{start_col}')
         end_node_input.send_keys(f'{end_row},{end_col}')
-        ActionChains(self.browser).move_to_element(submit_button).click(submit_button).perform()
+        submit_button.click()
 
         grid = self.browser.find_element_by_id('grid')
         self.wait_for_assert(
@@ -112,7 +122,7 @@ class TestGrid:
 
         # The user then clicks on an empty box in the grid and immediately sees it turn black.
         element = self.browser.find_element_by_id(self.make_node_id(5, 5, num_cols))
-        ActionChains(self.browser).move_to_element(element).click(element).perform()
+        element.click()
         self.wait_for_assert(lambda: element.get_attribute('class') == 'node wall')
 
         # The user then clicks and holds down on an empty box in the grid and drags their mouse across multiple

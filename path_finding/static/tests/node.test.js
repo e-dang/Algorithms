@@ -7,6 +7,8 @@ describe('NodeTest', () => {
     beforeEach(() => {
         grid = document.createElement('div');
         grid.id = 'grid';
+        grid.nodeWidth = '10px';
+        grid.nodeHeight = '10px';
         document.body.appendChild(grid);
         node = new Node(grid);
     });
@@ -25,6 +27,11 @@ describe('NodeTest', () => {
 
     test('constructor sets node dom element id to "n${length of grid - 1}"', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
+    });
+
+    test('constructor sets node width and height from grid', () => {
+        expect(node.element.style.width).toBe(grid.nodeWidth);
+        expect(node.element.style.height).toBe(grid.nodeHeight);
     });
 
     test('addEventListener adds event listener to dom element', () => {

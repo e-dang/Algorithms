@@ -10,16 +10,22 @@ class Grid {
         this.endCol = endCol;
         this.isMouseDown = false;
         this.setNodeType = 'setAsWallNode';
+        this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
     }
 
     draw() {
         const grid = document.createElement('div');
         grid.id = 'grid';
-        grid.className = 'grid';
+        grid.className = 'algorithm-grid';
 
-        grid.style.width = '800px';
-        grid.style.height = '800px';
+        const nodeWidth = Math.floor(this.gridWrapper.offsetWidth / this.nCols);
+        const nodeHeight = Math.floor(this.gridWrapper.offsetHeight / this.nRows);
+
+        grid.style.width = nodeWidth * this.nCols + 'px';
+        grid.style.height = nodeHeight * this.nRows + 'px';
+        grid.nodeWidth = nodeWidth - 1 + 'px';
+        grid.nodeHeight = nodeHeight - 1 + 'px';
 
         for (let row = 0; row < this.nRows; row++) {
             for (let col = 0; col < this.nCols; col++) {
@@ -39,7 +45,7 @@ class Grid {
         grid.addEventListener('mousedown', () => this._handleMouseDown());
         grid.addEventListener('mouseup', () => this._handleMouseUp());
 
-        document.body.appendChild(grid);
+        this.gridWrapper.appendChild(grid);
     }
 
     reset(nRows, nCols, startRow, startCol, endRow, endCol) {
