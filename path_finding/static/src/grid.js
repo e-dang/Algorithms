@@ -35,7 +35,7 @@ class Grid {
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
                 } else {
-                    node.addEventListener('mouseover', () => this._handleMouseOver(node));
+                    node.addEventListener('mousemove', () => this._handleMouseMove(node));
                     node.addEventListener('click', () => this._handleClick(node));
                 }
                 this.nodes.push(node);
@@ -90,7 +90,7 @@ class Grid {
         return node;
     }
 
-    _handleMouseOver(node) {
+    _handleMouseMove(node) {
         if (this.isMouseDown) {
             node[this.setNodeType]();
         }

@@ -164,12 +164,12 @@ describe('TestGrid', () => {
         expect(document.getElementById('grid')).toBeNull();
     });
 
-    test('_handleMouseOver calls setColor if isMouseDown is true', () => {
+    test('_handleMouseMove calls setColor if isMouseDown is true', () => {
         const node = new Node();
         grid.isMouseDown = true;
         grid.setNodeType = 'setAsWallNode';
 
-        grid._handleMouseOver(node);
+        grid._handleMouseMove(node);
 
         expect(node[grid.setNodeType]).toHaveBeenCalled();
     });
