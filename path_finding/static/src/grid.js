@@ -19,16 +19,6 @@ class Grid {
         grid.id = 'grid';
         grid.className = 'algorithm-grid';
 
-        const nodeWidth = Math.floor(this.gridWrapper.offsetWidth / this.nCols);
-        const nodeHeight = Math.floor(this.gridWrapper.offsetHeight / this.nRows);
-
-        grid.style.width = nodeWidth * this.nCols + 'px';
-        grid.style.height = nodeHeight * this.nRows + 'px';
-        grid.nodeWidth = nodeWidth - 1 + 'px';
-        grid.nodeHeight = nodeHeight - 1 + 'px';
-        this.nodeWidth = nodeWidth - 1;
-        this.nodeHeight = nodeHeight - 1;
-
         for (let row = 0; row < this.nRows; row++) {
             for (let col = 0; col < this.nCols; col++) {
                 let node = new Node(grid);
@@ -48,6 +38,7 @@ class Grid {
         grid.addEventListener('mouseup', () => this._handleMouseUp());
 
         this.gridWrapper.appendChild(grid);
+        this._setGridWidthHeight(grid);
     }
 
     reset(nRows, nCols, startRow, startCol, endRow, endCol) {
@@ -108,6 +99,17 @@ class Grid {
 
     _handleMouseUp() {
         this.isMouseDown = false;
+    }
+
+    _setGridWidthHeight(grid) {
+        const style = window.getComputedStyle(this.nodes[0].element);
+        let width = style.getPropertyValue('width');
+        let height = style.getPropertyValue('height');
+        width = parseInt(width.substring(0, width.length - 1));
+        height = parseInt(height.substring(0, height.length - 1));
+
+        grid.style.width = (width + 1) * this.nCols + 'px';
+        grid.style.height = (height + 1) * this.nRows + 'px';
     }
 }
 

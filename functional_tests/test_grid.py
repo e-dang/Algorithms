@@ -43,20 +43,20 @@ class TestGrid:
 
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized.
         # The user enters a new grid size, start, and end points and submits the form.
-        dims, start, end = 10, 2, 7
-        page.dims_input = f'{dims},{dims}'
+        rows, cols, start, end = 10, 11, 2, 7
+        page.dims_input = f'{rows},{cols}'
         page.start_node_input = f'{start},{start}'
         page.end_node_input = f'{end},{end}'
         page.click_submit()
 
         # A new grid appears with the correct dimensions, start, and end nodes
-        assert page.grid_has_dimensions(dims, dims)
+        assert page.grid_has_dimensions(rows, cols)
         assert page.nodes_are_square()
         assert page.is_node_of_type(start, start, 'start')
         assert page.is_node_of_type(end, end, 'end')
 
         # The table now displays the correct information about the updated grid
-        assert page.table_displays_dimensions(dims, dims)
+        assert page.table_displays_dimensions(rows, cols)
         assert page.table_displays_start_node_coords(start, start)
         assert page.table_displays_end_node_coords(end, end)
 

@@ -32,20 +32,34 @@ describe('TestGrid', () => {
         expect(grid.endCol).toBe(endCol);
     });
 
-    test('draw constructs a grid element and constructs nRows * nCols Nodes with it', () => {
-        grid.draw();
+    describe('test draw method', () => {
+        let mockSetter;
+        beforeEach(() => {
+            mockSetter = jest.fn();
+            grid._setGridWidthHeight = mockSetter;
+        });
 
-        expect(document.getElementById('grid')).toBeTruthy();
-        expect(Node).toHaveBeenCalledTimes(nRows * nCols);
-        expect(Node).toHaveBeenCalledWith(document.getElementById('grid'));
-    });
+        test('draw constructs a grid element and constructs nRows * nCols Nodes with it', () => {
+            grid.draw();
 
-    test('draw push nRows * nCols Nodes to node property', () => {
-        grid.nodes.push = jest.fn();
+            expect(document.getElementById('grid')).toBeTruthy();
+            expect(Node).toHaveBeenCalledTimes(nRows * nCols);
+            expect(Node).toHaveBeenCalledWith(document.getElementById('grid'));
+        });
 
-        grid.draw();
+        test('draw push nRows * nCols Nodes to node property', () => {
+            grid.nodes.push = jest.fn();
 
-        expect(grid.nodes.push).toHaveBeenCalledTimes(nRows * nCols);
+            grid.draw();
+
+            expect(grid.nodes.push).toHaveBeenCalledTimes(nRows * nCols);
+        });
+
+        test('draw calls _setGridWidthHeight', () => {
+            grid.draw();
+
+            expect(mockSetter).toHaveBeenCalledWith(document.getElementById('grid'));
+        });
     });
 
     test('getNode returns the correct node', () => {
@@ -141,22 +155,26 @@ describe('TestGrid', () => {
         expect(grid.draw).toHaveBeenCalledTimes(1);
     });
 
-    test('clear removes the grid element', () => {
-        grid.draw();
+    describe('test clear method', () => {
+        beforeEach(() => {
+            const gridDiv = document.createElement('div');
+            gridDiv.id = 'grid';
+            document.body.appendChild(gridDiv);
+        });
 
-        grid.clear();
+        test('clear removes the grid element', () => {
+            grid.clear();
 
-        expect(document.getElementById('grid')).toBeNull();
-    });
+            expect(document.getElementById('grid')).toBeNull();
+        });
 
-    test('clear resets nodes property to empty list', () => {
-        const obj = {remove: jest.fn()};
-        document.getElementById = jest.fn((x) => obj);
-        grid.nodes = [new Node()];
+        test('clear resets nodes property to empty list', () => {
+            grid.nodes = [new Node()];
 
-        grid.clear();
+            grid.clear();
 
-        expect(grid.nodes.length).toBe(0);
+            expect(grid.nodes.length).toBe(0);
+        });
     });
 
     test('_handleMouseMove calls setColor if isMouseDown is true', () => {
@@ -226,5 +244,36 @@ describe('TestGrid', () => {
         const y = row * grid.nodeHeight + 1;
 
         expect(grid.getNodeFromPoint(x, y)).toBe(node);
+    });
+
+    describe('test _setGridWidthHeight', () => {
+        let node;
+        let mockGrid;
+
+        beforeEach(() => {
+            node = document.createElement('div');
+            node.className = 'node';
+            document.body.appendChild(node);
+            grid.nodes.push({element: node});
+            mockGrid = {style: {width: undefined, height: undefined}};
+        });
+
+        test('_setGridWidthHeight sets grid width to nCols * nodeWidth', () => {
+            const widthPx = getComputedStyle(node).width;
+            const nodeWidth = parseInt(widthPx.substring(0, widthPx.length - 1));
+
+            grid._setGridWidthHeight(mockGrid);
+
+            expect(mockGrid.style.width).toBe(`${grid.nCols * (nodeWidth + 1)}px`);
+        });
+
+        test('_setGridWidthHeight sets grid height to nRows * nodeHeight', () => {
+            const heightPx = getComputedStyle(node).height;
+            const nodeHeight = parseInt(heightPx.substring(0, heightPx.length - 1));
+
+            grid._setGridWidthHeight(mockGrid);
+
+            expect(mockGrid.style.height).toBe(`${grid.nRows * (nodeHeight + 1)}px`);
+        });
     });
 });

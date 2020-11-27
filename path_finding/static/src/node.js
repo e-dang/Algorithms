@@ -1,11 +1,8 @@
 class Node {
     constructor(grid) {
         this.element = document.createElement('div');
-        document.getEvent;
         this.setAsEmptyNode();
         this.element.id = `n${grid.children.length}`;
-        this.element.style.height = grid.nodeHeight;
-        this.element.style.width = grid.nodeWidth;
 
         grid.appendChild(this.element);
     }
