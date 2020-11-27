@@ -1,0 +1,33 @@
+.grid-wrapper {
+    width: 600px;
+    height: 600px;
+}
+
+.algorithm-grid {
+    border: 1px solid #000000;
+    border-width: 1px 0 0 1px;
+}
+
+.node {
+    border: 1px solid #000000;
+    border-width: 0 1px 1px 0;
+    width: 13px;
+    height: 13px;
+    float: left;
+}
+
+.node.empty {
+    background-color: white;
+}
+
+.node.wall {
+    background-color: black;
+}
+
+.node.start {
+    background-color: green;
+}
+
+.node.end {
+    background-color: red;
+}

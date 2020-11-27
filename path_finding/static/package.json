@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "webpack ./src/main.js --output-filename=bundle.js"
+  }
+}
