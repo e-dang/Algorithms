@@ -1,6 +1,7 @@
-
 from selenium.webdriver.common.action_chains import ActionChains
-from .base import BaseInputElement, BasePage
+from selenium.webdriver.support.ui import Select, WebDriverWait
+
+from .base import TIMEOUT, BaseInputElement, BasePage
 
 
 class DimensionsInputElement(BaseInputElement):
@@ -75,6 +76,20 @@ class GridPage(BasePage):
         submit_button = self.driver.find_element_by_id('submitButton')
         submit_button.click()
         self._calculate_grid_dimensions()
+
+    def click_run(self):
+        self.driver.find_element_by_id('runButton').click()
+
+    def click_reset(self):
+        self.driver.find_element_by_id('resetButton').click()
+
+    def wait_until_complete(self, timeout=None):
+        WebDriverWait(self.driver, timeout or TIMEOUT).until(
+            lambda driver: driver.find_element_by_id('algComplete').is_displayed)
+
+    def select_algorithm(self, algorithm):
+        select = Select(self.driver.find_element_by_id('algorithmSelect'))
+        select.select_by_visible_text(algorithm)
 
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
