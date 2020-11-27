@@ -36,6 +36,11 @@ class GridPage(BasePage):
         nodes = self._get_grid().find_elements_by_class_name('node')
         return self.num_rows == num_rows and self.num_cols == num_cols and len(nodes) == num_rows * num_cols
 
+    def nodes_are_square(self):
+        node = self._get_grid().find_elements_by_class_name('node')[0]
+        width, height = self._extract_pixel_dimensions(node)
+        return width == height
+
     def is_node_of_type(self, row, col, n_type):
         grid = self._get_grid()
         return grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class') == f'node {n_type}'

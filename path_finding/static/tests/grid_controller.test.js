@@ -6,14 +6,18 @@ jest.mock('../src/grid');
 describe('GridControllerTest', () => {
     const nRows = 10;
     const nCols = 14;
+    const startRow = 1;
+    const startCol = 1;
+    const endRow = 1;
+    const endCol = 1;
     let controller;
 
     beforeEach(() => {
-        controller = new GridController(nRows, nCols);
+        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol);
     });
 
     test('constructor initializes a new Grid with the passed in dimensions', () => {
-        expect(Grid).toHaveBeenCalledWith(nRows, nCols);
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {

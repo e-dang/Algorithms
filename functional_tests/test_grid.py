@@ -30,8 +30,11 @@ class TestGrid:
         assert page.has_correct_title()
         assert page.has_correct_header()
 
-        # A grid is visible on the page, with start and end nodes
+        # A grid of squares is visible on the page, with start and end nodes
         assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
+        assert page.nodes_are_square()
+        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
+        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
         # There is also information about the grid's dimensions and locations of the start and end nodes
         assert page.table_displays_dimensions(grid_params['num_rows'], grid_params['num_cols'])
@@ -48,8 +51,14 @@ class TestGrid:
 
         # A new grid appears with the correct dimensions, start, and end nodes
         assert page.grid_has_dimensions(dims, dims)
+        assert page.nodes_are_square()
         assert page.is_node_of_type(start, start, 'start')
         assert page.is_node_of_type(end, end, 'end')
+
+        # The table now displays the correct information about the updated grid
+        assert page.table_displays_dimensions(dims, dims)
+        assert page.table_displays_start_node_coords(start, start)
+        assert page.table_displays_end_node_coords(end, end)
 
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid

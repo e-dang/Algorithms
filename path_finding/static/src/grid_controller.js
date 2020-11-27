@@ -1,8 +1,8 @@
 const Grid = require('./grid');
 
 class GridController {
-    constructor(nRows, nCols) {
-        this.grid = new Grid(nRows, nCols);
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
+        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
 
         this.grid.draw();
     }
