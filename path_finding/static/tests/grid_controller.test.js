@@ -30,42 +30,65 @@ describe('GridControllerTest', () => {
         expect(second).toBe(11);
     });
 
-    describe('updating grid', () => {
-        let button;
+    test('_handleUpdateGrid is called when submit button is pressed', () => {
+        button = document.createElement('button');
+        button.id = 'submitButton';
+        document.body.appendChild(button);
+        controller._handleUpdateGrid = jest.fn();
+        controller.addUpdateGridEventListener();
 
-        beforeEach(() => {
-            button = document.createElement('button');
-            button.id = 'submitButton';
-            document.body.appendChild(button);
-        });
+        button.click();
 
-        test('_handleUpdateGrid is called when submit button is pressed', () => {
-            controller._handleUpdateGrid = jest.fn();
-            controller.addUpdateGridEventListener();
+        expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
+    });
 
-            button.click();
+    test('_handleUpdateGrid calls _handleUpdateTable and reset on grid', () => {
+        controller._handleUpdateTable = jest.fn();
+        const [rows, cols, startRow, startCol, endRow, endCol] = [20, 20, 15, 15, 10, 9];
+        controller._parseInput = jest
+            .fn()
+            .mockReturnValueOnce([rows, cols])
+            .mockReturnValueOnce([startRow, startCol])
+            .mockReturnValueOnce([endRow, endCol]);
 
-            expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
-        });
+        controller._handleUpdateGrid();
 
-        test('_handleUpdateGrid calls reset on grid', () => {
-            const dimInput = document.createElement('input');
-            const startNodeInput = document.createElement('input');
-            const endNodeInput = document.createElement('input');
-            dimInput.id = 'dimensionsInput';
-            startNodeInput.id = 'startNodeInput';
-            endNodeInput.id = 'endNodeInput';
-            dimInput.value = '20,20';
-            startNodeInput.value = '15,15';
-            endNodeInput.value = '10,9';
-            document.body.appendChild(dimInput);
-            document.body.appendChild(startNodeInput);
-            document.body.appendChild(endNodeInput);
-            controller.grid.reset = jest.fn();
+        expect(controller.grid.reset).toHaveBeenCalledWith(rows, cols, startRow, startCol, endRow, endCol);
+        expect(controller._handleUpdateTable).toHaveBeenCalledWith(rows, cols, startRow, startCol, endRow, endCol);
+    });
 
-            controller._handleUpdateGrid();
+    test('_handleUpdateTable sets textContent', () => {
+        document.body.innerHTML = `<table id="gridInfo" class="table">
+            <tr>
+                <th></th>
+                <th>Row</th>
+                <th>Column</th>
+            </tr>
+            <tr>
+                <td>Start Node</td>
+                <td id="startRow">-1</td>
+                <td id="startCol">-1</td>
+            </tr>
+            <tr>
+                <td>End Node</td>
+                <td id="endRow">-1</td>
+                <td id="endCol">-1</td>
+            </tr>
+            <tr>
+                <td>Dimensions</td>
+                <td id="rows">-1</td>
+                <td id="cols">-1</td>
+            </tr>
+        </table>`;
 
-            expect(controller.grid.reset).toHaveBeenCalledWith(20, 20, 15, 15, 10, 9);
-        });
+        const [rows, cols, startRow, startCol, endRow, endCol] = ['20', '20', '15', '15', '10', '9'];
+        controller._handleUpdateTable(rows, cols, startRow, startCol, endRow, endCol);
+
+        expect(document.getElementById('rows').textContent).toBe(rows);
+        expect(document.getElementById('cols').textContent).toBe(cols);
+        expect(document.getElementById('startRow').textContent).toBe(startRow);
+        expect(document.getElementById('startCol').textContent).toBe(startCol);
+        expect(document.getElementById('endRow').textContent).toBe(endRow);
+        expect(document.getElementById('endCol').textContent).toBe(endCol);
     });
 });
