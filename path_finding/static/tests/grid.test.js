@@ -226,26 +226,6 @@ describe('TestGrid', () => {
         expect(grid.isMouseDown).toBe(false);
     });
 
-    test('getNodeFromPoint', () => {
-        let node;
-        const nodeNum = 57;
-        for (let i = 0; i < nRows * nCols; i++) {
-            const newNode = new Node();
-            grid.nodes.push(newNode);
-            if (i == nodeNum) {
-                node = newNode;
-            }
-        }
-        grid.nodeHeight = 8;
-        grid.nodeWidth = 8;
-        const row = Math.floor(nodeNum / nCols);
-        const col = nodeNum - row * nCols;
-        const x = col * grid.nodeWidth + 1;
-        const y = row * grid.nodeHeight + 1;
-
-        expect(grid.getNodeFromPoint(x, y)).toBe(node);
-    });
-
     describe('test _setGridWidthHeight', () => {
         let node;
         let mockGrid;

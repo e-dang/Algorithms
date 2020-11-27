@@ -75,12 +75,6 @@ class Grid {
         this.getNode(row, col).setAsEndNode();
     }
 
-    getNodeFromPoint(x, y) {
-        const row = Math.floor(y / this.nodeHeight);
-        const col = Math.floor(x / this.nodeWidth);
-        return this.getNode(row, col);
-    }
-
     _handleMouseMove(node) {
         if (this.isMouseDown) {
             node[this.setNodeType]();
