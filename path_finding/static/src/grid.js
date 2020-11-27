@@ -26,6 +26,8 @@ class Grid {
         grid.style.height = nodeHeight * this.nRows + 'px';
         grid.nodeWidth = nodeWidth - 1 + 'px';
         grid.nodeHeight = nodeHeight - 1 + 'px';
+        this.nodeWidth = nodeWidth - 1;
+        this.nodeHeight = nodeHeight - 1;
 
         for (let row = 0; row < this.nRows; row++) {
             for (let col = 0; col < this.nCols; col++) {
@@ -42,7 +44,7 @@ class Grid {
             }
         }
 
-        grid.addEventListener('mousedown', () => this._handleMouseDown());
+        grid.addEventListener('mousedown', (event) => this._handleMouseDown(event));
         grid.addEventListener('mouseup', () => this._handleMouseUp());
 
         this.gridWrapper.appendChild(grid);
@@ -58,6 +60,7 @@ class Grid {
 
     clear() {
         document.getElementById('grid').remove();
+        this.nodes = [];
     }
 
     getNode(row, col) {
@@ -90,6 +93,12 @@ class Grid {
         return node;
     }
 
+    getNodeFromPoint(x, y) {
+        const row = Math.floor(y / this.nodeHeight);
+        const col = Math.floor(x / this.nodeWidth);
+        return this.getNode(row, col);
+    }
+
     _handleMouseMove(node) {
         if (this.isMouseDown) {
             node[this.setNodeType]();
@@ -100,8 +109,10 @@ class Grid {
         node.toggleNodeType();
     }
 
-    _handleMouseDown() {
+    _handleMouseDown(event) {
         this.isMouseDown = true;
+        const node = this.nodes[event.target.id.substring(1)];
+        this.setNodeType = node.isWallNode() ? 'setAsEmptyNode' : 'setAsWallNode';
     }
 
     _handleMouseUp() {

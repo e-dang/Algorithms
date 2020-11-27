@@ -164,6 +164,16 @@ describe('TestGrid', () => {
         expect(document.getElementById('grid')).toBeNull();
     });
 
+    test('clear resets nodes property to empty list', () => {
+        const obj = {remove: jest.fn()};
+        document.getElementById = jest.fn((x) => obj);
+        grid.nodes = [new Node()];
+
+        grid.clear();
+
+        expect(grid.nodes.length).toBe(0);
+    });
+
     test('_handleMouseMove calls setColor if isMouseDown is true', () => {
         const node = new Node();
         grid.isMouseDown = true;
@@ -183,11 +193,26 @@ describe('TestGrid', () => {
     });
 
     test('_handleMouseDown sets isMouseDown to true', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        grid.nodes = [new Node()];
         grid.isMouseDown = false;
 
-        grid._handleMouseDown();
+        grid._handleMouseDown(event);
 
         expect(grid.isMouseDown).toBe(true);
+    });
+
+    test('_handleMouseDown sets setNodeType to opposite of node type', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(true);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+
+        expect(grid.setNodeType).toBe('setAsEmptyNode');
     });
 
     test('_handleMouseUp sets isMouseDown to false', () => {
@@ -196,5 +221,25 @@ describe('TestGrid', () => {
         grid._handleMouseUp();
 
         expect(grid.isMouseDown).toBe(false);
+    });
+
+    test('getNodeFromPoint', () => {
+        let node;
+        const nodeNum = 57;
+        for (let i = 0; i < nRows * nCols; i++) {
+            const newNode = new Node();
+            grid.nodes.push(newNode);
+            if (i == nodeNum) {
+                node = newNode;
+            }
+        }
+        grid.nodeHeight = 8;
+        grid.nodeWidth = 8;
+        const row = Math.floor(nodeNum / nCols);
+        const col = nodeNum - row * nCols;
+        const x = col * grid.nodeWidth + 1;
+        const y = row * grid.nodeHeight + 1;
+
+        expect(grid.getNodeFromPoint(x, y)).toBe(node);
     });
 });
