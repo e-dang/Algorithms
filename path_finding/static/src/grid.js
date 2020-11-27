@@ -84,15 +84,6 @@ class Grid {
         this.getNode(row, col).setAsEndNode();
     }
 
-    _createNode(row, col) {
-        const node = document.createElement('div');
-        node.style.width = '8px';
-        node.style.height = '8px';
-        node.className = 'node';
-        node.id = `n${row * this.nCols + col}`;
-        return node;
-    }
-
     getNodeFromPoint(x, y) {
         const row = Math.floor(y / this.nodeHeight);
         const col = Math.floor(x / this.nodeWidth);

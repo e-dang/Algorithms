@@ -48,21 +48,6 @@ describe('TestGrid', () => {
         expect(grid.nodes.push).toHaveBeenCalledTimes(nRows * nCols);
     });
 
-    test('_createNode creates a node with className "node"', () => {
-        const node = grid._createNode(3, 4);
-
-        expect(node.className).toBe('node');
-    });
-
-    test('_createNode creates a node with id dependent on row, col', () => {
-        const row = 3;
-        const col = 4;
-
-        const node = grid._createNode(row, col);
-
-        expect(node.id).toBe(`n${row * nCols + col}`);
-    });
-
     test('getNode returns the correct node', () => {
         const row = 1;
         const col = 4;
