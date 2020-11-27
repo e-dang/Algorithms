@@ -89,3 +89,11 @@ class TestGrid:
         page.click_and_hold_nodes(start_row, col, end_row, col)
         for i in range(start_row, end_row + 1):
             assert page.is_node_of_type(i, col, 'empty')
+
+        # The user then clicks the start node and sees that it does not change
+        page.click_node(grid_params['start_row'], grid_params['start_col'])
+        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
+
+        # The user then clicks the end node and sees that it does not change
+        page.click_node(grid_params['end_row'], grid_params['end_col'])
+        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
