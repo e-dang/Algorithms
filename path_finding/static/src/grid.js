@@ -41,6 +41,14 @@ class Grid {
         this._setGridWidthHeight(grid);
     }
 
+    drawPath() {
+        let node = this.getEndNode().prev;
+        while (node != null) {
+            node.setAsPathNode();
+            node = node.prev;
+        }
+    }
+
     reset(nRows, nCols, startRow, startCol, endRow, endCol) {
         this.setDimensions(nRows, nCols);
         this.setStartNode(startRow, startCol);
@@ -58,6 +66,14 @@ class Grid {
         return this.nodes[row * this.nCols + col];
     }
 
+    getStartNode() {
+        return this.getNode(this.startRow, this.startCol);
+    }
+
+    getEndNode() {
+        return this.getNode(this.endRow, this.endCol);
+    }
+
     setDimensions(rows, cols) {
         this.nRows = rows;
         this.nCols = cols;
@@ -73,6 +89,13 @@ class Grid {
         this.endRow = row;
         this.endCol = col;
         this.getNode(row, col).setAsEndNode();
+    }
+
+    isInvalidSpace(row, col) {
+        if (row < 0 || row >= this.nRows || col < 0 || col >= this.nCols || this.getNode(row, col).isWallNode()) {
+            return true;
+        }
+        return false;
     }
 
     _handleMouseMove(node) {

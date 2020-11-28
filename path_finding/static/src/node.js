@@ -1,5 +1,7 @@
 class Node {
     constructor(grid) {
+        this.prev = null;
+        this.distance = Infinity;
         this.element = document.createElement('div');
         this.setAsEmptyNode();
         this.element.id = `n${grid.children.length}`;
@@ -21,6 +23,18 @@ class Node {
 
     setAsWallNode() {
         this._setNodeType('wall');
+    }
+
+    setAsVisitedNode() {
+        this._setNodeType('visited');
+    }
+
+    setAsVisitingNode() {
+        this._setNodeType('visiting');
+    }
+
+    setAsPathNode() {
+        this._setNodeType('path');
     }
 
     addEventListener(eventType, callback) {

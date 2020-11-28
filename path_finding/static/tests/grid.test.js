@@ -256,4 +256,130 @@ describe('TestGrid', () => {
             expect(mockGrid.style.height).toBe(`${grid.nRows * (nodeHeight + 1)}px`);
         });
     });
+
+    test('isInvalidSpace returns true when row < 0', () => {
+        const row = -1;
+        const col = 0;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(true);
+    });
+
+    test('isInvalidSpace returns true when row >= nRows', () => {
+        const row = nRows + 1;
+        const col = 0;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(true);
+    });
+
+    test('isInvalidSpace returns true when col < 0', () => {
+        const row = 0;
+        const col = -1;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(true);
+    });
+
+    test('isInvalidSpace returns true when col >= nCols', () => {
+        const row = 0;
+        const col = nCols + 1;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(true);
+    });
+
+    test('isInvalidSpace returns true node at coords is a wall node', () => {
+        const node = new Node();
+        node.isWallNode = jest.fn().mockReturnValueOnce(true);
+        grid.nodes.push(node);
+        const row = 0;
+        const col = 0;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(true);
+    });
+
+    test('isInvalidSpace returns false on valid information', () => {
+        const node = new Node();
+        node.isWallNode = jest.fn().mockReturnValueOnce(false);
+        grid.nodes.push(node);
+        const row = 0;
+        const col = 0;
+
+        const result = grid.isInvalidSpace(row, col);
+
+        expect(result).toBe(false);
+    });
+
+    test('getStartNode returns node at start coordinates', () => {
+        let node;
+        for (i = 0; i < nRows * nCols; i++) {
+            const newNode = new Node();
+            grid.nodes.push(newNode);
+            if (i == startRow * nCols + startCol) {
+                node = newNode;
+            }
+        }
+
+        const result = grid.getStartNode();
+
+        expect(result).toBe(node);
+    });
+
+    test('getStartNode returns node at end coordinates', () => {
+        let node;
+        for (i = 0; i < nRows * nCols; i++) {
+            const newNode = new Node();
+            grid.nodes.push(newNode);
+            if (i == endRow * nCols + endCol) {
+                node = newNode;
+            }
+        }
+
+        const result = grid.getEndNode();
+
+        expect(result).toBe(node);
+    });
+
+    test('drawPath calls setAsPathNode on linked list of nodes starting at end node prev', () => {
+        node1 = new Node();
+        node2 = new Node();
+        node3 = new Node();
+        node3.prev = node2;
+        node2.prev = node1;
+        node1.prev = null;
+        grid.nodes = [node1, node2, node3];
+        grid.endRow = 0;
+        grid.endCol = 2;
+
+        grid.drawPath();
+
+        expect(node3.setAsPathNode).not.toHaveBeenCalled();
+        expect(node2.setAsPathNode).toHaveBeenCalledTimes(1);
+        expect(node1.setAsPathNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('drawPath doesnt call setAsPathNode when end nodes prev is null', () => {
+        node1 = new Node();
+        node2 = new Node();
+        node3 = new Node();
+        node3.prev = null;
+        node2.prev = node1;
+        node1.prev = null;
+        grid.nodes = [node1, node2, node3];
+        grid.endRow = 0;
+        grid.endCol = 2;
+
+        grid.drawPath();
+
+        expect(node3.setAsPathNode).not.toHaveBeenCalled();
+        expect(node2.setAsPathNode).not.toHaveBeenCalled();
+        expect(node1.setAsPathNode).not.toHaveBeenCalled();
+    });
 });

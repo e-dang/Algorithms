@@ -1,9 +1,10 @@
 const Grid = require('./grid');
+const Dijkstra = require('./algorithms/dijkstra');
 
 class GridController {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
-
+        this.alg = alg;
         this.grid.draw();
     }
 
@@ -29,8 +30,18 @@ class GridController {
         document.getElementById('endCol').textContent = endCol;
     }
 
+    _handleRunAlgorithm() {
+        this._algorithmFromString().run(this.grid.drawPath);
+    }
+
     _parseInput(element) {
         return element.value.split(',').map((value) => parseInt(value));
+    }
+
+    _algorithmFromString() {
+        if (this.alg == "Dijkstra's Algorithm") {
+            return new Dijkstra(this.grid);
+        }
     }
 }
 

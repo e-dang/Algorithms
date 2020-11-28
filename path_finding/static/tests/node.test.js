@@ -28,6 +28,14 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
     });
 
+    test('constructor initializes distance to Infinity', () => {
+        expect(node.distance).toBe(Infinity);
+    });
+
+    test('constructor initializes prev to null', () => {
+        expect(node.prev).toBe(null);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
@@ -92,6 +100,24 @@ describe('NodeTest', () => {
             node.setAsWallNode();
 
             expect(node.element.className).toBe('node wall');
+        });
+
+        test('setAsVisitedNode sets class list to "node visited"', () => {
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node visited');
+        });
+
+        test('setAsVisitingNode sets class list to "node visiting"', () => {
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node visiting');
+        });
+
+        test('setAsPathNode sets class list to "node path"', () => {
+            node.setAsPathNode();
+
+            expect(node.element.className).toBe('node path');
         });
     });
 });
