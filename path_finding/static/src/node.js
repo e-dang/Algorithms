@@ -28,11 +28,15 @@ class Node {
     }
 
     setAsVisitedNode() {
-        this._setNodeType('visited');
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this._setNodeType('visited');
+        }
     }
 
     setAsVisitingNode() {
-        this._setNodeType('visiting');
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this._setNodeType('visiting');
+        }
     }
 
     setAsPathNode() {
@@ -45,6 +49,14 @@ class Node {
 
     isWallNode() {
         return this.element.className == 'node wall';
+    }
+
+    isStartNode() {
+        return this.element.className == 'node start';
+    }
+
+    isEndNode() {
+        return this.element.className == 'node end';
     }
 
     toggleNodeType() {

@@ -83,6 +83,30 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(false);
     });
 
+    test('isStartNode returns true when class list is "node start"', () => {
+        node.element.className = 'node start';
+
+        expect(node.isStartNode()).toBe(true);
+    });
+
+    test('isStartNode returns false when class list does not contain start', () => {
+        node.element.className = 'node';
+
+        expect(node.isStartNode()).toBe(false);
+    });
+
+    test('isEndNode return true when class list is "node end"', () => {
+        node.element.className = 'node end';
+
+        expect(node.isEndNode()).toBe(true);
+    });
+
+    test('isEndNode returns false when class list does not contain end', () => {
+        node.element.className = 'node';
+
+        expect(node.isEndNode()).toBe(false);
+    });
+
     describe('test node type setter methods', () => {
         beforeEach(() => {
             node.element.className = 'blah random stuff';
@@ -118,10 +142,42 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe('node visited');
         });
 
+        test('setAsVisitedNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsVisitedNode doesnt change class list if node is end node', () => {
+            node.setAsEndNode();
+
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node end');
+        });
+
         test('setAsVisitingNode sets class list to "node visiting"', () => {
             node.setAsVisitingNode();
 
             expect(node.element.className).toBe('node visiting');
+        });
+
+        test('setAsVisitingNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsVisitingNode doesnt change class list if node is end node', () => {
+            node.setAsEndNode();
+
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node end');
         });
 
         test('setAsPathNode sets class list to "node path"', () => {
