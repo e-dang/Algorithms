@@ -39,3 +39,7 @@
 .node.visiting {
     background-color: orange;
 }
+
+.node.path {
+    background-color: blue;
+}
