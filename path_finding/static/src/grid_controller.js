@@ -43,7 +43,7 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        this._algorithmFromString().run(this.grid.drawPath);
+        this._algorithmFromString().run(() => this.grid.drawPath());
     }
 
     _parseInput(element) {

@@ -116,7 +116,6 @@ describe('GridControllerTest', () => {
 
         expect(controller._algorithmFromString).toHaveBeenCalledTimes(1);
         expect(mockReturn.run).toHaveBeenCalledTimes(1);
-        expect(mockReturn.run).toHaveBeenCalledWith(controller.grid.drawPath);
     });
 
     test('_handleRunAlgorithm gets called when runButton is clicked', () => {
