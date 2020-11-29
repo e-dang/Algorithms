@@ -18,6 +18,10 @@ describe('GridControllerTest', () => {
         controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg);
     });
 
+    afterEach(() => {
+        document.getElementsByTagName('html')[0].innerHTML = '';
+    });
+
     test('constructor initializes a new Grid with the passed in dimensions', () => {
         expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol);
     });
@@ -113,5 +117,44 @@ describe('GridControllerTest', () => {
         expect(controller._algorithmFromString).toHaveBeenCalledTimes(1);
         expect(mockReturn.run).toHaveBeenCalledTimes(1);
         expect(mockReturn.run).toHaveBeenCalledWith(controller.grid.drawPath);
+    });
+
+    test('_handleRunAlgorithm gets called when runButton is clicked', () => {
+        controller._handleRunAlgorithm = jest.fn();
+        const button = document.createElement('button');
+        button.id = 'runButton';
+        document.body.append(button);
+        controller.addRunAlgorithmEventListener();
+
+        button.click();
+
+        expect(controller._handleRunAlgorithm).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateAlgorithm sets the alg property to the current selection', () => {
+        const selection = document.createElement('select');
+        const option = document.createElement('option');
+        const value = 'Blah blah blah';
+        selection.id = 'algorithmSelect';
+        option.value = value;
+        selection.appendChild(option);
+        selection.options[0].selected = true;
+        document.body.appendChild(selection);
+
+        controller._handleUpdateAlgorithm();
+
+        expect(controller.alg).toBe(value);
+    });
+
+    test('_handleUpdateAlgorithm gets called when algorithm selection is chosen', () => {
+        const selection = document.createElement('select');
+        selection.id = 'algorithmSelect';
+        document.body.appendChild(selection);
+        controller._handleUpdateAlgorithm = jest.fn();
+        controller.addUpdateAlgorithmEventListener();
+
+        selection.dispatchEvent(new Event('change'));
+
+        expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 });
