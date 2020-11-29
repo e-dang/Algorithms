@@ -1,3 +1,4 @@
+const TIMEOUT = 10;
 class Dijkstra {
     constructor(grid) {
         this.grid = grid;
@@ -8,28 +9,30 @@ class Dijkstra {
         const dc = [0, -1, 0, 1, 1, -1, 1, -1];
 
         const visiting = [];
-        visiting.push(this.grid.getStartNode());
+        const startNode = this.grid.getStartNode();
+        startNode.distance = 0;
+        visiting.push(startNode);
 
         while (visiting.length) {
             const node = this.getMinimum(visiting);
             visiting.splice(visiting.indexOf(node), 1);
-            node.visit();
+            await this.visit(node);
 
             for (let i = 0; i < 8; i++) {
                 const row = node.row + dr[i];
                 const col = node.col + dc[i];
-                const candidateNode = this.grid.getNode(row, col);
 
                 if (this.grid.isInvalidSpace(row, col)) {
                     continue;
                 }
 
+                const candidateNode = this.grid.getNode(row, col);
                 if (candidateNode.distance > node.distance + 1) {
-                    if (candidateNode.dist != Infinity) {
+                    if (candidateNode.distance != Infinity) {
                         visiting.splice(visiting.indexOf(candidateNode), 1);
                     }
 
-                    candidateNode.visiting();
+                    await this.visiting(candidateNode);
                     candidateNode.distance = node.distance + 1;
                     candidateNode.prev = node;
                     visiting.push(candidateNode);
@@ -52,13 +55,19 @@ class Dijkstra {
         return minNode;
     }
 
-    visit(node) {
+    async visit(node) {
+        await sleep(TIMEOUT);
         node.setAsVisitedNode();
     }
 
-    visiting(node) {
+    async visiting(node) {
+        await sleep(TIMEOUT);
         node.setAsVisitingNode();
     }
+}
+
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = Dijkstra;

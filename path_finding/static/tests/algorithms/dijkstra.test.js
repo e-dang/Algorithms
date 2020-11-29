@@ -24,18 +24,18 @@ describe('TestDijkstra', () => {
         expect(node).toBe(minNode);
     });
 
-    test('visit calls setAsVisitedNode on node', () => {
+    test('visit calls setAsVisitedNode on node', async () => {
         const node = new Node();
 
-        alg.visit(node);
+        await alg.visit(node);
 
         expect(node.setAsVisitedNode).toHaveBeenCalledTimes(1);
     });
 
-    test('visiting calls setAsVisitingNode on node', () => {
+    test('visiting calls setAsVisitingNode on node', async () => {
         const node = new Node();
 
-        alg.visiting(node);
+        await alg.visiting(node);
 
         expect(node.setAsVisitingNode).toHaveBeenCalledTimes(1);
     });
