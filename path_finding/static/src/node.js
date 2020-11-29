@@ -40,7 +40,9 @@ class Node {
     }
 
     setAsPathNode() {
-        this._setNodeType('path');
+        if (!this.isStartNode()) {
+            this._setNodeType('path');
+        }
     }
 
     addEventListener(eventType, callback) {

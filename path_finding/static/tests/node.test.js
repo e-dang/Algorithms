@@ -185,5 +185,13 @@ describe('NodeTest', () => {
 
             expect(node.element.className).toBe('node path');
         });
+
+        test('setAsPathNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsPathNode();
+
+            expect(node.element.className).toBe('node start');
+        });
     });
 });
