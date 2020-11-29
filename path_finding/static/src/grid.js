@@ -21,7 +21,7 @@ class Grid {
 
         for (let row = 0; row < this.nRows; row++) {
             for (let col = 0; col < this.nCols; col++) {
-                let node = new Node(grid);
+                let node = new Node(row, col, grid);
                 if (row == this.startRow && col == this.startCol) {
                     node.setAsStartNode();
                 } else if (row == this.endRow && col == this.endCol) {

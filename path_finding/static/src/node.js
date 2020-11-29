@@ -1,7 +1,9 @@
 class Node {
-    constructor(grid) {
+    constructor(row, col, grid) {
         this.prev = null;
         this.distance = Infinity;
+        this.row = row;
+        this.col = col;
         this.element = document.createElement('div');
         this.setAsEmptyNode();
         this.element.id = `n${grid.children.length}`;

@@ -44,7 +44,7 @@ describe('TestGrid', () => {
 
             expect(document.getElementById('grid')).toBeTruthy();
             expect(Node).toHaveBeenCalledTimes(nRows * nCols);
-            expect(Node).toHaveBeenCalledWith(document.getElementById('grid'));
+            expect(Node).toHaveBeenCalledWith(0, 0, document.getElementById('grid'));
         });
 
         test('draw push nRows * nCols Nodes to node property', () => {

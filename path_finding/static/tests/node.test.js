@@ -1,6 +1,8 @@
 const Node = require('../src/node');
 
 describe('NodeTest', () => {
+    let row = 3;
+    let col = 1;
     let node;
     let grid;
 
@@ -9,7 +11,7 @@ describe('NodeTest', () => {
         grid.id = 'grid';
         grid.nodeSize = '10px';
         document.body.appendChild(grid);
-        node = new Node(grid);
+        node = new Node(row, col, grid);
     });
 
     afterEach(() => {
@@ -34,6 +36,14 @@ describe('NodeTest', () => {
 
     test('constructor initializes prev to null', () => {
         expect(node.prev).toBe(null);
+    });
+
+    test('constructor initializes row property with row param', () => {
+        expect(node.row).toBe(row);
+    });
+
+    test('constructor initializes col property with col param', () => {
+        expect(node.col).toBe(col);
     });
 
     test('addEventListener adds event listener to dom element', () => {
