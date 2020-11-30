@@ -1,7 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-TIMEOUT = 100
+TIMEOUT = 10
 
 
 class BaseInputElement:
