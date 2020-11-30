@@ -10,18 +10,26 @@ class GridController {
 
     addUpdateGridEventListener() {
         document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
+
+        return this;
     }
 
     addRunAlgorithmEventListener() {
         document.getElementById('runButton').addEventListener('click', () => this._handleRunAlgorithm());
+
+        return this;
     }
 
     addUpdateAlgorithmEventListener() {
         document.getElementById('algorithmSelect').addEventListener('change', () => this._handleUpdateAlgorithm());
+
+        return this;
     }
 
     addResetEventListener() {
         document.getElementById('resetButton').addEventListener('click', () => this._handleReset());
+
+        return this;
     }
 
     _handleUpdateGrid() {
