@@ -1,5 +1,9 @@
 class Node {
-    constructor(grid) {
+    constructor(row, col, grid) {
+        this.prev = null;
+        this.distance = Infinity;
+        this.row = row;
+        this.col = col;
         this.element = document.createElement('div');
         this.setAsEmptyNode();
         this.element.id = `n${grid.children.length}`;
@@ -23,12 +27,38 @@ class Node {
         this._setNodeType('wall');
     }
 
+    setAsVisitedNode() {
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this._setNodeType('visited');
+        }
+    }
+
+    setAsVisitingNode() {
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this._setNodeType('visiting');
+        }
+    }
+
+    setAsPathNode() {
+        if (!this.isStartNode()) {
+            this._setNodeType('path');
+        }
+    }
+
     addEventListener(eventType, callback) {
         this.element.addEventListener(eventType, callback);
     }
 
     isWallNode() {
         return this.element.className == 'node wall';
+    }
+
+    isStartNode() {
+        return this.element.className == 'node start';
+    }
+
+    isEndNode() {
+        return this.element.className == 'node end';
     }
 
     toggleNodeType() {

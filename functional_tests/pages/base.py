@@ -1,16 +1,17 @@
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+TIMEOUT = 10
+
+
 class BaseInputElement:
     """
     https://selenium-python.readthedocs.io/page-objects.html
     """
 
-    TIMEOUT = 100
-
     def __set__(self, obj, value):
         driver = obj.driver
-        WebDriverWait(driver, self.TIMEOUT).until(
+        WebDriverWait(driver, TIMEOUT).until(
             lambda driver: driver.find_element_by_id(self.locator))
         driver.find_element_by_id(self.locator).clear()
         driver.find_element_by_id(self.locator).send_keys(value)

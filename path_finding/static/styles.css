@@ -31,3 +31,15 @@
 .node.end {
     background-color: red;
 }
+
+.node.visited {
+    background-color: yellow;
+}
+
+.node.visiting {
+    background-color: orange;
+}
+
+.node.path {
+    background-color: blue;
+}

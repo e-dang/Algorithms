@@ -1,6 +1,8 @@
 const Node = require('../src/node');
 
 describe('NodeTest', () => {
+    let row = 3;
+    let col = 1;
     let node;
     let grid;
 
@@ -9,7 +11,7 @@ describe('NodeTest', () => {
         grid.id = 'grid';
         grid.nodeSize = '10px';
         document.body.appendChild(grid);
-        node = new Node(grid);
+        node = new Node(row, col, grid);
     });
 
     afterEach(() => {
@@ -26,6 +28,22 @@ describe('NodeTest', () => {
 
     test('constructor sets node dom element id to "n${length of grid - 1}"', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
+    });
+
+    test('constructor initializes distance to Infinity', () => {
+        expect(node.distance).toBe(Infinity);
+    });
+
+    test('constructor initializes prev to null', () => {
+        expect(node.prev).toBe(null);
+    });
+
+    test('constructor initializes row property with row param', () => {
+        expect(node.row).toBe(row);
+    });
+
+    test('constructor initializes col property with col param', () => {
+        expect(node.col).toBe(col);
     });
 
     test('addEventListener adds event listener to dom element', () => {
@@ -65,6 +83,30 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(false);
     });
 
+    test('isStartNode returns true when class list is "node start"', () => {
+        node.element.className = 'node start';
+
+        expect(node.isStartNode()).toBe(true);
+    });
+
+    test('isStartNode returns false when class list does not contain start', () => {
+        node.element.className = 'node';
+
+        expect(node.isStartNode()).toBe(false);
+    });
+
+    test('isEndNode return true when class list is "node end"', () => {
+        node.element.className = 'node end';
+
+        expect(node.isEndNode()).toBe(true);
+    });
+
+    test('isEndNode returns false when class list does not contain end', () => {
+        node.element.className = 'node';
+
+        expect(node.isEndNode()).toBe(false);
+    });
+
     describe('test node type setter methods', () => {
         beforeEach(() => {
             node.element.className = 'blah random stuff';
@@ -92,6 +134,64 @@ describe('NodeTest', () => {
             node.setAsWallNode();
 
             expect(node.element.className).toBe('node wall');
+        });
+
+        test('setAsVisitedNode sets class list to "node visited"', () => {
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node visited');
+        });
+
+        test('setAsVisitedNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsVisitedNode doesnt change class list if node is end node', () => {
+            node.setAsEndNode();
+
+            node.setAsVisitedNode();
+
+            expect(node.element.className).toBe('node end');
+        });
+
+        test('setAsVisitingNode sets class list to "node visiting"', () => {
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node visiting');
+        });
+
+        test('setAsVisitingNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsVisitingNode doesnt change class list if node is end node', () => {
+            node.setAsEndNode();
+
+            node.setAsVisitingNode();
+
+            expect(node.element.className).toBe('node end');
+        });
+
+        test('setAsPathNode sets class list to "node path"', () => {
+            node.setAsPathNode();
+
+            expect(node.element.className).toBe('node path');
+        });
+
+        test('setAsPathNode doesnt change class list if node is start node', () => {
+            node.setAsStartNode();
+
+            node.setAsPathNode();
+
+            expect(node.element.className).toBe('node start');
         });
     });
 });
