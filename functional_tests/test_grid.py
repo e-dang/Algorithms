@@ -60,6 +60,38 @@ class TestGrid:
         assert page.table_displays_start_node_coords(start, start)
         assert page.table_displays_end_node_coords(end, end)
 
+    def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
+        # The user goes to the website
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user notices the page title and header mention path finding algorithms
+        assert page.has_correct_title()
+        assert page.has_correct_header()
+
+        # A grid of squares is visible on the page, with start and end nodes
+        assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
+        assert page.nodes_are_square()
+        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
+        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
+
+        # The user clicks and drags the start node to a new position and sees the start node move with the mouse
+        begin_row, finish_row = grid_params['start_row'], grid_params['start_row'] + 5
+        page.click_and_hold_nodes(begin_row, grid_params['start_col'], finish_row, grid_params['start_col'])
+        self.assert_line_of_nodes_are_of_type(page, begin_row, finish_row - 1, grid_params['start_col'], 'empty')
+        assert page.is_node_of_type(finish_row, grid_params['start_col'], 'start')
+
+        # The user clicks and drags the end node to a new position and sees the start node move with the mouse
+        begin_row, finish_row = grid_params['end_row'], grid_params['end_row'] - 5
+        page.click_and_hold_nodes(begin_row, grid_params['end_col'], finish_row, grid_params['end_col'])
+        self.assert_line_of_nodes_are_of_type(page, begin_row, finish_row + 1, grid_params['end_col'], 'empty')
+        assert page.is_node_of_type(finish_row, grid_params['end_col'], 'end')
+
+        # The user clicks and drags on the virtical edge of the grid and sees the grid resize horizontally
+        assert False, 'finish the test!'
+
+        # The user clicks and drags on the horizontal edge of the grid and sees the grid resize vertically
+
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
