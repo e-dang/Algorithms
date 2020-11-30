@@ -136,6 +136,26 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe('node wall');
         });
 
+        test('setAsWallNode doesnt change class list if node is a start node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isStartNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWallNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
+        test('setAsWallNode doesnt change class list if node is an end node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isEndNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWallNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
         test('setAsVisitedNode sets class list to "node visited"', () => {
             node.setAsVisitedNode();
 
