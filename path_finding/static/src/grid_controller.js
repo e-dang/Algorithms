@@ -20,6 +20,10 @@ class GridController {
         document.getElementById('algorithmSelect').addEventListener('change', () => this._handleUpdateAlgorithm());
     }
 
+    addResetEventListener() {
+        document.getElementById('resetButton').addEventListener('click', () => this._handleReset());
+    }
+
     _handleUpdateGrid() {
         const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
         const [startRow, startCol] = this._parseInput(document.getElementById('startNodeInput'));
@@ -59,6 +63,12 @@ class GridController {
     _handleCompleteAlgorithm() {
         this.grid.drawPath();
         document.getElementById('algComplete').hidden = false;
+    }
+
+    _handleReset() {
+        document.getElementById('algComplete').hidden = true;
+        this.grid.clear();
+        this.grid.draw();
     }
 }
 

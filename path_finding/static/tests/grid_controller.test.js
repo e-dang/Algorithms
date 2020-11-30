@@ -157,7 +157,7 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
-    describe('test _handleCompleteAlgorithm', () => {
+    describe('test _handleCompleteAlgorithm and _handleReset', () => {
         let element;
         beforeEach(() => {
             element = document.createElement('p');
@@ -178,5 +178,41 @@ describe('GridControllerTest', () => {
 
             expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
         });
+
+        test('_handleReset sets algComplete element to be invisible', () => {
+            element.hidden = false;
+
+            controller._handleReset();
+
+            expect(element).not.toBeVisible();
+        });
+
+        test('_handleReset calls grid.draw()', () => {
+            controller.grid.draw = jest.fn();
+
+            controller._handleReset();
+
+            expect(controller.grid.draw).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleReset calls grid.clear()', () => {
+            controller.grid.clear = jest.fn();
+
+            controller._handleReset();
+
+            expect(controller.grid.clear).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    test('clicking resetButton calls _handleReset', () => {
+        const resetButton = document.createElement('button');
+        resetButton.id = 'resetButton';
+        document.body.appendChild(resetButton);
+        controller._handleReset = jest.fn();
+        controller.addResetEventListener();
+
+        resetButton.click();
+
+        expect(controller._handleReset).toHaveBeenCalledTimes(1);
     });
 });

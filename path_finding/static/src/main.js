@@ -11,3 +11,4 @@ const controller = new GridController(rows, cols, startRow, startCol, endRow, en
 controller.addUpdateGridEventListener();
 controller.addUpdateAlgorithmEventListener();
 controller.addRunAlgorithmEventListener();
+controller.addResetEventListener();
