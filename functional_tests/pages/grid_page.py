@@ -1,4 +1,5 @@
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from .base import TIMEOUT, BaseInputElement, BasePage
@@ -85,7 +86,7 @@ class GridPage(BasePage):
 
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
-            lambda driver: driver.find_element_by_id('algComplete').is_displayed)
+            EC.visibility_of(self.driver.find_element_by_id('algComplete')))
 
     def select_algorithm(self, algorithm):
         select = Select(self.driver.find_element_by_id('algorithmSelect'))
