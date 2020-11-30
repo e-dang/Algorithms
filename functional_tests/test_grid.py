@@ -18,6 +18,9 @@ class TestGrid:
             else:
                 assert page.is_node_of_type(const, i, n_type)
 
+    def make_form_input(self, row, col):
+        return f'{row},{col}'
+
     def test_user_can_customize_grid_through_input_fields(self, url):
         # A user goes to the website
         self.driver.get(url)
@@ -41,9 +44,9 @@ class TestGrid:
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized.
         # The user enters a new grid size, start, and end points and submits the form.
         rows, cols, start, end = 10, 11, 2, 7
-        page.dims_input = f'{rows},{cols}'
-        page.start_node_input = f'{start},{start}'
-        page.end_node_input = f'{end},{end}'
+        page.dims_input = self.make_form_input(rows, cols)
+        page.start_node_input = self.make_form_input(start, start)
+        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # A new grid appears with the correct dimensions, start, and end nodes
@@ -102,9 +105,9 @@ class TestGrid:
 
         # Resize the grid to something small so the test runs faster
         dims, start, end = 10, 1, 8
-        page.dims_input = f'{dims},{dims}'
-        page.start_node_input = f'{start},{start}'
-        page.end_node_input = f'{end},{end}'
+        page.dims_input = self.make_form_input(dims, dims)
+        page.start_node_input = self.make_form_input(start, start)
+        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
