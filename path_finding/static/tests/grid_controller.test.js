@@ -156,4 +156,27 @@ describe('GridControllerTest', () => {
 
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
+
+    describe('test _handleCompleteAlgorithm', () => {
+        let element;
+        beforeEach(() => {
+            element = document.createElement('p');
+            element.id = 'algComplete';
+            document.body.appendChild(element);
+        });
+
+        test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
+            element.hidden = true;
+
+            controller._handleCompleteAlgorithm();
+
+            expect(element).toBeVisible();
+        });
+
+        test('_handleCompleteAlgorithm calls grid.drawPath', () => {
+            controller._handleCompleteAlgorithm();
+
+            expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
+        });
+    });
 });

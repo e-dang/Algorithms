@@ -43,7 +43,7 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        this._algorithmFromString().run(() => this.grid.drawPath());
+        this._algorithmFromString().run(() => this._handleCompleteAlgorithm());
     }
 
     _parseInput(element) {
@@ -54,6 +54,11 @@ class GridController {
         if (this.alg == "Dijkstra's Algorithm") {
             return new Dijkstra(this.grid);
         }
+    }
+
+    _handleCompleteAlgorithm() {
+        this.grid.drawPath();
+        document.getElementById('algComplete').hidden = false;
     }
 }
 
