@@ -85,10 +85,24 @@ class Grid {
         this.getNode(row, col).setAsStartNode();
     }
 
+    setNodeAsStartNode(node) {
+        this.getStartNode().setAsEmptyNode();
+        this.startRow = node.row;
+        this.startCol = node.col;
+        node.setAsStartNode();
+    }
+
     setEndNode(row, col) {
         this.endRow = row;
         this.endCol = col;
         this.getNode(row, col).setAsEndNode();
+    }
+
+    setNodeAsEndNode(node) {
+        this.getEndNode().setAsEmptyNode();
+        this.endRow = node.row;
+        this.endCol = node.col;
+        node.setAsEndNode();
     }
 
     isInvalidSpace(row, col) {

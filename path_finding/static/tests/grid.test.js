@@ -114,6 +114,36 @@ describe('TestGrid', () => {
         expect(grid.getNode(row, col).setAsStartNode).toHaveBeenCalledTimes(1);
     });
 
+    test('setNodeAsStartNode sets startRow and startCol', () => {
+        const node = new Node();
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
+        node.row = 1;
+        node.col = 0;
+
+        grid.setNodeAsStartNode(node);
+
+        expect(grid.startRow).toBe(node.row);
+        expect(grid.startCol).toBe(node.col);
+    });
+
+    test('setNodeAsStartNode calls setAsStartNode on node', () => {
+        const node = new Node();
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setNodeAsStartNode(node);
+
+        expect(node.setAsStartNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setNodeAsStartNode sets previous startNode to empty node', () => {
+        const node = new Node();
+        grid.getStartNode = jest.fn().mockReturnValueOnce(node);
+
+        grid.setNodeAsStartNode(new Node());
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
     test('setEndNode sets endRow and endCol', () => {
         const row = 10;
         const col = 9;
@@ -136,6 +166,36 @@ describe('TestGrid', () => {
         grid.setEndNode(row, col);
 
         expect(grid.getNode(row, col).setAsEndNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setNodeAsEndNode sets endRow and endCol', () => {
+        const node = new Node();
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+        node.row = 1;
+        node.col = 0;
+
+        grid.setNodeAsEndNode(node);
+
+        expect(grid.endRow).toBe(node.row);
+        expect(grid.endCol).toBe(node.col);
+    });
+
+    test('setNodeAsEndNode calls setAsEndNode on node', () => {
+        const node = new Node();
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setNodeAsEndNode(node);
+
+        expect(node.setAsEndNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setNodeAsEndNode sets previous startNode to empty node', () => {
+        const node = new Node();
+        grid.getEndNode = jest.fn().mockReturnValueOnce(node);
+
+        grid.setNodeAsEndNode(new Node());
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
     });
 
     test('reset calls setDimensions, setStartNode, setEndNode, and draw with right args', () => {
