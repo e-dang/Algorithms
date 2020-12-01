@@ -81,17 +81,21 @@ class Grid {
     }
 
     setAsStartNode(node) {
-        this.getStartNode().setAsEmptyNode();
-        this.startRow = node.row;
-        this.startCol = node.col;
-        node.setAsStartNode();
+        if (!node.isEndNode()) {
+            this.getStartNode().setAsEmptyNode();
+            this.startRow = node.row;
+            this.startCol = node.col;
+            node.setAsStartNode();
+        }
     }
 
     setAsEndNode(node) {
-        this.getEndNode().setAsEmptyNode();
-        this.endRow = node.row;
-        this.endCol = node.col;
-        node.setAsEndNode();
+        if (!node.isStartNode()) {
+            this.getEndNode().setAsEmptyNode();
+            this.endRow = node.row;
+            this.endCol = node.col;
+            node.setAsEndNode();
+        }
     }
 
     isInvalidSpace(row, col) {

@@ -1,4 +1,5 @@
 const Grid = require('../src/grid');
+const GridController = require('../src/grid_controller');
 const Node = require('../src/node');
 
 jest.mock('../src/node');
@@ -92,6 +93,7 @@ describe('TestGrid', () => {
 
     test('setAsStartNode sets startRow and startCol', () => {
         const node = new Node();
+        node.isEndNode.mockReturnValueOnce(false);
         grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
         node.row = 1;
         node.col = 0;
@@ -104,6 +106,7 @@ describe('TestGrid', () => {
 
     test('setAsStartNode calls setAsStartNode on node', () => {
         const node = new Node();
+        node.isEndNode.mockReturnValueOnce(false);
         grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
 
         grid.setAsStartNode(node);
@@ -114,14 +117,30 @@ describe('TestGrid', () => {
     test('setAsStartNode sets previous startNode to empty node', () => {
         const node = new Node();
         grid.getStartNode = jest.fn().mockReturnValueOnce(node);
+        const nodeParam = new Node();
+        nodeParam.isEndNode.mockReturnValueOnce(false);
 
-        grid.setAsStartNode(new Node());
+        grid.setAsStartNode(nodeParam);
 
         expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
     });
 
+    test('setAsStartNode doesnt set startRow and startCol if node.isEndNode returns true', () => {
+        const node = new Node();
+        node.row = 9;
+        node.col = 9;
+        node.isEndNode.mockReturnValueOnce(true);
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setAsStartNode(node);
+
+        expect(grid.startRow).toBe(startRow);
+        expect(grid.startCol).toBe(startCol);
+    });
+
     test('setAsEndNode sets endRow and endCol', () => {
         const node = new Node();
+        node.isStartNode.mockReturnValueOnce(false);
         grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
         node.row = 1;
         node.col = 0;
@@ -144,10 +163,25 @@ describe('TestGrid', () => {
     test('setAsEndNode sets previous startNode to empty node', () => {
         const node = new Node();
         grid.getEndNode = jest.fn().mockReturnValueOnce(node);
+        const nodeParam = new Node();
+        nodeParam.isStartNode.mockReturnValueOnce(false);
 
-        grid.setAsEndNode(new Node());
+        grid.setAsEndNode(nodeParam);
 
         expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setAsEndNode doesnt set endRow and endCol if isStartNode returns true', () => {
+        const node = new Node();
+        node.row = 1;
+        node.col = 3;
+        node.isStartNode.mockReturnValueOnce(true);
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setAsEndNode(node);
+
+        expect(grid.endRow).toBe(endRow);
+        expect(grid.endCol).toBe(endCol);
     });
 
     describe('test reset', () => {
