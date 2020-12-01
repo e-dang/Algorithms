@@ -15,15 +15,6 @@ describe('TestDijkstra', () => {
         expect(alg.grid).toBe(grid);
     });
 
-    test('getMinimum returns node with minimum distance', () => {
-        minNode = {distance: 1};
-        const nodes = [{distance: 100}, minNode, {distance: Infinity}];
-
-        const node = alg.getMinimum(nodes);
-
-        expect(node).toBe(minNode);
-    });
-
     test('visit calls setAsVisitedNode on node', async () => {
         const node = new Node();
 

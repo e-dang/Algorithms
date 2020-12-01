@@ -146,7 +146,7 @@ class TestGrid:
         page.click_run()
 
         # The algorithm runs and the user sees explored nodes around the start node
-        assert page.is_node_of_type(start + 1, start, 'visited')
+        assert page.is_node_of_type(start - 1, start, 'visited')
 
         # The algorithm completes and the user sees path nodes at the start and end nodes
         page.wait_until_complete()
