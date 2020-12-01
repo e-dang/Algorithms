@@ -64,32 +64,37 @@ class TestGrid:
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
         # The user clicks and drags the start node to a new position and sees the start node move with the mouse
-        begin_row, finish_row = grid_params['start_row'], grid_params['start_row'] + 5
-        page.click_and_hold_nodes(begin_row, grid_params['start_col'], finish_row, grid_params['start_col'])
-        self.assert_line_of_nodes_are_of_type(page, begin_row, finish_row - 1, grid_params['start_col'], 'empty')
-        assert page.is_node_of_type(finish_row, grid_params['start_col'], 'start')
+        start_begin_row, start_finish_row = grid_params['start_row'], grid_params['start_row'] + 5
+        page.click_and_hold_nodes(start_begin_row, grid_params['start_col'], start_finish_row, grid_params['start_col'])
+        self.assert_line_of_nodes_are_of_type(
+            page, start_begin_row, start_finish_row - 1, grid_params['start_col'], 'empty')
+        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
 
         # The user then clicks the old start node position and sees it turn into a wall node
         page.click_node(grid_params['start_row'], grid_params['start_col'])
         assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'wall')
 
         # The user then clicks the new start node, but it remains a start node
-        page.click_node(finish_row, grid_params['start_col'])
-        assert page.is_node_of_type(finish_row, grid_params['start_col'], 'start')
+        page.click_node(start_finish_row, grid_params['start_col'])
+        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
 
         # The user clicks and drags the end node to a new position and sees the start node move with the mouse
-        begin_row, finish_row = grid_params['end_row'], grid_params['end_row'] - 5
-        page.click_and_hold_nodes(begin_row, grid_params['end_col'], finish_row, grid_params['end_col'])
-        self.assert_line_of_nodes_are_of_type(page, begin_row, finish_row + 1, grid_params['end_col'], 'empty')
-        assert page.is_node_of_type(finish_row, grid_params['end_col'], 'end')
+        end_begin_row, end_finish_row = grid_params['end_row'], grid_params['end_row'] - 5
+        page.click_and_hold_nodes(end_begin_row, grid_params['end_col'], end_finish_row, grid_params['end_col'])
+        self.assert_line_of_nodes_are_of_type(page, end_begin_row, end_finish_row + 1, grid_params['end_col'], 'empty')
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
 
         # The user then clicks the old end node position and sees it turn into a wall node
         page.click_node(grid_params['end_row'], grid_params['end_col'])
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'wall')
 
         # The user then clicks the new end node, but it remains an end node
-        page.click_node(finish_row, grid_params['end_col'])
-        assert page.is_node_of_type(finish_row, grid_params['end_col'], 'end')
+        page.click_node(end_finish_row, grid_params['end_col'])
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+
+        # The user then drags the start node onto the end node but doesnt see the end node change
+        page.click_and_hold_nodes(start_finish_row, grid_params['start_col'], end_finish_row, grid_params['end_col'])
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
 
         # The user clicks and drags on the virtical edge of the grid and sees the grid resize horizontally
         assert False, 'finish the test!'
