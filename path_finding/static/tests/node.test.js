@@ -46,6 +46,10 @@ describe('NodeTest', () => {
         expect(node.col).toBe(col);
     });
 
+    test('constructor initializes id property and element.id property as the same thing', () => {
+        expect(node.id).toBe(node.element.id);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
