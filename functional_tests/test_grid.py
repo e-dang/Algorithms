@@ -21,7 +21,7 @@ class TestGrid:
     def make_form_input(self, row, col):
         return f'{row},{col}'
 
-    def test_user_can_customize_grid_through_input_fields(self, url):
+    def test_user_can_customize_grid_through_input_field(self, url):
         # A user goes to the website
         self.driver.get(url)
         page = GridPage(self.driver)
@@ -52,16 +52,6 @@ class TestGrid:
         # The user goes to the website
         self.driver.get(url)
         page = GridPage(self.driver)
-
-        # The user notices the page title and header mention path finding algorithms
-        assert page.has_correct_title()
-        assert page.has_correct_header()
-
-        # A grid of squares is visible on the page, with start and end nodes
-        assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
-        assert page.nodes_are_square()
-        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
-        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
         # The user clicks and drags the start node to a new position and sees the start node move with the mouse
         start_begin_row, start_finish_row = grid_params['start_row'], grid_params['start_row'] + 5
