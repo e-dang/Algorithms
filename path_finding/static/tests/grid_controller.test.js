@@ -53,7 +53,7 @@ describe('GridControllerTest', () => {
     });
 
     test('_algorithmFromString returns Dijkstra when Dijkstra.name is the alg property', () => {
-        controller.alg = "Dijkstra's Algorithm";
+        controller.alg = 'dijkstra';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(Dijkstra);
     });

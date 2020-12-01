@@ -50,7 +50,7 @@ class GridController {
     }
 
     _algorithmFromString() {
-        if (this.alg == "Dijkstra's Algorithm") {
+        if (this.alg == 'dijkstra') {
             return new Dijkstra(this.grid);
         }
     }
