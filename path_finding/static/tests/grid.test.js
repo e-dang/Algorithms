@@ -237,14 +237,15 @@ describe('TestGrid', () => {
         });
     });
 
-    test('_handleMouseMove calls setColor if isMouseDown is true', () => {
+    test('_handleMouseMove calls setNodeType with node if isMouseDown is true', () => {
         const node = new Node();
         grid.isMouseDown = true;
-        grid.setNodeType = 'setAsWallNode';
+        grid.setNodeType = jest.fn();
 
         grid._handleMouseMove(node);
 
-        expect(node[grid.setNodeType]).toHaveBeenCalled();
+        expect(grid.setNodeType).toHaveBeenCalledWith(node);
+        expect(grid.setNodeType).toHaveBeenCalledTimes(1);
     });
 
     test('_handleClick calls toggleNodeType', () => {
@@ -266,7 +267,7 @@ describe('TestGrid', () => {
         expect(grid.isMouseDown).toBe(true);
     });
 
-    test('_handleMouseDown sets setNodeType to opposite of node type', () => {
+    test('_handleMouseDown sets setNodeType to func that sets node as empty node when node is a wall node', () => {
         const mockFn = jest.fn((x) => 0);
         const event = {target: {id: {substring: mockFn}}};
         const node = new Node();
@@ -274,8 +275,51 @@ describe('TestGrid', () => {
         grid.nodes = [node];
 
         grid._handleMouseDown(event);
+        grid.setNodeType(node);
 
-        expect(grid.setNodeType).toBe('setAsEmptyNode');
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMouseDown sets setNodeType to func that sets node as wall node when node is a empty node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(false);
+        node.isEndNode.mockReturnValueOnce(false);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+        grid.setNodeType(node);
+
+        expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMouseDown sets setNodeType to setNodeAsStartNode when node is a start node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(true);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+
+        expect(grid.setNodeType).toBe(grid.setNodeAsStartNode);
+    });
+
+    test('_handleMouseDown sets setNodeType to setNodeAsEndNode when node is a end node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(false);
+        node.isEndNode.mockReturnValueOnce(true);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+
+        expect(grid.setNodeType).toBe(grid.setNodeAsEndNode);
     });
 
     test('_handleMouseUp sets isMouseDown to false', () => {

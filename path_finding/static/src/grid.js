@@ -9,7 +9,7 @@ class Grid {
         this.endRow = endRow;
         this.endCol = endCol;
         this.isMouseDown = false;
-        this.setNodeType = 'setAsWallNode';
+        this.setNodeType = null;
         this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
     }
@@ -26,10 +26,9 @@ class Grid {
                     node.setAsStartNode();
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
-                } else {
-                    node.addEventListener('mousemove', () => this._handleMouseMove(node));
-                    node.addEventListener('click', () => this._handleClick(node));
                 }
+                node.addEventListener('mousemove', () => this._handleMouseMove(node));
+                node.addEventListener('click', () => this._handleClick(node));
                 this.nodes.push(node);
             }
         }
@@ -114,7 +113,7 @@ class Grid {
 
     _handleMouseMove(node) {
         if (this.isMouseDown) {
-            node[this.setNodeType]();
+            this.setNodeType(node);
         }
     }
 
@@ -125,7 +124,15 @@ class Grid {
     _handleMouseDown(event) {
         this.isMouseDown = true;
         const node = this.nodes[event.target.id.substring(1)];
-        this.setNodeType = node.isWallNode() ? 'setAsEmptyNode' : 'setAsWallNode';
+        if (node.isWallNode()) {
+            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
+        } else if (node.isStartNode()) {
+            this.setNodeType = this.setNodeAsStartNode;
+        } else if (node.isEndNode()) {
+            this.setNodeType = this.setNodeAsEndNode;
+        } else {
+            this.setNodeType = (currNode) => currNode.setAsWallNode();
+        }
     }
 
     _handleMouseUp() {
