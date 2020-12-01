@@ -96,11 +96,6 @@ class TestGrid:
         page.click_and_hold_nodes(start_finish_row, grid_params['start_col'], end_finish_row, grid_params['end_col'])
         assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
 
-        # The user clicks and drags on the virtical edge of the grid and sees the grid resize horizontally
-        assert False, 'finish the test!'
-
-        # The user clicks and drags on the horizontal edge of the grid and sees the grid resize vertically
-
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
