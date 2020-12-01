@@ -33,6 +33,9 @@ class GridPage(BasePage):
     def has_correct_header(self):
         return 'Path Finding Algorithms' in self.driver.find_element_by_tag_name('h1').text
 
+    def has_node_of_type(self, n_type):
+        return len(self._get_grid().find_elements_by_class_name(f'node.{n_type}')) != 0
+
     def grid_has_dimensions(self, num_rows, num_cols):
         self._calculate_grid_dimensions()
         nodes = self._get_grid().find_elements_by_class_name('node')
@@ -46,18 +49,6 @@ class GridPage(BasePage):
     def is_node_of_type(self, row, col, n_type):
         grid = self._get_grid()
         return grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class') == f'node {n_type}'
-
-    def table_displays_dimensions(self, num_rows, num_cols):
-        row_text = self._get_table_row_text()
-        return 'Dimensions {} {}'.format(num_rows, num_cols) in row_text
-
-    def table_displays_start_node_coords(self, row, col):
-        row_text = self._get_table_row_text()
-        return 'Start Node {} {}'.format(row, col) in row_text
-
-    def table_displays_end_node_coords(self, row, col):
-        row_text = self._get_table_row_text()
-        return 'End Node {} {}'.format(row, col) in row_text
 
     def click_node(self, row, col):
         grid = self._get_grid()

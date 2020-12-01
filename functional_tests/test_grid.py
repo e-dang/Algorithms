@@ -36,29 +36,65 @@ class TestGrid:
         assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
-        # There is also information about the grid's dimensions and locations of the start and end nodes
-        assert page.table_displays_dimensions(grid_params['num_rows'], grid_params['num_cols'])
-        assert page.table_displays_start_node_coords(grid_params['start_row'], grid_params['start_col'])
-        assert page.table_displays_end_node_coords(grid_params['end_row'], grid_params['end_col'])
-
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized.
         # The user enters a new grid size, start, and end points and submits the form.
-        rows, cols, start, end = 10, 11, 2, 7
+        rows, cols = 10, 11
         page.dims_input = self.make_form_input(rows, cols)
-        page.start_node_input = self.make_form_input(start, start)
-        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # A new grid appears with the correct dimensions, start, and end nodes
         assert page.grid_has_dimensions(rows, cols)
         assert page.nodes_are_square()
-        assert page.is_node_of_type(start, start, 'start')
-        assert page.is_node_of_type(end, end, 'end')
+        assert page.has_node_of_type('start')
+        assert page.has_node_of_type('end')
 
-        # The table now displays the correct information about the updated grid
-        assert page.table_displays_dimensions(rows, cols)
-        assert page.table_displays_start_node_coords(start, start)
-        assert page.table_displays_end_node_coords(end, end)
+    def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
+        # The user goes to the website
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user notices the page title and header mention path finding algorithms
+        assert page.has_correct_title()
+        assert page.has_correct_header()
+
+        # A grid of squares is visible on the page, with start and end nodes
+        assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
+        assert page.nodes_are_square()
+        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
+        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
+
+        # The user clicks and drags the start node to a new position and sees the start node move with the mouse
+        start_begin_row, start_finish_row = grid_params['start_row'], grid_params['start_row'] + 5
+        page.click_and_hold_nodes(start_begin_row, grid_params['start_col'], start_finish_row, grid_params['start_col'])
+        self.assert_line_of_nodes_are_of_type(
+            page, start_begin_row, start_finish_row - 1, grid_params['start_col'], 'empty')
+        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
+
+        # The user then clicks the old start node position and sees it turn into a wall node
+        page.click_node(grid_params['start_row'], grid_params['start_col'])
+        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'wall')
+
+        # The user then clicks the new start node, but it remains a start node
+        page.click_node(start_finish_row, grid_params['start_col'])
+        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
+
+        # The user clicks and drags the end node to a new position and sees the start node move with the mouse
+        end_begin_row, end_finish_row = grid_params['end_row'], grid_params['end_row'] - 5
+        page.click_and_hold_nodes(end_begin_row, grid_params['end_col'], end_finish_row, grid_params['end_col'])
+        self.assert_line_of_nodes_are_of_type(page, end_begin_row, end_finish_row + 1, grid_params['end_col'], 'empty')
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+
+        # The user then clicks the old end node position and sees it turn into a wall node
+        page.click_node(grid_params['end_row'], grid_params['end_col'])
+        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'wall')
+
+        # The user then clicks the new end node, but it remains an end node
+        page.click_node(end_finish_row, grid_params['end_col'])
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+
+        # The user then drags the start node onto the end node but doesnt see the end node change
+        page.click_and_hold_nodes(start_finish_row, grid_params['start_col'], end_finish_row, grid_params['end_col'])
+        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
 
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid
@@ -104,10 +140,8 @@ class TestGrid:
         page = GridPage(self.driver)
 
         # Resize the grid to something small so the test runs faster
-        dims, start, end = 10, 1, 8
+        dims, start, end = 10, 1, 8  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
-        page.start_node_input = self.make_form_input(start, start)
-        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm

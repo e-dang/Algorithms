@@ -1,4 +1,5 @@
 const Grid = require('../src/grid');
+const GridController = require('../src/grid_controller');
 const Node = require('../src/node');
 
 jest.mock('../src/node');
@@ -90,69 +91,125 @@ describe('TestGrid', () => {
         expect(grid.nCols).toBe(cols);
     });
 
-    test('setStartNode sets startRow and startCol', () => {
-        const row = 10;
-        const col = 9;
-        grid.getNode = jest.fn();
-        grid.getNode.mockReturnValueOnce(new Node());
+    test('setAsStartNode sets startRow and startCol', () => {
+        const node = new Node();
+        node.isEndNode.mockReturnValueOnce(false);
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
+        node.row = 1;
+        node.col = 0;
 
-        grid.setStartNode(row, col);
+        grid.setAsStartNode(node);
 
-        expect(grid.startRow).toBe(row);
-        expect(grid.startCol).toBe(col);
+        expect(grid.startRow).toBe(node.row);
+        expect(grid.startCol).toBe(node.col);
     });
 
-    test('setStartNode calls setAsStartNode on correct node', () => {
-        const row = 0;
-        const col = 6;
-        for (let i = 0; i < 10; i++) {
-            grid.nodes.push(new Node());
-        }
+    test('setAsStartNode calls setAsStartNode on node', () => {
+        const node = new Node();
+        node.isEndNode.mockReturnValueOnce(false);
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
 
-        grid.setStartNode(row, col);
+        grid.setAsStartNode(node);
 
-        expect(grid.getNode(row, col).setAsStartNode).toHaveBeenCalledTimes(1);
+        expect(node.setAsStartNode).toHaveBeenCalledTimes(1);
     });
 
-    test('setEndNode sets endRow and endCol', () => {
-        const row = 10;
-        const col = 9;
-        grid.getNode = jest.fn();
-        grid.getNode.mockReturnValueOnce(new Node());
+    test('setAsStartNode sets previous startNode to empty node', () => {
+        const node = new Node();
+        grid.getStartNode = jest.fn().mockReturnValueOnce(node);
+        const nodeParam = new Node();
+        nodeParam.isEndNode.mockReturnValueOnce(false);
 
-        grid.setEndNode(row, col);
+        grid.setAsStartNode(nodeParam);
 
-        expect(grid.endRow).toBe(row);
-        expect(grid.endCol).toBe(col);
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
     });
 
-    test('setEndNode calls setAsEndNode on correct node', () => {
-        const row = 0;
-        const col = 6;
-        for (let i = 0; i < 10; i++) {
-            grid.nodes.push(new Node());
-        }
+    test('setAsStartNode doesnt set startRow and startCol if node.isEndNode returns true', () => {
+        const node = new Node();
+        node.row = 9;
+        node.col = 9;
+        node.isEndNode.mockReturnValueOnce(true);
+        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
 
-        grid.setEndNode(row, col);
+        grid.setAsStartNode(node);
 
-        expect(grid.getNode(row, col).setAsEndNode).toHaveBeenCalledTimes(1);
+        expect(grid.startRow).toBe(startRow);
+        expect(grid.startCol).toBe(startCol);
     });
 
-    test('reset calls setDimensions, setStartNode, setEndNode, and draw with right args', () => {
-        grid.setDimensions = jest.fn();
-        grid.setStartNode = jest.fn();
-        grid.setEndNode = jest.fn();
-        grid.clear = jest.fn();
-        grid.draw = jest.fn();
-        const [rows, cols, startRow, startCol, endRow, endCol] = [15, 15, 10, 8, 1, 2];
+    test('setAsEndNode sets endRow and endCol', () => {
+        const node = new Node();
+        node.isStartNode.mockReturnValueOnce(false);
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+        node.row = 1;
+        node.col = 0;
 
-        grid.reset(rows, cols, startRow, startCol, endRow, endCol);
+        grid.setAsEndNode(node);
 
-        expect(grid.setDimensions).toHaveBeenCalledWith(rows, cols);
-        expect(grid.setStartNode).toHaveBeenCalledWith(startRow, startCol);
-        expect(grid.setEndNode).toHaveBeenCalledWith(endRow, endCol);
-        expect(grid.clear).toHaveBeenCalledTimes(1);
-        expect(grid.draw).toHaveBeenCalledTimes(1);
+        expect(grid.endRow).toBe(node.row);
+        expect(grid.endCol).toBe(node.col);
+    });
+
+    test('setAsEndNode calls setAsEndNode on node', () => {
+        const node = new Node();
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setAsEndNode(node);
+
+        expect(node.setAsEndNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setAsEndNode sets previous startNode to empty node', () => {
+        const node = new Node();
+        grid.getEndNode = jest.fn().mockReturnValueOnce(node);
+        const nodeParam = new Node();
+        nodeParam.isStartNode.mockReturnValueOnce(false);
+
+        grid.setAsEndNode(nodeParam);
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('setAsEndNode doesnt set endRow and endCol if isStartNode returns true', () => {
+        const node = new Node();
+        node.row = 1;
+        node.col = 3;
+        node.isStartNode.mockReturnValueOnce(true);
+        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
+
+        grid.setAsEndNode(node);
+
+        expect(grid.endRow).toBe(endRow);
+        expect(grid.endCol).toBe(endCol);
+    });
+
+    describe('test reset', () => {
+        beforeEach(() => {
+            grid.setDimensions = jest.fn();
+            grid.clear = jest.fn();
+            grid.draw = jest.fn();
+        });
+
+        test('reset calls setDimensions args', () => {
+            const [rows, cols] = [15, 15];
+
+            grid.reset(rows, cols);
+
+            expect(grid.setDimensions).toHaveBeenCalledWith(rows, cols);
+        });
+
+        test('reset calls clear', () => {
+            grid.reset(1, 1);
+
+            expect(grid.clear).toHaveBeenCalledTimes(1);
+        });
+
+        test('reset calls draw', () => {
+            grid.reset(1, 1);
+
+            expect(grid.draw).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe('test clear method', () => {
@@ -177,14 +234,15 @@ describe('TestGrid', () => {
         });
     });
 
-    test('_handleMouseMove calls setColor if isMouseDown is true', () => {
+    test('_handleMouseMove calls setNodeType with node if isMouseDown is true', () => {
         const node = new Node();
         grid.isMouseDown = true;
-        grid.setNodeType = 'setAsWallNode';
+        grid.setNodeType = jest.fn();
 
         grid._handleMouseMove(node);
 
-        expect(node[grid.setNodeType]).toHaveBeenCalled();
+        expect(grid.setNodeType).toHaveBeenCalledWith(node);
+        expect(grid.setNodeType).toHaveBeenCalledTimes(1);
     });
 
     test('_handleClick calls toggleNodeType', () => {
@@ -206,7 +264,7 @@ describe('TestGrid', () => {
         expect(grid.isMouseDown).toBe(true);
     });
 
-    test('_handleMouseDown sets setNodeType to opposite of node type', () => {
+    test('_handleMouseDown sets setNodeType to func that sets node as empty node when node is a wall node', () => {
         const mockFn = jest.fn((x) => 0);
         const event = {target: {id: {substring: mockFn}}};
         const node = new Node();
@@ -214,8 +272,51 @@ describe('TestGrid', () => {
         grid.nodes = [node];
 
         grid._handleMouseDown(event);
+        grid.setNodeType(node);
 
-        expect(grid.setNodeType).toBe('setAsEmptyNode');
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMouseDown sets setNodeType to func that sets node as wall node when node is a empty node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(false);
+        node.isEndNode.mockReturnValueOnce(false);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+        grid.setNodeType(node);
+
+        expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMouseDown sets setNodeType to setAsStartNode when node is a start node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(true);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+
+        expect(grid.setNodeType).toBe(grid.setAsStartNode);
+    });
+
+    test('_handleMouseDown sets setNodeType to setAsEndNode when node is a end node', () => {
+        const mockFn = jest.fn((x) => 0);
+        const event = {target: {id: {substring: mockFn}}};
+        const node = new Node();
+        node.isWallNode.mockReturnValueOnce(false);
+        node.isStartNode.mockReturnValueOnce(false);
+        node.isEndNode.mockReturnValueOnce(true);
+        grid.nodes = [node];
+
+        grid._handleMouseDown(event);
+
+        expect(grid.setNodeType).toBe(grid.setAsEndNode);
     });
 
     test('_handleMouseUp sets isMouseDown to false', () => {

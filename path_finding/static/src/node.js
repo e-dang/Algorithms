@@ -24,7 +24,9 @@ class Node {
     }
 
     setAsWallNode() {
-        this._setNodeType('wall');
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this._setNodeType('wall');
+        }
     }
 
     setAsVisitedNode() {

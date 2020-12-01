@@ -9,7 +9,7 @@ class Grid {
         this.endRow = endRow;
         this.endCol = endCol;
         this.isMouseDown = false;
-        this.setNodeType = 'setAsWallNode';
+        this.setNodeType = null;
         this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
     }
@@ -26,10 +26,9 @@ class Grid {
                     node.setAsStartNode();
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
-                } else {
-                    node.addEventListener('mousemove', () => this._handleMouseMove(node));
-                    node.addEventListener('click', () => this._handleClick(node));
                 }
+                node.addEventListener('mousemove', () => this._handleMouseMove(node));
+                node.addEventListener('click', () => this._handleClick(node));
                 this.nodes.push(node);
             }
         }
@@ -49,10 +48,12 @@ class Grid {
         }
     }
 
-    reset(nRows, nCols, startRow, startCol, endRow, endCol) {
+    reset(nRows, nCols) {
+        this.startRow = Math.floor(nRows * 0.1);
+        this.startCol = Math.floor(nCols * 0.1);
+        this.endRow = Math.ceil(nRows * 0.9) - 1;
+        this.endCol = Math.ceil(nCols * 0.9) - 1;
         this.setDimensions(nRows, nCols);
-        this.setStartNode(startRow, startCol);
-        this.setEndNode(endRow, endCol);
         this.clear();
         this.draw();
     }
@@ -79,16 +80,22 @@ class Grid {
         this.nCols = cols;
     }
 
-    setStartNode(row, col) {
-        this.startRow = row;
-        this.startCol = col;
-        this.getNode(row, col).setAsStartNode();
+    setAsStartNode(node) {
+        if (!node.isEndNode()) {
+            this.getStartNode().setAsEmptyNode();
+            this.startRow = node.row;
+            this.startCol = node.col;
+            node.setAsStartNode();
+        }
     }
 
-    setEndNode(row, col) {
-        this.endRow = row;
-        this.endCol = col;
-        this.getNode(row, col).setAsEndNode();
+    setAsEndNode(node) {
+        if (!node.isStartNode()) {
+            this.getEndNode().setAsEmptyNode();
+            this.endRow = node.row;
+            this.endCol = node.col;
+            node.setAsEndNode();
+        }
     }
 
     isInvalidSpace(row, col) {
@@ -100,7 +107,7 @@ class Grid {
 
     _handleMouseMove(node) {
         if (this.isMouseDown) {
-            node[this.setNodeType]();
+            this.setNodeType(node);
         }
     }
 
@@ -111,7 +118,15 @@ class Grid {
     _handleMouseDown(event) {
         this.isMouseDown = true;
         const node = this.nodes[event.target.id.substring(1)];
-        this.setNodeType = node.isWallNode() ? 'setAsEmptyNode' : 'setAsWallNode';
+        if (node.isWallNode()) {
+            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
+        } else if (node.isStartNode()) {
+            this.setNodeType = this.setAsStartNode;
+        } else if (node.isEndNode()) {
+            this.setNodeType = this.setAsEndNode;
+        } else {
+            this.setNodeType = (currNode) => currNode.setAsWallNode();
+        }
     }
 
     _handleMouseUp() {
