@@ -48,10 +48,12 @@ class Grid {
         }
     }
 
-    reset(nRows, nCols, startRow, startCol, endRow, endCol) {
+    reset(nRows, nCols) {
+        this.startRow = Math.floor(nRows * 0.1);
+        this.startCol = Math.floor(nCols * 0.1);
+        this.endRow = Math.ceil(nRows * 0.9) - 1;
+        this.endCol = Math.ceil(nCols * 0.9) - 1;
         this.setDimensions(nRows, nCols);
-        this.setStartNode(startRow, startCol);
-        this.setEndNode(endRow, endCol);
         this.clear();
         this.draw();
     }
@@ -78,26 +80,14 @@ class Grid {
         this.nCols = cols;
     }
 
-    setStartNode(row, col) {
-        this.startRow = row;
-        this.startCol = col;
-        this.getNode(row, col).setAsStartNode();
-    }
-
-    setNodeAsStartNode(node) {
+    setAsStartNode(node) {
         this.getStartNode().setAsEmptyNode();
         this.startRow = node.row;
         this.startCol = node.col;
         node.setAsStartNode();
     }
 
-    setEndNode(row, col) {
-        this.endRow = row;
-        this.endCol = col;
-        this.getNode(row, col).setAsEndNode();
-    }
-
-    setNodeAsEndNode(node) {
+    setAsEndNode(node) {
         this.getEndNode().setAsEmptyNode();
         this.endRow = node.row;
         this.endCol = node.col;
@@ -127,9 +117,9 @@ class Grid {
         if (node.isWallNode()) {
             this.setNodeType = (currNode) => currNode.setAsEmptyNode();
         } else if (node.isStartNode()) {
-            this.setNodeType = this.setNodeAsStartNode;
+            this.setNodeType = this.setAsStartNode;
         } else if (node.isEndNode()) {
-            this.setNodeType = this.setNodeAsEndNode;
+            this.setNodeType = this.setAsEndNode;
         } else {
             this.setNodeType = (currNode) => currNode.setAsWallNode();
         }

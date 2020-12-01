@@ -36,29 +36,17 @@ class TestGrid:
         assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
-        # There is also information about the grid's dimensions and locations of the start and end nodes
-        assert page.table_displays_dimensions(grid_params['num_rows'], grid_params['num_cols'])
-        assert page.table_displays_start_node_coords(grid_params['start_row'], grid_params['start_col'])
-        assert page.table_displays_end_node_coords(grid_params['end_row'], grid_params['end_col'])
-
         # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized.
         # The user enters a new grid size, start, and end points and submits the form.
-        rows, cols, start, end = 10, 11, 2, 7
+        rows, cols = 10, 11
         page.dims_input = self.make_form_input(rows, cols)
-        page.start_node_input = self.make_form_input(start, start)
-        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # A new grid appears with the correct dimensions, start, and end nodes
         assert page.grid_has_dimensions(rows, cols)
         assert page.nodes_are_square()
-        assert page.is_node_of_type(start, start, 'start')
-        assert page.is_node_of_type(end, end, 'end')
-
-        # The table now displays the correct information about the updated grid
-        assert page.table_displays_dimensions(rows, cols)
-        assert page.table_displays_start_node_coords(start, start)
-        assert page.table_displays_end_node_coords(end, end)
+        assert page.has_node_of_type('start')
+        assert page.has_node_of_type('end')
 
     def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
         # The user goes to the website
@@ -152,10 +140,8 @@ class TestGrid:
         page = GridPage(self.driver)
 
         # Resize the grid to something small so the test runs faster
-        dims, start, end = 10, 1, 8
+        dims, start, end = 10, 1, 8  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
-        page.start_node_input = self.make_form_input(start, start)
-        page.end_node_input = self.make_form_input(end, end)
         page.click_submit()
 
         # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
