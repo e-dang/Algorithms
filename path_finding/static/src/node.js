@@ -6,7 +6,8 @@ class Node {
         this.col = col;
         this.element = document.createElement('div');
         this.setAsEmptyNode();
-        this.element.id = `n${grid.children.length}`;
+        this.id = `n${grid.children.length}`;
+        this.element.id = this.id;
 
         grid.appendChild(this.element);
     }

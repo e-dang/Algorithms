@@ -1,5 +1,6 @@
 const Grid = require('./grid');
 const Dijkstra = require('./algorithms/dijkstra');
+const BaseAlgorithm = require('./algorithms/base_algorithm');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -10,6 +11,12 @@ class GridController {
 
     addUpdateGridEventListener() {
         document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
+
+        return this;
+    }
+
+    addUpdateGridEventListenerOnChange() {
+        document.getElementById('dimensionsInput').addEventListener('change', () => this._handleUpdateGridOnChange());
 
         return this;
     }
@@ -34,15 +41,29 @@ class GridController {
 
     _handleUpdateGrid() {
         const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
-        this.grid.reset(nRows, nCols);
+        if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
+            this.grid.reset(nRows, nCols);
+        } else {
+            this._handleGridInputError();
+        }
     }
 
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
+        document.getElementById('algorithmSelectErrorMessage').hidden = true;
+        document.getElementById('algorithmSelect').className = '';
     }
 
     _handleRunAlgorithm() {
         this._algorithmFromString().run(() => this._handleCompleteAlgorithm());
+    }
+
+    _handleGridInputError() {
+        document.getElementById('gridErrorMessage').hidden = false;
+    }
+
+    _handleUpdateGridOnChange() {
+        document.getElementById('gridErrorMessage').hidden = true;
     }
 
     _parseInput(element) {
@@ -50,8 +71,10 @@ class GridController {
     }
 
     _algorithmFromString() {
-        if (this.alg == "Dijkstra's Algorithm") {
+        if (this.alg == 'dijkstra') {
             return new Dijkstra(this.grid);
+        } else {
+            return new BaseAlgorithm(this.grid);
         }
     }
 

@@ -24,6 +24,7 @@
                     <div class="form-group">
                         <label>Dimensions: </label>
                         <input id="dimensionsInput" class="form-control" type="text" placeholder="e.g. 50,50">
+                        <p id="gridErrorMessage" hidden>Invalid input - number of cells must be greater than 2.</p>
                     </div>
                     <button id=submitButton class="btn btn-primary">Submit</button>
                 </div>
@@ -31,8 +32,10 @@
 
             <div class="col">
                 <select id="algorithmSelect">
-                    <option selected value="Dijkstra's Algorithm">Dijkstra's Algorithm</option>
+                    <option selected value="null">Select One...</option>
+                    <option value="dijkstra">Dijkstra's Algorithm</option>
                 </select>
+                <p id="algorithmSelectErrorMessage" hidden>Please select an algorithm.</p>
             </div>
         </div>
 

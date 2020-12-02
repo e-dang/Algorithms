@@ -9,6 +9,7 @@ const endCol = parseInt(document.currentScript.getAttribute('endCol'));
 const alg = document.getElementById('algorithmSelect').value;
 const controller = new GridController(rows, cols, startRow, startCol, endRow, endCol, alg)
     .addUpdateGridEventListener()
+    .addUpdateGridEventListenerOnChange()
     .addUpdateAlgorithmEventListener()
     .addRunAlgorithmEventListener()
     .addResetEventListener();

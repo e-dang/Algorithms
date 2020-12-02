@@ -1,6 +1,7 @@
 const GridController = require('../src/grid_controller');
 const Grid = require('../src/grid');
 const Dijkstra = require('../src/algorithms/dijkstra');
+const BaseAlgorithm = require('../src/algorithms/base_algorithm');
 
 jest.mock('../src/grid');
 
@@ -52,10 +53,64 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
     });
 
-    test('_algorithmFromString returns Dijkstra when Dijkstra.name is the alg property', () => {
-        controller.alg = "Dijkstra's Algorithm";
+    describe('test _handleUpdateGrid with different inputs', () => {
+        beforeEach(() => {
+            const element = document.createElement('input');
+            element.id = 'dimensionsInput';
+            document.body.append(element);
+            controller._handleGridInputError = jest.fn();
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nRows * nCols < 1', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([1, 1]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nRows and nCols is negative', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([-2, -2]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid calls grid.reset with valid input', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([1, 2]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).toHaveBeenCalledTimes(1);
+            expect(controller._handleGridInputError).not.toHaveBeenCalled();
+        });
+    });
+
+    test('_handleUpdateGridOnChange is called when user starts typing in input', () => {
+        const element = document.createElement('input');
+        element.id = 'dimensionsInput';
+        document.body.append(element);
+        controller._handleUpdateGridOnChange = jest.fn();
+        controller.addUpdateGridEventListenerOnChange();
+
+        element.dispatchEvent(new Event('change'));
+
+        expect(controller._handleUpdateGridOnChange).toHaveBeenCalledTimes(1);
+    });
+
+    test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
+        controller.alg = 'dijkstra';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(Dijkstra);
+    });
+
+    test('_algorithmFromString returns BaseAlgorithm when "null" is the alg property', () => {
+        controller.alg = 'null';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(BaseAlgorithm);
     });
 
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
@@ -84,11 +139,14 @@ describe('GridControllerTest', () => {
         const selection = document.createElement('select');
         const option = document.createElement('option');
         const value = 'Blah blah blah';
+        const p = document.createElement('p');
+        p.id = 'algorithmSelectErrorMessage';
         selection.id = 'algorithmSelect';
         option.value = value;
         selection.appendChild(option);
         selection.options[0].selected = true;
         document.body.appendChild(selection);
+        document.body.appendChild(p);
 
         controller._handleUpdateAlgorithm();
 

@@ -36,6 +36,13 @@ class GridPage(BasePage):
     def has_node_of_type(self, n_type):
         return len(self._get_grid().find_elements_by_class_name(f'node.{n_type}')) != 0
 
+    def is_grid_input_error_visible(self):
+        return self.driver.find_element_by_id('gridErrorMessage').is_displayed()
+
+    def is_algorithm_select_error_visible(self):
+        return self.driver.find_element_by_id('algorithmSelectErrorMessage').is_displayed() and \
+            len(self.driver.find_elements_by_class_name('error-select')) != 0
+
     def grid_has_dimensions(self, num_rows, num_cols):
         self._calculate_grid_dimensions()
         nodes = self._get_grid().find_elements_by_class_name('node')
@@ -78,6 +85,9 @@ class GridPage(BasePage):
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
             EC.visibility_of(self.driver.find_element_by_id('algComplete')))
+
+    def wait_for_node_to_be_of_type(self, row, col, n_type, timeout=None):
+        WebDriverWait(self.driver, timeout or TIMEOUT).until(lambda x: self.is_node_of_type(row, col, n_type))
 
     def select_algorithm(self, algorithm):
         select = Select(self.driver.find_element_by_id('algorithmSelect'))

@@ -21,7 +21,7 @@ class TestGrid:
     def make_form_input(self, row, col):
         return f'{row},{col}'
 
-    def test_user_can_customize_grid_through_input_fields(self, url):
+    def test_user_can_customize_grid_through_input_field(self, url):
         # A user goes to the website
         self.driver.get(url)
         page = GridPage(self.driver)
@@ -36,32 +36,34 @@ class TestGrid:
         assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
-        # The user also notices a form that enables the grid dimensions, start, and end nodes to be customized.
-        # The user enters a new grid size, start, and end points and submits the form.
+        # The user also notices a form that enables the grid dimensions to be customized.
+        # The user enters a new grid size and submits the form.
         rows, cols = 10, 11
         page.dims_input = self.make_form_input(rows, cols)
         page.click_submit()
 
-        # A new grid appears with the correct dimensions, start, and end nodes
+        # A new grid appears with the correct dimensions
         assert page.grid_has_dimensions(rows, cols)
         assert page.nodes_are_square()
         assert page.has_node_of_type('start')
         assert page.has_node_of_type('end')
 
+        # The user then tries to input negative numbers for the dimensions
+        invalid_rows, invalid_cols = -1, -1
+        page.dims_input = self.make_form_input(invalid_rows, invalid_cols)
+        page.click_submit()
+
+        # The user sees an error message about invalid input
+        assert page.is_grid_input_error_visible()
+
+        # The user begins typing in the input and sees the error message disappear
+        page.dims_input = '1'
+        assert not page.is_grid_input_error_visible()
+
     def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
         # The user goes to the website
         self.driver.get(url)
         page = GridPage(self.driver)
-
-        # The user notices the page title and header mention path finding algorithms
-        assert page.has_correct_title()
-        assert page.has_correct_header()
-
-        # A grid of squares is visible on the page, with start and end nodes
-        assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
-        assert page.nodes_are_square()
-        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
-        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
         # The user clicks and drags the start node to a new position and sees the start node move with the mouse
         start_begin_row, start_finish_row = grid_params['start_row'], grid_params['start_row'] + 5
@@ -134,6 +136,20 @@ class TestGrid:
         page.click_node(grid_params['end_row'], grid_params['end_col'])
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
+    def test_user_cant_run_algorithm_when_none_are_selected(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user immediately presses run but an error shows up telling the user to select an algorithm
+        page.click_run()
+        assert page.is_algorithm_select_error_visible()
+
+        # The user then clicks on the selection drop down menu and the error disappears
+        page.select_algorithm("Dijkstra's Algorithm")
+
+        assert not page.is_algorithm_select_error_visible()
+
     def test_user_can_select_different_algorithms_and_run_them(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
@@ -156,7 +172,7 @@ class TestGrid:
         page.click_run()
 
         # The algorithm runs and the user sees explored nodes around the start node
-        assert page.is_node_of_type(start + 1, start, 'visited')
+        page.wait_for_node_to_be_of_type(start - 1, start, 'visited', timeout=2)
 
         # The algorithm completes and the user sees path nodes at the start and end nodes
         page.wait_until_complete()
