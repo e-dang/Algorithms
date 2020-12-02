@@ -4,7 +4,7 @@ static_path := $(mkfile_path)/path_finding/static
 install:
 	python3 -m pip install -U pip
 	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
+	pip install -r test-requirements.txt
 	cd $(static_path) && yarn install
 
 build:
