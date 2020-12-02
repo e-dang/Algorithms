@@ -43,3 +43,7 @@
 .node.path {
     background-color: blue;
 }
+
+.error-select {
+    border-color: red;
+}
