@@ -1,11 +1,7 @@
+const BaseAlgorithm = require('./base_algorithm');
 const NodeMinHeap = require('../utils/node_min_heap');
 
-const TIMEOUT = 10;
-class Dijkstra {
-    constructor(grid) {
-        this.grid = grid;
-    }
-
+class Dijkstra extends BaseAlgorithm {
     async run(callback) {
         const dr = [-1, 0, 1, 0, 1, 1, -1, -1];
         const dc = [0, -1, 0, 1, 1, -1, 1, -1];
@@ -48,20 +44,6 @@ class Dijkstra {
 
         callback();
     }
-
-    async visit(node) {
-        await sleep(TIMEOUT);
-        node.setAsVisitedNode();
-    }
-
-    async visiting(node) {
-        await sleep(TIMEOUT);
-        node.setAsVisitingNode();
-    }
-}
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = Dijkstra;
