@@ -136,6 +136,20 @@ class TestGrid:
         page.click_node(grid_params['end_row'], grid_params['end_col'])
         assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
 
+    def test_user_cant_run_algorithm_when_none_are_selected(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user immediately presses run but an error shows up telling the user to select an algorithm
+        page.click_run()
+        assert page.is_algorithm_select_error_visible()
+
+        # The user then clicks on the selection drop down menu and the error disappears
+        page.select_algorithm("Dijkstra's Algorithm")
+
+        assert not page.is_algorithm_select_error_visible()
+
     def test_user_can_select_different_algorithms_and_run_them(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
