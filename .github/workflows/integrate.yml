@@ -1,0 +1,26 @@
+name: Integrate
+
+on:
+  pull_request:
+    branches: [ master ]
+    
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '15.2'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: 'x86'
+
+      - name: Install and build
+        run: |
+          python3 -m pip install -U pip
+          pip install -r requirements.txt
+          cd path_finding/static && npm ci && cpm run build
