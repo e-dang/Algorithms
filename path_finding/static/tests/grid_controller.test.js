@@ -1,6 +1,7 @@
 const GridController = require('../src/grid_controller');
 const Grid = require('../src/grid');
 const Dijkstra = require('../src/algorithms/dijkstra');
+const BaseAlgorithm = require('../src/algorithms/base_algorithm');
 
 jest.mock('../src/grid');
 
@@ -100,10 +101,16 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateGridOnChange).toHaveBeenCalledTimes(1);
     });
 
-    test('_algorithmFromString returns Dijkstra when Dijkstra.name is the alg property', () => {
+    test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
         controller.alg = 'dijkstra';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(Dijkstra);
+    });
+
+    test('_algorithmFromString returns BaseAlgorithm when "null" is the alg property', () => {
+        controller.alg = 'null';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(BaseAlgorithm);
     });
 
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
@@ -132,11 +139,14 @@ describe('GridControllerTest', () => {
         const selection = document.createElement('select');
         const option = document.createElement('option');
         const value = 'Blah blah blah';
+        const p = document.createElement('p');
+        p.id = 'algorithmSelectErrorMessage';
         selection.id = 'algorithmSelect';
         option.value = value;
         selection.appendChild(option);
         selection.options[0].selected = true;
         document.body.appendChild(selection);
+        document.body.appendChild(p);
 
         controller._handleUpdateAlgorithm();
 

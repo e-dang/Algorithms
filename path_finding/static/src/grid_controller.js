@@ -1,5 +1,6 @@
 const Grid = require('./grid');
 const Dijkstra = require('./algorithms/dijkstra');
+const BaseAlgorithm = require('./algorithms/base_algorithm');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -49,6 +50,8 @@ class GridController {
 
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
+        document.getElementById('algorithmSelectErrorMessage').hidden = true;
+        document.getElementById('algorithmSelect').className = '';
     }
 
     _handleRunAlgorithm() {
@@ -70,6 +73,8 @@ class GridController {
     _algorithmFromString() {
         if (this.alg == 'dijkstra') {
             return new Dijkstra(this.grid);
+        } else {
+            return new BaseAlgorithm(this.grid);
         }
     }
 
