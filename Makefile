@@ -1,17 +1,24 @@
 mkfile_path := `dirname $(abspath $(MAKEFILE_LIST))`
 
+install-ci:
+	python3 -m pip install -U pip
+	pip install -r requirements.txt
+	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+	sudo apt update && sudo apt install yarn
+
 build:
 	cd $(mkfile_path)/path_finding/static && yarn build
 
-test_js:
+test-js:
 	cd $(mkfile_path)/path_finding/static/tests && yarn test
 
-test_py:
+test-py:
 	cd $(mkfile_path) && pytest -m unit
 
-test_unit: test_js test_py
+test-unit: test-js test-py
 
-test_ft:
+test-ft:
 	cd $(mkfile_path) && pytest -m functional
 
-test: test_unit test_ft
+test: test-unit test-ft
