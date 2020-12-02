@@ -14,6 +14,12 @@ class GridController {
         return this;
     }
 
+    addUpdateGridEventListenerOnChange() {
+        document.getElementById('dimensionsInput').addEventListener('change', () => this._handleUpdateGridOnChange());
+
+        return this;
+    }
+
     addRunAlgorithmEventListener() {
         document.getElementById('runButton').addEventListener('click', () => this._handleRunAlgorithm());
 
@@ -34,7 +40,11 @@ class GridController {
 
     _handleUpdateGrid() {
         const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
-        this.grid.reset(nRows, nCols);
+        if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
+            this.grid.reset(nRows, nCols);
+        } else {
+            this._handleGridInputError();
+        }
     }
 
     _handleUpdateAlgorithm() {
@@ -43,6 +53,14 @@ class GridController {
 
     _handleRunAlgorithm() {
         this._algorithmFromString().run(() => this._handleCompleteAlgorithm());
+    }
+
+    _handleGridInputError() {
+        document.getElementById('gridErrorMessage').hidden = false;
+    }
+
+    _handleUpdateGridOnChange() {
+        document.getElementById('gridErrorMessage').hidden = true;
     }
 
     _parseInput(element) {
