@@ -19,3 +19,7 @@ jobs:
         run: |
           make install-ci
           make build
+
+      - name: Unit tests
+        run: |
+          make test-unit
