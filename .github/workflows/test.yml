@@ -20,6 +20,14 @@ jobs:
           make install-ci
           make build
 
+      - name: Install firefox
+        run: |
+          sudo apt install firefox
+          wget https://github.com/mozilla/geckodriver/releases/tag/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
+          tar -xvzf geckodriver-v0.28.0-linux64.tar.gz
+          mv geckodriver /usr/local/bin
+          geckodriver --version
+
       - name: Unit tests
         run: |
           make test-unit
