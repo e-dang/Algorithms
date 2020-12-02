@@ -1,4 +1,5 @@
 mkfile_path := `dirname $(abspath $(MAKEFILE_LIST))`
+static_path := $(mkfile_path)/path_finding/static
 
 install-ci:
 	python3 -m pip install -U pip
@@ -7,9 +8,10 @@ install-ci:
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 	sudo apt update && sudo apt install yarn
+	cd $(static_path) && yarn install
 
 build:
-	cd $(mkfile_path)/path_finding/static && yarn build
+	cd $(static_path) && yarn build
 
 test-js:
 	cd $(mkfile_path)/path_finding/static/tests && yarn test
