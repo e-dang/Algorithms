@@ -23,8 +23,8 @@ jobs:
       - name: Install firefox
         run: |
           sudo apt install firefox
-          wget https://github.com/mozilla/geckodriver/releases/tag/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
-          tar -xvzf geckodriver-v0.28.0-linux64.tar.gz
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
+          tar -xvzf geckodriver*
           mv geckodriver /usr/local/bin
           geckodriver --version
 
