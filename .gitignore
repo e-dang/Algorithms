@@ -131,5 +131,5 @@ dmypy.json
 geckodriver.log
 node_modules
 .terraform
-*.tfstate.*
+*.tfstate*
 *.tfvars
