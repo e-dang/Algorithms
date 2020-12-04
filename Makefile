@@ -24,10 +24,14 @@ test-ft:
 
 test: test-unit test-ft
 
+# deploy-staging:
+# 	cd $(ANSIBLE_DIR) && \
+# 	ansible-playbook -i inventory.ansible create_user.yml --limit staging --extra-vars "ansible_ssh_user=root" && \
+# 	ansible-playbook -i inventory.ansible provision.yml --limit staging --become && \
+# 	ansible-playbook -i inventory.ansible deploy.yml --limit staging --become
+
 deploy-staging:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible create_user.yml --limit staging --extra-vars "ansible_ssh_user=root" && \
-	ansible-playbook -i inventory.ansible provision.yml --limit staging --become && \
 	ansible-playbook -i inventory.ansible deploy.yml --limit staging --become
 
 deploy-prod:

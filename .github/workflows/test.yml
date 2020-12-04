@@ -47,9 +47,6 @@ jobs:
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.STAGING_SSH_KEY }}" >> ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
 
-      # - name: ssh into server to test
-      #   run: ssh edang@staging.dangdelicious.net -vvv
-
       - name: Deploy to staging server
         run: make deploy-staging
 
