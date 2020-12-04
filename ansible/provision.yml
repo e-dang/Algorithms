@@ -1,0 +1,56 @@
+- hosts: all
+
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Create WORKSPACE directory
+      file:
+        path: "{{ WORKSPACE }}"
+        state: directory
+
+    - name: Add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: Add yarn apt key
+      apt_key:
+        url: https://dl.yarnpkg.com/debian/pubkey.gpg
+        state: present
+
+    - name: Update nodejs repository
+      apt_repository:
+        repo: deb https://deb.nodesource.com/{{ NODE_VERSION }} {{ DISTRO }} main
+        state: present
+
+    - name: Add yarn repository
+      apt_repository:
+        repo: "deb https://dl.yarnpkg.com/debian/ stable main"
+        state: present
+
+    - name: Add deadsnakes PPA
+      apt_repository:
+        repo: "ppa:deadsnakes/ppa"
+
+    - name: Install system packages
+      apt:
+        pkg: nginx,git,{{ SYS_PYTHON }},{{ SYS_PYTHON }}-venv,yarn
+        state: present
+        update_cache: yes
+
+    - name: Add nginx config to sites-available
+      template:
+        src: ./nginx.conf.j2
+        dest: /etc/nginx/sites-available/{{ HOST }}
+
+    - name: Add symlink in nginx sites-enabled
+      file:
+        src: /etc/nginx/sites-available/{{ HOST }}
+        dest: /etc/nginx/sites-enabled/{{ HOST }}
+        state: link
+
+    - name: Write gunicorn service script
+      template:
+        src: ./gunicorn.service.j2
+        dest: /etc/systemd/system/gunicorn-{{ HOST }}.service
