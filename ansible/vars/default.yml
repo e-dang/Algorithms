@@ -1,0 +1,9 @@
+HOST: "{{ inventory_hostname }}"
+USER: edang
+LOCAL_SSH_KEY: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_do.pub') }}"
+WORKSPACE: "/home/{{ USER }}/sites/{{ HOST }}"
+SYS_PYTHON: python3.9
+VENV_PYTHON: "{{ WORKSPACE }}/venv/bin/python"
+NODE_VERSION: node_15.x
+DISTRO: bionic
+ansible_python_interpreter: /usr/bin/python3
