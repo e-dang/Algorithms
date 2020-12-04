@@ -1,0 +1,14 @@
+name: Staging
+
+on:
+  repository_dispatch:
+    types: [integration-success]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Test command
+        run: echo Successfully been dispatched
+
