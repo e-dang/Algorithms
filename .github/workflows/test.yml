@@ -44,8 +44,8 @@ jobs:
       - name: Functional tests
         run: pytest --headless functional_tests
 
-      - name: Trigger staging workflow
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          event-type: integration-success
+      - name: Deploy to staging server
+        run: make deploy-staging
+
+      - name: Test again st staging server
+        run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
