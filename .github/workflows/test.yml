@@ -45,7 +45,7 @@ jobs:
       #   run: pytest --headless functional_tests
 
       - name: Create ssh key file from secrets
-        run: mkdir -p ~/.ssh && echo ${{ secrets.STAGING_SSH_KEY }} >> ~/.ssh/id_rsa
+        run: mkdir -p ~/.ssh && echo ${{ secrets.STAGING_SSH_KEY }} >> ~/.ssh/id_rsa.txt
 
       - name: Deploy to staging server
         run: make deploy-staging
