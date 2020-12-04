@@ -1,0 +1,5 @@
+[prod]
+prod.dangdelicious.net ansible_user=edang
+
+[staging]
+staging.dangdelicious.net ansible_user=edang
