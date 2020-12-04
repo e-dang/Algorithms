@@ -1,5 +1,5 @@
 [prod]
-prod.dangdelicious.net ansible_user=edang
+prod.dangdelicious.net ansible_user=edang ansible_ssh_private_key_file=~/.ssh/id_rsa
 
 [staging]
-staging.dangdelicious.net ansible_user=edang
+staging.dangdelicious.net ansible_user=edang ansible_ssh_private_key_file=~/.ssh/id_rsa
