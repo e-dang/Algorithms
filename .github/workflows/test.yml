@@ -35,14 +35,14 @@ jobs:
       - name: Install dependencies
         run: make install
 
-      - name: Build bundle
-        run: make build
+      # - name: Build bundle
+      #   run: make build
 
-      - name: Unit tests
-        run: make test-unit
+      # - name: Unit tests
+      #   run: make test-unit
 
-      - name: Functional tests
-        run: pytest --headless functional_tests
+      # - name: Functional tests
+      #   run: pytest --headless functional_tests
 
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo ${{ secrets.STAGING_SSH_KEY }} >> ~/.ssh/id_rsa
