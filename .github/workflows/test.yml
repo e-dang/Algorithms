@@ -15,34 +15,34 @@ jobs:
         with:
           python-version: '3.9'
 
-      # - name: Install yarn
-      #   run: |
-      #     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-      #     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-      #     sudo apt update
-      #     sudo apt install yarn
+      - name: Install yarn
+        run: |
+          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          sudo apt update
+          sudo apt install yarn
 
-      # - name: Install firefox
-      #   run: sudo apt install firefox
+      - name: Install firefox
+        run: sudo apt install firefox
 
-      # - name: Install geckodriver
-      #   run: |
-      #     wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
-      #     tar -xvzf geckodriver*
-      #     sudo mv geckodriver /usr/local/bin
-      #     geckodriver --version
+      - name: Install geckodriver
+        run: |
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
+          tar -xvzf geckodriver*
+          sudo mv geckodriver /usr/local/bin
+          geckodriver --version
 
-      # - name: Install dependencies
-      #   run: make install
+      - name: Install dependencies
+        run: make install
 
-      # - name: Build bundle
-      #   run: make build
+      - name: Build bundle
+        run: make build
 
-      # - name: Unit tests
-      #   run: make test-unit
+      - name: Unit tests
+        run: make test-unit
 
-      # - name: Functional tests
-      #   run: pytest --headless functional_tests
+      - name: Functional tests
+        run: pytest --headless functional_tests
 
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.STAGING_SSH_KEY }}" >> ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
