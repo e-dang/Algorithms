@@ -41,3 +41,10 @@
     cmd: "{{ venv_python }} manage.py collectstatic -i package.json -i yarn.lock -i node_modules -i src -i tests --no-input"
   notify:
     - Restart nginx
+
+- name: Make migrations
+  shell:
+    chdir: "{{ workspace }}"
+    cmd: "{{ venv_python }} manage.py migrate"
+  notify:
+    - Restart gunicorn
