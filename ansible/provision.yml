@@ -1,0 +1,30 @@
+---
+- hosts: all
+
+  remote_user: "root"
+
+  vars_files:
+    - vars/default.yml
+
+  vars:
+    ssh_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_do.pub') }}"
+    node_version: node_15.x
+    distro: bionic
+    keys:
+      - https://deb.nodesource.com/gpgkey/nodesource.gpg.key # nodejs
+      - https://dl.yarnpkg.com/debian/pubkey.gpg # yarn
+    repos:
+      - deb https://deb.nodesource.com/{{ node_version }} {{ distro }} main # nodejs
+      - deb https://dl.yarnpkg.com/debian/ stable main # yarn
+      - ppa:deadsnakes/ppa # python
+    packages:
+      - nginx
+      - git
+      - "{{ sys_python }}"
+      - "{{ sys_python }}-venv"
+      - yarn
+      - nodejs
+
+  roles:
+    - user
+    - apt

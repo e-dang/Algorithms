@@ -1,0 +1,40 @@
+---
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+
+- name: Create non-root user
+  user:
+    name: "{{ user }}"
+    state: present
+    groups:
+      - wheel
+    shell: /bin/bash
+    system: no
+
+- name: Set authorized key for remote user
+  authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ ssh_key }}"
+
+- name: Disable password authentication for root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "^#?PermitRootLogin"
+    line: "PermitRootLogin prohibit-password"
+
+- name: Create workspace directory
+  file:
+    path: "{{ workspace }}"
+    state: directory

@@ -2,24 +2,58 @@ name: Integrate
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
+  push:
+    branches: [master]
 
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
 
-      - name: Install and build
+      - name: Install yarn
         run: |
-          python3 -m pip install -U pip
-          pip install -r requirements.txt
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          sudo apt update && sudo apt install yarn
-          make build
+          sudo apt update
+          sudo apt install yarn
+
+      - name: Install firefox
+        run: sudo apt install firefox
+
+      - name: Install geckodriver
+        run: |
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.28.0/geckodriver-v0.28.0-linux64.tar.gz
+          tar -xvzf geckodriver*
+          sudo mv geckodriver /usr/local/bin
+          geckodriver --version
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Build bundle
+        run: make build
+
+      - name: Unit tests
+        run: make test-unit
+
+      - name: Functional tests
+        run: pytest --headless functional_tests
+
+      - name: Create ssh key file from secrets
+        run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY }}" >> ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
+
+      - name: Deploy to staging server
+        run: make deploy-staging
+
+      - name: Test against staging server
+        run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
+
+      - name: Deploy to production server
+        run: make deploy-prod

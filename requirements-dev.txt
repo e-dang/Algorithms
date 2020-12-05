@@ -1,0 +1,6 @@
+selenium==3.141.0
+pytest==6.1.2
+pytest-django==4.1.0
+mock==4.0.2
+passlib==1.7.4
+ansible==2.10.4
