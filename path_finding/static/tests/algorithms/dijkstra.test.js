@@ -1,33 +1,18 @@
 const Dijkstra = require('../../src/algorithms/dijkstra');
-const Node = require('../../src/node');
+const BaseAlgorithm = require('../../src/algorithms/base_algorithm');
 
-jest.mock('../../src/node');
+jest.mock('../../src/algorithms/base_algorithm');
 
 describe('TestDijkstra', () => {
-    grid = jest.fn();
+    let grid;
     let alg;
 
     beforeEach(() => {
+        grid = jest.fn();
         alg = new Dijkstra(grid);
     });
 
-    test('constructor sets grid param to grid property', () => {
-        expect(alg.grid).toBe(grid);
-    });
-
-    test('visit calls setAsVisitedNode on node', async () => {
-        const node = new Node();
-
-        await alg.visit(node);
-
-        expect(node.setAsVisitedNode).toHaveBeenCalledTimes(1);
-    });
-
-    test('visiting calls setAsVisitingNode on node', async () => {
-        const node = new Node();
-
-        await alg.visiting(node);
-
-        expect(node.setAsVisitingNode).toHaveBeenCalledTimes(1);
+    test('constructor calls parent constructor', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
     });
 });
