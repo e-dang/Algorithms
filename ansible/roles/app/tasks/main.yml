@@ -1,0 +1,43 @@
+- name: Clone git repository
+  git:
+    repo: https://github.com/e-dang/Algorithms.git
+    dest: "{{ workspace }}"
+    version: ci-cd
+  notify:
+    - Restart gunicorn
+
+- name: Create virtualenv and install requirements
+  pip:
+    chdir: "{{ workspace }}"
+    virtualenv: "venv"
+    virtualenv_command: "{{ sys_python }} -m venv venv"
+    requirements: requirements.txt
+  notify:
+    - Restart gunicorn
+
+- name: Create .env file
+  template:
+    src: env.conf.j2
+    dest: "{{ workspace }}/.env"
+    force: no
+  notify:
+    - Restart gunicorn
+
+- name: Write gunicorn service script
+  template:
+    src: gunicorn.service.j2
+    dest: /etc/systemd/system/gunicorn-{{ host }}.service
+  notify:
+    - Restart gunicorn
+
+- name: Build javascript bundle
+  shell:
+    chdir: "{{ workspace }}"
+    cmd: cd ./path_finding/static && yarn install && yarn build
+
+- name: Collect static files
+  shell:
+    chdir: "{{ workspace }}"
+    cmd: "{{ venv_python }} manage.py collectstatic -i package.json -i yarn.lock -i node_modules -i src -i tests --no-input"
+  notify:
+    - Restart nginx

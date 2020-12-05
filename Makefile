@@ -25,19 +25,23 @@ test-ft:
 
 test: test-unit test-ft
 
-
-provision:
+provision-resources:
 	cd $(TERRAFORM_DIR) && \
 	terraform init && \
 	terraform apply -auto-approve
+
+clean-resources:
+	cd $(TERRAFORM_DIR) && \
+	terraform destroy -auto-approve
+
+provision-software:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible create_user.yml --extra-vars "ansible_ssh_user=root" && \
-	ansible-playbook -i inventory.ansible provision.yml --become
+	ansible-playbook -i inventory.ansible provision.yml
 
 deploy-staging:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible deploy.yml --limit staging --become
+	ansible-playbook -i inventory.ansible deploy.yml --limit staging
 
 deploy-prod:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible deploy.yml --limit prod --become
+	ansible-playbook -i inventory.ansible deploy.yml --limit prod

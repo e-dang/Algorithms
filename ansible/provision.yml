@@ -1,56 +1,30 @@
+---
 - hosts: all
+
+  remote_user: "root"
 
   vars_files:
     - vars/default.yml
 
-  tasks:
-    - name: Create WORKSPACE directory
-      file:
-        path: "{{ WORKSPACE }}"
-        state: directory
+  vars:
+    ssh_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa_do.pub') }}"
+    node_version: node_15.x
+    distro: bionic
+    keys:
+      - https://deb.nodesource.com/gpgkey/nodesource.gpg.key # nodejs
+      - https://dl.yarnpkg.com/debian/pubkey.gpg # yarn
+    repos:
+      - deb https://deb.nodesource.com/{{ node_version }} {{ distro }} main # nodejs
+      - deb https://dl.yarnpkg.com/debian/ stable main # yarn
+      - ppa:deadsnakes/ppa # python
+    packages:
+      - nginx
+      - git
+      - "{{ sys_python }}"
+      - "{{ sys_python }}-venv"
+      - yarn
+      - nodejs
 
-    - name: Add nodejs apt key
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-        state: present
-
-    - name: Add yarn apt key
-      apt_key:
-        url: https://dl.yarnpkg.com/debian/pubkey.gpg
-        state: present
-
-    - name: Update nodejs repository
-      apt_repository:
-        repo: deb https://deb.nodesource.com/{{ NODE_VERSION }} {{ DISTRO }} main
-        state: present
-
-    - name: Add yarn repository
-      apt_repository:
-        repo: "deb https://dl.yarnpkg.com/debian/ stable main"
-        state: present
-
-    - name: Add deadsnakes PPA
-      apt_repository:
-        repo: "ppa:deadsnakes/ppa"
-
-    - name: Install system packages
-      apt:
-        pkg: nginx,git,{{ SYS_PYTHON }},{{ SYS_PYTHON }}-venv,yarn
-        state: present
-        update_cache: yes
-
-    - name: Add nginx config to sites-available
-      template:
-        src: ./nginx.conf.j2
-        dest: /etc/nginx/sites-available/{{ HOST }}
-
-    - name: Add symlink in nginx sites-enabled
-      file:
-        src: /etc/nginx/sites-available/{{ HOST }}
-        dest: /etc/nginx/sites-enabled/{{ HOST }}
-        state: link
-
-    - name: Write gunicorn service script
-      template:
-        src: ./gunicorn.service.j2
-        dest: /etc/systemd/system/gunicorn-{{ HOST }}.service
+  roles:
+    - user
+    - apt

@@ -1,53 +1,19 @@
+---
 - hosts: all
+
+  remote_user: "{{ user }}"
+
+  become: yes
+
+  become_method: sudo
 
   vars_files:
     - vars/default.yml
 
-  tasks:
-    - name: Clone git repository
-      git:
-        repo: https://github.com/e-dang/Algorithms.git
-        dest: "{{ WORKSPACE }}"
-        version: ci-cd
+  vars:
+    executable: "{{ workspace }}/venv/bin/pip"
+    venv_python: "{{ workspace }}/venv/bin/python"
 
-    - name: Create virtualenv and install requirements
-      pip:
-        chdir: "{{ WORKSPACE }}"
-        virtualenv: "venv"
-        virtualenv_command: "{{ SYS_PYTHON }} -m venv venv"
-        requirements: requirements.txt
-
-    - name: Create .env file
-      template:
-        src: ./env.conf.j2
-        dest: "{{ WORKSPACE }}/.env"
-        force: no
-      notify:
-        - restart nginx
-        - restart gunicorn
-
-    - name: Build javascript bundle
-      shell:
-        chdir: "{{ WORKSPACE }}"
-        cmd: cd path_finding/static && yarn install && yarn build
-
-    - name: Collect static files
-      shell:
-        chdir: "{{ WORKSPACE }}"
-        cmd: "{{ VENV_PYTHON }} manage.py collectstatic -i package.json -i yarn.lock -i node_modules -i src -i tests --no-input"
-      notify:
-        - restart nginx
-        - restart gunicorn
-
-  handlers:
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-
-    - name: restart gunicorn
-      systemd:
-        name: gunicorn-{{ HOST }}
-        daemon_reload: yes
-        enabled: yes
-        state: restarted
+  roles:
+    - nginx
+    - app
