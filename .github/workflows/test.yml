@@ -50,5 +50,8 @@ jobs:
       - name: Deploy to staging server
         run: make deploy-staging
 
-      - name: Test again st staging server
+      - name: Test against staging server
         run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
+
+      - name: Deploy to production server
+        run: make deploy-prod

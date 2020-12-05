@@ -1,6 +1,7 @@
 PROJECT_DIR := `dirname $(abspath $(MAKEFILE_LIST))`
 STATIC_DIR := $(PROJECT_DIR)/path_finding/static
 ANSIBLE_DIR := $(PROJECT_DIR)/ansible
+TERRAFORM_DIR := $(PROJECT_DIR)/terraform
 
 install:
 	python3 -m pip install -U pip
@@ -24,11 +25,14 @@ test-ft:
 
 test: test-unit test-ft
 
-# deploy-staging:
-# 	cd $(ANSIBLE_DIR) && \
-# 	ansible-playbook -i inventory.ansible create_user.yml --limit staging --extra-vars "ansible_ssh_user=root" && \
-# 	ansible-playbook -i inventory.ansible provision.yml --limit staging --become && \
-# 	ansible-playbook -i inventory.ansible deploy.yml --limit staging --become
+
+provision:
+	cd $(TERRAFORM_DIR) && \
+	terraform init && \
+	terraform apply -auto-approve
+	cd $(ANSIBLE_DIR) && \
+	ansible-playbook -i inventory.ansible create_user.yml --extra-vars "ansible_ssh_user=root" && \
+	ansible-playbook -i inventory.ansible provision.yml --become
 
 deploy-staging:
 	cd $(ANSIBLE_DIR) && \
@@ -36,6 +40,4 @@ deploy-staging:
 
 deploy-prod:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible create_user.yml --limit prod --extra-vars "ansible_ssh_user=root" && \
-	ansible-playbook -i inventory.ansible provision.yml --limit prod --become && \
 	ansible-playbook -i inventory.ansible deploy.yml --limit prod --become
