@@ -1,8 +1,10 @@
-name: Test-Integrate
+name: Integrate
 
 on:
+  pull_request:
+    branches: [master]
   push:
-    branches: ['*']
+    branches: [master]
 
   workflow_dispatch:
 
