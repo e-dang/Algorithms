@@ -1,0 +1,19 @@
+---
+- hosts: all
+
+  remote_user: "{{ user }}"
+
+  become: yes
+
+  become_method: sudo
+
+  vars_files:
+    - vars/default.yml
+
+  vars:
+    executable: "{{ workspace }}/venv/bin/pip"
+    venv_python: "{{ workspace }}/venv/bin/python"
+
+  roles:
+    - nginx
+    - app

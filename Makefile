@@ -1,17 +1,47 @@
-mkfile_path := `dirname $(abspath $(MAKEFILE_LIST))`
+PROJECT_DIR := `dirname $(abspath $(MAKEFILE_LIST))`
+STATIC_DIR := $(PROJECT_DIR)/path_finding/static
+ANSIBLE_DIR := $(PROJECT_DIR)/ansible
+TERRAFORM_DIR := $(PROJECT_DIR)/terraform
+
+install:
+	python3 -m pip install -U pip
+	pip install -r requirements.txt
+	pip install -r requirements-dev.txt
+	cd $(STATIC_DIR) && yarn install
 
 build:
-	cd $(mkfile_path)/path_finding/static && yarn build
+	cd $(STATIC_DIR) && yarn build
 
-test_js:
-	cd $(mkfile_path)/path_finding/static/tests && yarn test
+test-js:
+	cd $(STATIC_DIR)/tests && yarn test
 
-test_py:
-	cd $(mkfile_path) && pytest -m unit
+test-py:
+	cd $(PROJECT_DIR) && pytest -m unit
 
-test_unit: test_js test_py
+test-unit: test-js test-py
 
-test_ft:
-	cd $(mkfile_path) && pytest -m functional
+test-ft:
+	cd $(PROJECT_DIR) && pytest -m functional
 
-test: test_unit test_ft
+test: test-unit test-ft
+
+provision-resources:
+	cd $(TERRAFORM_DIR) && \
+	terraform init && \
+	terraform apply -auto-approve
+
+clean-resources:
+	cd $(TERRAFORM_DIR) && \
+	terraform destroy -auto-approve
+
+provision-software:
+	cd $(ANSIBLE_DIR) && \
+	ansible-playbook -i inventory.ansible provision.yml
+
+deploy-staging:
+	cd $(ANSIBLE_DIR) && \
+	ansible-playbook -i inventory.ansible deploy.yml --limit staging
+
+deploy-prod:
+	cd $(ANSIBLE_DIR) && \
+	ansible-playbook -i inventory.ansible deploy.yml --limit prod

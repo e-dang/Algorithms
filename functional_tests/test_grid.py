@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from path_finding.views import DEFAULT_GRID_PARAMS as grid_params
 
@@ -8,8 +10,12 @@ from .pages.grid_page import GridPage
 @pytest.mark.usefixtures("driver_init")
 class TestGrid:
     @pytest.fixture(autouse=True)
-    def url(self):
-        return 'http://localhost:8000/path-finding/'
+    def url(self, live_server):
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            return 'http://' + staging_server + '/path-finding/'
+        else:
+            return live_server.url + '/path-finding/'
 
     def assert_line_of_nodes_are_of_type(self, page, start, end, const, n_type, vertical=True):
         for i in range(start, end + 1):
