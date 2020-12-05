@@ -1,6 +1,7 @@
 const Grid = require('./grid');
 const Dijkstra = require('./algorithms/dijkstra');
 const BaseAlgorithm = require('./algorithms/base_algorithm');
+const DFS = require('./algorithms/dfs');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -73,6 +74,8 @@ class GridController {
     _algorithmFromString() {
         if (this.alg == 'dijkstra') {
             return new Dijkstra(this.grid);
+        } else if (this.alg == 'dfs') {
+            return new DFS(this.grid);
         } else {
             return new BaseAlgorithm(this.grid);
         }

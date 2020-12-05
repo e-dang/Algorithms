@@ -2,6 +2,7 @@ const GridController = require('../src/grid_controller');
 const Grid = require('../src/grid');
 const Dijkstra = require('../src/algorithms/dijkstra');
 const BaseAlgorithm = require('../src/algorithms/base_algorithm');
+const DFS = require('../src/algorithms/dfs');
 
 jest.mock('../src/grid');
 
@@ -111,6 +112,12 @@ describe('GridControllerTest', () => {
         controller.alg = 'null';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(BaseAlgorithm);
+    });
+
+    test('_algorithmFromString returns DFS when "dfs" is alg property', () => {
+        controller.alg = 'dfs';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(DFS);
     });
 
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
