@@ -1,8 +1,9 @@
+---
 - name: Clone git repository
   git:
     repo: https://github.com/e-dang/Algorithms.git
     dest: "{{ workspace }}"
-    version: ci-cd
+    version: "{{ version | default('master') }}"
   notify:
     - Restart gunicorn
 

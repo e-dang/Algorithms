@@ -49,8 +49,13 @@ jobs:
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY_DO }}" >> ~/.ssh/id_rsa_do && chmod 0600 ~/.ssh/id_rsa_do
 
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       - name: Deploy to staging server
-        run: make deploy-staging
+        run: make deploy-staging ARGS="version=${{ steps.extract_branch.outputs.branch }}"
 
       - name: Test against staging server
         run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
