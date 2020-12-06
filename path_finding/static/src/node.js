@@ -2,6 +2,7 @@ class Node {
     constructor(row, col, grid) {
         this.prev = null;
         this.distance = Infinity;
+        this.astarScore = undefined;
         this.visited = false;
         this.row = row;
         this.col = col;

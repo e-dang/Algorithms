@@ -54,6 +54,10 @@ describe('NodeTest', () => {
         expect(node.visited).toBe(false);
     });
 
+    test('constructor initializes astarScore to be undefined', () => {
+        expect(node.astarScore).toBe(undefined);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
