@@ -1,8 +1,8 @@
 const MinHeap = require('./min_heap');
 
 class NodeMinHeap extends MinHeap {
-    constructor() {
-        super((node) => node.distance);
+    constructor(keyExtractor = (node) => node.distance) {
+        super(keyExtractor);
         this.map = {};
     }
 

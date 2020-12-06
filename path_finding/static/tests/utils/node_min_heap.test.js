@@ -15,6 +15,14 @@ describe('TestModeMinHeap', () => {
         heap = new NodeMinHeap();
     });
 
+    test('constructor can take optional keyExtractor function and set it as keyExtractor prop', () => {
+        const keyExtractor = jest.fn();
+
+        heap = new NodeMinHeap(keyExtractor);
+
+        expect(heap.keyExtractor).toBe(keyExtractor);
+    });
+
     test('pop remove minimum and maintains heap order', () => {
         heap.heap = createPsuedoNodes([6, 7, 9, 10, 8]);
 
