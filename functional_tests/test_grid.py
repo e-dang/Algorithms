@@ -107,7 +107,7 @@ class TestGrid:
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
 
         # The user clicks on an empty node in the grid and immediately sees it turn to a wall node.
         row, col = 5, 5

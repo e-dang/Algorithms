@@ -22,10 +22,10 @@ class GridPage(BasePage):
     start_node_input = StartNodeInputElement()
     end_node_input = EndNodeInputElement()
 
-    def __init__(self, driver):
+    def __init__(self, driver, num_rows=None, num_cols=None):
         super().__init__(driver)
-        self.num_rows = None
-        self.num_cols = None
+        self.num_rows = num_rows
+        self.num_cols = num_cols
 
     def has_correct_title(self):
         return 'Path Finding Algorithms' in self.driver.title
