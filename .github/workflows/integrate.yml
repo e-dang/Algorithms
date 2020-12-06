@@ -18,14 +18,6 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Get source branch name on pull request
-        run: echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
-        if: ${{ github.event_name == 'pull_request' }}
-
-      - name: Test branch name in command
-        run: |
-          echo "version = ${{ env.BRANCH_NAME }}"
-
       - name: Install yarn
         run: |
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -58,6 +50,10 @@ jobs:
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY_DO }}" >> ~/.ssh/id_rsa_do && chmod 0600 ~/.ssh/id_rsa_do
 
+      - name: Get source branch name on pull request
+        run: echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+
       - name: Deploy to staging server
         run: make deploy-staging ARGS="version=${BRANCH_NAME}"
 
@@ -66,4 +62,4 @@ jobs:
 
       - name: Deploy to production server
         run: make deploy-prod
-        if: ${{ env.BRANCH_NAME != 'master' }}
+        if: ${{ env.BRANCH_NAME == 'master' }}
