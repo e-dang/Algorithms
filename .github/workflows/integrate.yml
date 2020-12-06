@@ -23,7 +23,7 @@ jobs:
 
       - name: Test branch name in conditional
         run: echo "this should be echoed"
-        if: ${{ BRANCH_NAME != 'master' }}
+        if: ${{ env.BRANCH_NAME != 'master' }}
 
       - name: Install yarn
         run: |
@@ -65,4 +65,4 @@ jobs:
 
       - name: Deploy to production server
         run: make deploy-prod
-        if: ${BRANCH_NAME} == 'master'
+        if: ${{ env.BRANCH_NAME != 'master' }}
