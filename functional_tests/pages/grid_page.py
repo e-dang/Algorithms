@@ -54,6 +54,9 @@ class GridPage(BasePage):
         return width == height
 
     def is_node_of_type(self, row, col, n_type):
+        if row < 0 or col < 0 or row >= self.num_rows or col >= self.num_cols:
+            return False
+
         grid = self._get_grid()
         return grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class') == f'node {n_type}'
 
