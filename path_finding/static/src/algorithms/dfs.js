@@ -22,10 +22,8 @@ class DFS extends BaseAlgorithm {
             return true;
         }
 
-        const dr = [-1, 0, 1, 0, 1, 1, -1, -1];
-        const dc = [0, -1, 0, 1, 1, -1, 1, -1];
-        for (let i = 0; i < dr.length; i++) {
-            if (await this.runHelper(row + dr[i], col + dc[i], node)) {
+        for (let i = 0; i < this.dr.length; i++) {
+            if (await this.runHelper(row + this.dr[i], col + this.dc[i], node)) {
                 return true;
             }
         }

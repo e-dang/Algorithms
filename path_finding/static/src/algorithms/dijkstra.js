@@ -3,9 +3,6 @@ const NodeMinHeap = require('../utils/node_min_heap');
 
 class Dijkstra extends BaseAlgorithm {
     async run(callback) {
-        const dr = [-1, 0, 1, 0, 1, 1, -1, -1];
-        const dc = [0, -1, 0, 1, 1, -1, 1, -1];
-
         const visiting = new NodeMinHeap();
         const startNode = this.grid.getStartNode();
         startNode.distance = 0;
@@ -15,9 +12,9 @@ class Dijkstra extends BaseAlgorithm {
             const node = visiting.pop();
             await this.visit(node);
 
-            for (let i = 0; i < dr.length; i++) {
-                const row = node.row + dr[i];
-                const col = node.col + dc[i];
+            for (let i = 0; i < this.dr.length; i++) {
+                const row = node.row + this.dr[i];
+                const col = node.col + this.dc[i];
 
                 if (this.grid.isInvalidSpace(row, col)) {
                     continue;

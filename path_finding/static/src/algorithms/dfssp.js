@@ -16,10 +16,8 @@ class DFSShortestPath extends BaseAlgorithm {
         if (node.distance > cost) {
             await this.visiting(node, cost, prevNode);
 
-            const dr = [-1, 0, 1, 0, 1, 1, -1, -1];
-            const dc = [0, -1, 0, 1, 1, -1, 1, -1];
-            for (let i = 0; i < dr.length; i++) {
-                await this.runHelper(row + dr[i], col + dc[i], cost + 1, node);
+            for (let i = 0; i < this.dr.length; i++) {
+                await this.runHelper(row + this.dr[i], col + this.dc[i], cost + 1, node);
             }
 
             await this.visit(node);
