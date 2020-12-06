@@ -4,6 +4,7 @@ const BaseAlgorithm = require('./algorithms/base_algorithm');
 const DFS = require('./algorithms/dfs');
 const DFSShortestPath = require('./algorithms/dfssp');
 const BFS = require('./algorithms/bfs');
+const AStarSearch = require('./algorithms/astar');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -82,6 +83,8 @@ class GridController {
             return new DFSShortestPath(this.grid);
         } else if (this.alg == 'bfs') {
             return new BFS(this.grid);
+        } else if (this.alg == 'a*') {
+            return new AStarSearch(this.grid);
         } else {
             return new BaseAlgorithm(this.grid);
         }

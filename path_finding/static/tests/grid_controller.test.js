@@ -5,6 +5,7 @@ const BaseAlgorithm = require('../src/algorithms/base_algorithm');
 const DFS = require('../src/algorithms/dfs');
 const DFSShortestPath = require('../src/algorithms/dfssp');
 const BFS = require('../src/algorithms/bfs');
+const AStarSearch = require('../src/algorithms/astar');
 
 jest.mock('../src/grid');
 
@@ -132,6 +133,12 @@ describe('GridControllerTest', () => {
         controller.alg = 'bfs';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(BFS);
+    });
+
+    test('_algorithmFromString returns AStarSearch when "a*" is alg property', () => {
+        controller.alg = 'a*';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(AStarSearch);
     });
 
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
