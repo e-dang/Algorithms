@@ -3,6 +3,7 @@ const Dijkstra = require('./algorithms/dijkstra');
 const BaseAlgorithm = require('./algorithms/base_algorithm');
 const DFS = require('./algorithms/dfs');
 const DFSShortestPath = require('./algorithms/dfssp');
+const BFS = require('./algorithms/bfs');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -79,6 +80,8 @@ class GridController {
             return new DFS(this.grid);
         } else if (this.alg == 'dfssp') {
             return new DFSShortestPath(this.grid);
+        } else if (this.alg == 'bfs') {
+            return new BFS(this.grid);
         } else {
             return new BaseAlgorithm(this.grid);
         }
