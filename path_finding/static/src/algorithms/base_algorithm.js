@@ -3,6 +3,8 @@ const TIMEOUT = 10;
 class BaseAlgorithm {
     constructor(grid) {
         this.grid = grid;
+        this.dr = [-1, 0, 1, 0, 1, 1, -1, -1];
+        this.dc = [0, -1, 0, 1, 1, -1, 1, -1];
     }
 
     async run(callback) {

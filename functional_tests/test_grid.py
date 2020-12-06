@@ -107,7 +107,7 @@ class TestGrid:
     def test_user_can_change_node_types_between_wall_and_empty(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
 
         # The user clicks on an empty node in the grid and immediately sees it turn to a wall node.
         row, col = 5, 5
@@ -156,19 +156,20 @@ class TestGrid:
 
         assert not page.is_algorithm_select_error_visible()
 
-    @pytest.mark.parametrize('url, algorithm', [
-        (None, "Dijkstra's Algorithm"),
-        (None, 'DFS')
+    @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes', [
+        (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5)),
+        (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5)),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1))
     ],
         indirect=['url'],
-        ids=['dijkstra', 'dfs'])
-    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm):
+        ids=['dijkstra', 'dfs', 'dfssp'])
+    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm, grid_props, wall_nodes):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
 
         # Resize the grid to something small so the test runs faster
-        dims, start, end = 10, 1, 8  # start and end are known from scaling calculation in js
+        dims, start, end = grid_props  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
         page.click_submit()
 
@@ -176,7 +177,7 @@ class TestGrid:
         page.select_algorithm(algorithm)
 
         # The user clicks and drags on some empty nodes and converts them to wall nodes
-        w_start_row, w_end_row, col = 3, 8, 5
+        w_start_row, w_end_row, col = wall_nodes
         page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
         self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
 
@@ -184,7 +185,7 @@ class TestGrid:
         page.click_run()
 
         # The algorithm runs and the user sees explored nodes around the start node
-        page.wait_for_node_to_be_of_type(start - 1, start, 'visited', timeout=2)
+        page.wait_for_node_to_be_of_type(start + 1, start, 'visited', timeout=2)
 
         # The algorithm completes and the user sees path nodes at the start and end nodes
         page.wait_until_complete()

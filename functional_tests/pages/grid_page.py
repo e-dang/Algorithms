@@ -22,10 +22,10 @@ class GridPage(BasePage):
     start_node_input = StartNodeInputElement()
     end_node_input = EndNodeInputElement()
 
-    def __init__(self, driver):
+    def __init__(self, driver, num_rows=None, num_cols=None):
         super().__init__(driver)
-        self.num_rows = None
-        self.num_cols = None
+        self.num_rows = num_rows
+        self.num_cols = num_cols
 
     def has_correct_title(self):
         return 'Path Finding Algorithms' in self.driver.title
@@ -54,6 +54,9 @@ class GridPage(BasePage):
         return width == height
 
     def is_node_of_type(self, row, col, n_type):
+        if row < 0 or col < 0 or row >= self.num_rows or col >= self.num_cols:
+            return False
+
         grid = self._get_grid()
         return grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class') == f'node {n_type}'
 
