@@ -44,4 +44,4 @@ deploy-staging:
 
 deploy-prod:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible deploy.yml --limit prod
+	ansible-playbook -i inventory.ansible deploy.yml --limit prod --extra-vars version=master

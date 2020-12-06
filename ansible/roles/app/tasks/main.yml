@@ -3,7 +3,7 @@
   git:
     repo: https://github.com/e-dang/Algorithms.git
     dest: "{{ workspace }}"
-    version: "{{ version | default('master') }}"
+    version: "{{ version }}"
   notify:
     - Restart gunicorn
 
