@@ -62,3 +62,4 @@ jobs:
 
       - name: Deploy to production server
         run: make deploy-prod
+        if: ${{ steps.extract_branch.outputs.branch == 'master' }}
