@@ -18,17 +18,13 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Get source branch name on pull request
+        run: echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
+
       - name: Test branch name in command
         run: |
-          echo "version = ${BRANCH_NAME}"
-          echo GITHUB_REF pull request branch name = ${{ github.head_ref }}
-          echo "GITHUB_REF = ${GITHUB_REF}"
-          echo "GITHUB_REF##*/ = ${GITHUB_REF##*/}"
-          echo "GITHUB_HEAD_REF = ${GITHUB_HEAD_REF}"
-
-      - name: Test branch name in conditional
-        run: echo "this should be echoed"
-        if: ${{ github.head_ref != 'master' }}
+          echo "version = ${{ env.BRANCH_NAME }}"
 
       - name: Install yarn
         run: |
