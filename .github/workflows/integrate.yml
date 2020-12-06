@@ -13,9 +13,17 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
+      - uses: nelonoel/branch-name@v1.0.1
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
+
+      - name: Test branch name in command
+        run: echo "version=${BRANCH_NAME}"
+
+      - name: Test branch name in conditional
+        run: echo "this should be echoed"
+        if: ${BRANCH_NAME} != 'master'
 
       - name: Install yarn
         run: |
@@ -49,17 +57,12 @@ jobs:
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY_DO }}" >> ~/.ssh/id_rsa_do && chmod 0600 ~/.ssh/id_rsa_do
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
       - name: Deploy to staging server
-        run: make deploy-staging ARGS="version=${{ steps.extract_branch.outputs.branch }}"
+        run: make deploy-staging ARGS="version=${BRANCH_NAME}"
 
       - name: Test against staging server
         run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
 
       - name: Deploy to production server
         run: make deploy-prod
-        if: ${{ steps.extract_branch.outputs.branch == 'master' }}
+        if: ${BRANCH_NAME} == 'master'
