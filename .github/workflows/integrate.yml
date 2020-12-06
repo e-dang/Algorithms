@@ -19,11 +19,16 @@ jobs:
           python-version: '3.9'
 
       - name: Test branch name in command
-        run: echo "version=${BRANCH_NAME}"
+        run: |
+        echo "version = ${BRANCH_NAME}"
+        echo "GITHUB_REF = ${{ GITHUB_REF }}"
+        echo "GITHUB_REF##*/ = ${{ GITHUB_REF##*/ }}"
+        echo "GITHUB_REF pull request branch name = ${{ github.head_ref }}"
+        echo "GITHUB_HEAD_REF = ${GITHUB_HEAD_REF}"
 
       - name: Test branch name in conditional
         run: echo "this should be echoed"
-        if: ${{ env.BRANCH_NAME != 'master' }}
+        if: ${{ github.head_ref != 'master' }}
 
       - name: Install yarn
         run: |
