@@ -158,10 +158,11 @@ class TestGrid:
 
     @pytest.mark.parametrize('url, algorithm', [
         (None, "Dijkstra's Algorithm"),
-        (None, 'DFS')
+        (None, 'Depth-First Search'),
+        (None, 'Depth-First Search (Shortest Path)')
     ],
         indirect=['url'],
-        ids=['dijkstra', 'dfs'])
+        ids=['dijkstra', 'dfs', 'dfssp'])
     def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm):
         # The user goes to the website and sees a grid
         self.driver.get(url)
