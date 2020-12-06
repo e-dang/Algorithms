@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v2
+      - uses: nelonoel/branch-name@v1.0.1
       - uses: actions/setup-python@v2
         with:
           python-version: '3.9'
@@ -47,13 +48,18 @@ jobs:
         run: pytest --headless functional_tests
 
       - name: Create ssh key file from secrets
-        run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY }}" >> ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa
+        run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY_DO }}" >> ~/.ssh/id_rsa_do && chmod 0600 ~/.ssh/id_rsa_do
+
+      - name: Get source branch name on pull request
+        run: echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
+        if: ${{ github.event_name == 'pull_request' }}
 
       - name: Deploy to staging server
-        run: make deploy-staging
+        run: make deploy-staging ARGS="version=${BRANCH_NAME}"
 
       - name: Test against staging server
         run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
 
       - name: Deploy to production server
         run: make deploy-prod
+        if: ${{ env.BRANCH_NAME == 'master' }}

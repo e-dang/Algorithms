@@ -50,6 +50,10 @@ describe('NodeTest', () => {
         expect(node.id).toBe(node.element.id);
     });
 
+    test('constructor initializes visited property to false', () => {
+        expect(node.visited).toBe(false);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
@@ -180,6 +184,15 @@ describe('NodeTest', () => {
             node.setAsVisitedNode();
 
             expect(node.element.className).toBe('node end');
+        });
+
+        test('setAsVisitedNode sets visited property to true despite node type', () => {
+            node.visited = false;
+            node.element.className = 'not a valid node';
+
+            node.setAsVisitedNode();
+
+            expect(node.visited).toBe(true);
         });
 
         test('setAsVisitingNode sets class list to "node visiting"', () => {

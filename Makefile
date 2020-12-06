@@ -40,8 +40,8 @@ provision-software:
 
 deploy-staging:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible deploy.yml --limit staging
+	ansible-playbook -i inventory.ansible deploy.yml --limit staging --extra-vars "$(ARGS)"
 
 deploy-prod:
 	cd $(ANSIBLE_DIR) && \
-	ansible-playbook -i inventory.ansible deploy.yml --limit prod
+	ansible-playbook -i inventory.ansible deploy.yml --limit prod --extra-vars version=master

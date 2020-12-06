@@ -2,6 +2,7 @@ class Node {
     constructor(row, col, grid) {
         this.prev = null;
         this.distance = Infinity;
+        this.visited = false;
         this.row = row;
         this.col = col;
         this.element = document.createElement('div');
@@ -31,6 +32,7 @@ class Node {
     }
 
     setAsVisitedNode() {
+        this.visited = true;
         if (!this.isStartNode() && !this.isEndNode()) {
             this._setNodeType('visited');
         }

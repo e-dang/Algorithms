@@ -156,7 +156,13 @@ class TestGrid:
 
         assert not page.is_algorithm_select_error_visible()
 
-    def test_user_can_select_different_algorithms_and_run_them(self, url):
+    @pytest.mark.parametrize('url, algorithm', [
+        (None, "Dijkstra's Algorithm"),
+        (None, 'DFS')
+    ],
+        indirect=['url'],
+        ids=['dijkstra', 'dfs'])
+    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
@@ -167,7 +173,7 @@ class TestGrid:
         page.click_submit()
 
         # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
-        page.select_algorithm("Dijkstra's Algorithm")
+        page.select_algorithm(algorithm)
 
         # The user clicks and drags on some empty nodes and converts them to wall nodes
         w_start_row, w_end_row, col = 3, 8, 5
