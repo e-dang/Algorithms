@@ -1,8 +1,9 @@
 const MinHeap = require('./min_heap');
 
 class NodeMinHeap extends MinHeap {
-    constructor(keyExtractor = (node) => node.distance) {
-        super(keyExtractor);
+    constructor(key = 'distance') {
+        super((node) => node[key]);
+        this.key = key;
         this.map = {};
     }
 
@@ -25,12 +26,12 @@ class NodeMinHeap extends MinHeap {
         return retVal;
     }
 
-    update(node, distance) {
-        const tmp = node.distance;
+    update(node, val) {
+        const tmp = node[this.key];
         const idx = this.map[node.id];
-        node.distance = distance;
+        node[this.key] = val;
 
-        if (distance < tmp) {
+        if (val < tmp) {
             this._heapifyUp(idx);
         } else {
             this._heapifyDown(idx);

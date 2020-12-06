@@ -15,12 +15,14 @@ describe('TestModeMinHeap', () => {
         heap = new NodeMinHeap();
     });
 
-    test('constructor can take optional keyExtractor function and set it as keyExtractor prop', () => {
-        const keyExtractor = jest.fn();
+    test('constructor can take optional key prop to extract the ordering val off a node', () => {
+        const key = 'randomProp';
+        node = {randomProp: 1289};
+        heap = new NodeMinHeap(key);
 
-        heap = new NodeMinHeap(keyExtractor);
+        const retVal = heap.keyExtractor(node);
 
-        expect(heap.keyExtractor).toBe(keyExtractor);
+        expect(retVal).toBe(1289);
     });
 
     test('pop remove minimum and maintains heap order', () => {
