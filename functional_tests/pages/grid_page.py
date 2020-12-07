@@ -99,7 +99,7 @@ class GridPage(BasePage):
     def get_cost(self):
         element = self.driver.find_element_by_id('cost')
         if element.is_displayed():
-            return int(element.value)
+            return int(element.text)
 
         return None
 
