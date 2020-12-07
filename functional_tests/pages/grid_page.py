@@ -96,6 +96,13 @@ class GridPage(BasePage):
         select = Select(self.driver.find_element_by_id('algorithmSelect'))
         select.select_by_visible_text(algorithm)
 
+    def get_cost(self):
+        element = self.driver.find_element_by_id('cost')
+        if element.is_displayed():
+            return int(element.value)
+
+        return None
+
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 
