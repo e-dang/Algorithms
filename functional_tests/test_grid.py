@@ -157,15 +157,16 @@ class TestGrid:
         assert not page.is_algorithm_select_error_visible()
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
-        # (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5), 10),
-        # (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5), 82),
-        # (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
-        # (None, 'Breadth-First Search', (10, 1, 8), (3, 8, 5), 10),
-        # (None, 'A* Search', (10, 1, 8), (3, 8, 5), 10),
-        (None, 'Greedy Best-First Search', (10, 1, 8), (3, 8, 5), 11)
+        (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5), 10),
+        (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5), 82),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
+        (None, 'Breadth-First Search', (10, 1, 8), (3, 8, 5), 10),
+        (None, 'A* Search', (10, 1, 8), (3, 8, 5), 10),
+        (None, 'Greedy Best-First Search', (10, 1, 8), (3, 8, 5), 11),
+        (None, 'Bidirectional Search', (10, 1, 8), (3, 8, 5), 10),
     ],
-        indirect=['url'])
-    # ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs'])
+        indirect=['url'],
+        ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
     def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm, grid_props, wall_nodes, cost):
         # The user goes to the website and sees a grid
         self.driver.get(url)
