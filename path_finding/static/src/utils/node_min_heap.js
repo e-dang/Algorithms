@@ -1,7 +1,7 @@
 const MinHeap = require('./min_heap');
 
 class NodeMinHeap extends MinHeap {
-    constructor(key = 'distance') {
+    constructor(key = 'totalCost') {
         super((node) => node[key]);
         this.key = key;
         this.map = {};

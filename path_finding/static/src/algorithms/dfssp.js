@@ -4,7 +4,7 @@ class DFSShortestPath extends BaseAlgorithm {
     async run(callback) {
         const startNode = this.grid.getStartNode();
         await this.runHelper(startNode.row, startNode.col, 0, null);
-        callback(this.grid.getEndNode().distance);
+        callback(this.grid.getEndNode().totalCost);
     }
 
     async runHelper(row, col, cost, prevNode) {
@@ -13,7 +13,7 @@ class DFSShortestPath extends BaseAlgorithm {
         }
 
         const node = this.grid.getNode(row, col);
-        if (node.distance > cost) {
+        if (node.totalCost > cost) {
             await this.visiting(node, cost, prevNode);
 
             for (let i = 0; i < this.dr.length; i++) {
@@ -27,7 +27,7 @@ class DFSShortestPath extends BaseAlgorithm {
     }
 
     async visiting(node, cost, prevNode) {
-        node.distance = cost;
+        node.totalCost = cost;
         node.prev = prevNode;
         await super.visiting(node);
     }

@@ -1,7 +1,8 @@
 class Node {
-    constructor(row, col, grid) {
+    constructor(row, col, grid, cost = 1) {
         this.prev = null;
-        this.distance = Infinity;
+        this.cost = cost;
+        this.totalCost = Infinity;
         this.astarScore = undefined;
         this.visited = false;
         this.row = row;

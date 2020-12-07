@@ -1,7 +1,7 @@
 const NodeMinHeap = require('../../src/utils/node_min_heap');
 
 const createPsuedoNode = (val) => {
-    return {distance: val, id: `${val}`};
+    return {totalCost: val, id: `${val}`};
 };
 
 const createPsuedoNodes = (vals) => {

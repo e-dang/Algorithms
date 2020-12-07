@@ -6,7 +6,7 @@ class AStarSearch extends BaseAlgorithm {
         const endNode = this.grid.getEndNode();
         const startNode = this.grid.getStartNode();
         const heap = new NodeMinHeap('astarScore');
-        startNode.distance = 0;
+        startNode.totalCost = 0;
         startNode.astarScore = this.calcHeuristic(startNode, endNode);
         heap.insert(startNode);
 
@@ -27,8 +27,8 @@ class AStarSearch extends BaseAlgorithm {
                 }
 
                 const candidateNode = this.grid.getNode(row, col);
-                const cost = node.distance + 1;
-                if (candidateNode.distance > cost) {
+                const cost = node.totalCost + candidateNode.cost;
+                if (candidateNode.totalCost > cost) {
                     const astarScore = cost + this.calcHeuristic(candidateNode, endNode);
                     if (heap.contains(candidateNode)) {
                         heap.update(candidateNode, astarScore);
@@ -38,13 +38,13 @@ class AStarSearch extends BaseAlgorithm {
                         await this.visiting(candidateNode);
                     }
 
-                    candidateNode.distance = cost;
+                    candidateNode.totalCost = cost;
                     candidateNode.prev = node;
                 }
             }
         }
 
-        callback(endNode.distance);
+        callback(endNode.totalCost);
     }
 
     calcHeuristic(node1, node2) {

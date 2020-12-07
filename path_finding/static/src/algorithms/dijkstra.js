@@ -5,7 +5,7 @@ class Dijkstra extends BaseAlgorithm {
     async run(callback) {
         const visiting = new NodeMinHeap();
         const startNode = this.grid.getStartNode();
-        startNode.distance = 0;
+        startNode.totalCost = 0;
         visiting.insert(startNode);
 
         while (!visiting.isEmpty()) {
@@ -25,12 +25,12 @@ class Dijkstra extends BaseAlgorithm {
                 }
 
                 const candidateNode = this.grid.getNode(row, col);
-                const cost = node.distance + 1;
-                if (candidateNode.distance > cost) {
+                const cost = node.totalCost + candidateNode.cost;
+                if (candidateNode.totalCost > cost) {
                     if (visiting.contains(candidateNode)) {
                         visiting.update(candidateNode, cost);
                     } else {
-                        candidateNode.distance = cost;
+                        candidateNode.totalCost = cost;
                         visiting.insert(candidateNode);
                         await this.visiting(candidateNode);
                     }
@@ -40,7 +40,7 @@ class Dijkstra extends BaseAlgorithm {
             }
         }
 
-        callback(this.grid.getEndNode().distance);
+        callback(this.grid.getEndNode().totalCost);
     }
 }
 

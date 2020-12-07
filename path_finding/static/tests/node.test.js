@@ -30,8 +30,20 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
     });
 
-    test('constructor initializes distance to Infinity', () => {
-        expect(node.distance).toBe(Infinity);
+    test('constructor initializes totalCost to Infinity', () => {
+        expect(node.totalCost).toBe(Infinity);
+    });
+
+    test('constructor sets cost prop to cost param', () => {
+        const cost = 10;
+
+        node = new Node(row, col, grid, cost);
+
+        expect(node.cost).toBe(cost);
+    });
+
+    test('constructor sets cost prop to default 1', () => {
+        expect(node.cost).toBe(1);
     });
 
     test('constructor initializes prev to null', () => {
