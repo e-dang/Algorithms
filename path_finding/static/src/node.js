@@ -3,7 +3,7 @@ class Node {
         this.prev = null;
         this.cost = cost;
         this.totalCost = Infinity;
-        this.astarScore = undefined;
+        this.heuristicScore = undefined;
         this.visited = false;
         this.row = row;
         this.col = col;

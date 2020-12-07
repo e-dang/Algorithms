@@ -66,8 +66,8 @@ describe('NodeTest', () => {
         expect(node.visited).toBe(false);
     });
 
-    test('constructor initializes astarScore to be undefined', () => {
-        expect(node.astarScore).toBe(undefined);
+    test('constructor initializes heuristicScore to be undefined', () => {
+        expect(node.heuristicScore).toBe(undefined);
     });
 
     test('addEventListener adds event listener to dom element', () => {

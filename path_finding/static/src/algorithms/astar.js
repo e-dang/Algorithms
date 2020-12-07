@@ -5,9 +5,9 @@ class AStarSearch extends BaseAlgorithm {
     async run(callback) {
         const endNode = this.grid.getEndNode();
         const startNode = this.grid.getStartNode();
-        const heap = new NodeMinHeap('astarScore');
+        const heap = new NodeMinHeap('heuristicScore');
         startNode.totalCost = 0;
-        startNode.astarScore = this.calcHeuristic(startNode, endNode);
+        startNode.heuristicScore = this.calcHeuristic(startNode, endNode);
         heap.insert(startNode);
 
         while (!heap.isEmpty()) {
@@ -33,7 +33,7 @@ class AStarSearch extends BaseAlgorithm {
                     if (heap.contains(candidateNode)) {
                         heap.update(candidateNode, astarScore);
                     } else {
-                        candidateNode.astarScore = astarScore;
+                        candidateNode.heuristicScore = astarScore;
                         heap.insert(candidateNode);
                         await this.visiting(candidateNode);
                     }
