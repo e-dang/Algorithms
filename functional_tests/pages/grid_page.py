@@ -89,8 +89,12 @@ class GridPage(BasePage):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
             EC.visibility_of(self.driver.find_element_by_id('algComplete')))
 
-    def wait_for_node_to_be_of_type(self, row, col, n_type, timeout=None):
-        WebDriverWait(self.driver, timeout or TIMEOUT).until(lambda x: self.is_node_of_type(row, col, n_type))
+    def wait_for_node_to_be_of_type(self, row, col, n_types, timeout=None):
+        if not isinstance(n_types, list):
+            n_types = [n_types]
+        WebDriverWait(self.driver, timeout or TIMEOUT).until(
+            lambda x: any(self.is_node_of_type(row, col, n_type) for n_type in n_types)
+        )
 
     def select_algorithm(self, algorithm):
         select = Select(self.driver.find_element_by_id('algorithmSelect'))
