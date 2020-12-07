@@ -6,6 +6,7 @@ const DFS = require('../src/algorithms/dfs');
 const DFSShortestPath = require('../src/algorithms/dfssp');
 const BFS = require('../src/algorithms/bfs');
 const AStarSearch = require('../src/algorithms/astar');
+const GreedyBestFirstSearch = require('../src/algorithms/greedy-bfs.js');
 
 jest.mock('../src/grid');
 
@@ -139,6 +140,12 @@ describe('GridControllerTest', () => {
         controller.alg = 'a*';
 
         expect(controller._algorithmFromString()).toBeInstanceOf(AStarSearch);
+    });
+
+    test('algorithmFromString returns GreedyBestFirstSearch when "greedy-bfs" is alg property', () => {
+        controller.alg = 'greedy-bfs';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(GreedyBestFirstSearch);
     });
 
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
