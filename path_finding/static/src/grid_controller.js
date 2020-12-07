@@ -6,6 +6,7 @@ const DFSShortestPath = require('./algorithms/dfssp');
 const BFS = require('./algorithms/bfs');
 const AStarSearch = require('./algorithms/astar');
 const GreedyBestFirstSearch = require('./algorithms/greedy-bfs');
+const BidirectionalSearch = require('./algorithms/bidirectional');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -95,6 +96,8 @@ class GridController {
             return new AStarSearch(this.grid);
         } else if (this.alg == 'greedy-bfs') {
             return new GreedyBestFirstSearch(this.grid);
+        } else if (this.alg == 'bidirectional') {
+            return new BidirectionalSearch(this.grid);
         } else {
             return new BaseAlgorithm(this.grid);
         }
