@@ -1,7 +1,7 @@
 const BaseAlgorithm = require('./base_algorithm');
 const NodeMinHeap = require('../utils/node_min_heap');
 
-class AStarSearch extends BaseAlgorithm {
+class GreedyBestFirstSearch extends BaseAlgorithm {
     async run(callback) {
         const endNode = this.grid.getEndNode();
         const startNode = this.grid.getStartNode();
@@ -29,11 +29,11 @@ class AStarSearch extends BaseAlgorithm {
                 const candidateNode = this.grid.getNode(row, col);
                 const cost = node.totalCost + candidateNode.cost;
                 if (candidateNode.totalCost > cost) {
-                    const astarScore = cost + this.calcHeuristic(candidateNode, endNode);
+                    const heuristicScore = this.calcHeuristic(candidateNode, endNode);
                     if (heap.contains(candidateNode)) {
-                        heap.update(candidateNode, astarScore);
+                        heap.update(candidateNode, heuristicScore);
                     } else {
-                        candidateNode.heuristicScore = astarScore;
+                        candidateNode.heuristicScore = heuristicScore;
                         heap.insert(candidateNode);
                         await this.visiting(candidateNode);
                     }
@@ -52,4 +52,4 @@ class AStarSearch extends BaseAlgorithm {
     }
 }
 
-module.exports = AStarSearch;
+module.exports = GreedyBestFirstSearch;
