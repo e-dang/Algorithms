@@ -1,7 +1,7 @@
 const NodeMinHeap = require('../../src/utils/node_min_heap');
 
 const createPsuedoNode = (val) => {
-    return {distance: val, id: `${val}`};
+    return {totalCost: val, id: `${val}`};
 };
 
 const createPsuedoNodes = (vals) => {
@@ -13,6 +13,16 @@ describe('TestModeMinHeap', () => {
 
     beforeEach(() => {
         heap = new NodeMinHeap();
+    });
+
+    test('constructor can take optional key prop to extract the ordering val off a node', () => {
+        const key = 'randomProp';
+        node = {randomProp: 1289};
+        heap = new NodeMinHeap(key);
+
+        const retVal = heap.keyExtractor(node);
+
+        expect(retVal).toBe(1289);
     });
 
     test('pop remove minimum and maintains heap order', () => {

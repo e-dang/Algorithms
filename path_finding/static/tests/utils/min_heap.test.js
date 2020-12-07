@@ -12,7 +12,7 @@ describe('TestMinHeap', () => {
     });
 
     test('constructor sets keyExtractor property to keyExtractor param', () => {
-        const keyExtractor = (node) => node.distance;
+        const keyExtractor = (node) => node.totalCost;
 
         heap = new MinHeap(keyExtractor);
 

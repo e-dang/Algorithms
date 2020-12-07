@@ -5,6 +5,7 @@ const BaseAlgorithm = require('../src/algorithms/base_algorithm');
 const DFS = require('../src/algorithms/dfs');
 const DFSShortestPath = require('../src/algorithms/dfssp');
 const BFS = require('../src/algorithms/bfs');
+const AStarSearch = require('../src/algorithms/astar');
 
 jest.mock('../src/grid');
 
@@ -134,6 +135,12 @@ describe('GridControllerTest', () => {
         expect(controller._algorithmFromString()).toBeInstanceOf(BFS);
     });
 
+    test('_algorithmFromString returns AStarSearch when "a*" is alg property', () => {
+        controller.alg = 'a*';
+
+        expect(controller._algorithmFromString()).toBeInstanceOf(AStarSearch);
+    });
+
     test('_handleRunAlgorithm calls _algorithmFromString and run on its return value', () => {
         const mockReturn = {run: jest.fn()};
         controller._algorithmFromString = jest.fn().mockReturnValueOnce(mockReturn);
@@ -189,9 +196,11 @@ describe('GridControllerTest', () => {
     describe('test _handleCompleteAlgorithm and _handleReset', () => {
         let element;
         beforeEach(() => {
-            element = document.createElement('p');
-            element.id = 'algComplete';
-            document.body.appendChild(element);
+            document.body.innerHTML = `
+            <p id='algComplete' hidden>Complete!</p>
+            <p id='cost' hidden></p>
+            `;
+            element = document.getElementById('algComplete');
         });
 
         test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {

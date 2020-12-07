@@ -4,6 +4,7 @@ const BaseAlgorithm = require('./algorithms/base_algorithm');
 const DFS = require('./algorithms/dfs');
 const DFSShortestPath = require('./algorithms/dfssp');
 const BFS = require('./algorithms/bfs');
+const AStarSearch = require('./algorithms/astar');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -58,7 +59,14 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        this._algorithmFromString().run(() => this._handleCompleteAlgorithm());
+        const callback = (cost) => {
+            this._handleCompleteAlgorithm();
+            const element = document.getElementById('cost');
+            element.hidden = false;
+            element.innerHTML = cost;
+        };
+
+        this._algorithmFromString().run((cost) => callback(cost));
     }
 
     _handleGridInputError() {
@@ -82,6 +90,8 @@ class GridController {
             return new DFSShortestPath(this.grid);
         } else if (this.alg == 'bfs') {
             return new BFS(this.grid);
+        } else if (this.alg == 'a*') {
+            return new AStarSearch(this.grid);
         } else {
             return new BaseAlgorithm(this.grid);
         }
@@ -94,6 +104,7 @@ class GridController {
 
     _handleReset() {
         document.getElementById('algComplete').hidden = true;
+        document.getElementById('cost').hidden = true;
         this.grid.clear();
         this.grid.draw();
     }

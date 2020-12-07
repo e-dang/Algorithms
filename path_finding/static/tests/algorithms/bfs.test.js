@@ -29,10 +29,10 @@ describe('TestBFS', () => {
             cost = 10;
         });
 
-        test('visiting sets node distance to cost parameter', async () => {
+        test('visiting sets node totalCost to cost parameter', async () => {
             alg.visiting(node, cost, prevNode);
 
-            expect(node.distance).toBe(cost);
+            expect(node.totalCost).toBe(cost);
         });
 
         test('visiting sets node prev to prevNode parameter', async () => {

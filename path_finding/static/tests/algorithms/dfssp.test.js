@@ -29,10 +29,10 @@ describe('TestDFSShortestPath', () => {
             cost = 10;
         });
 
-        test('visiting sets node distance to cost param', async () => {
+        test('visiting sets node totalCost to cost param', async () => {
             await alg.visiting(node, cost, prevNode);
 
-            expect(node.distance).toBe(cost);
+            expect(node.totalCost).toBe(cost);
         });
 
         test('visiting sets node prev to prevNode', async () => {

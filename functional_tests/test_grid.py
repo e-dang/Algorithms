@@ -156,15 +156,16 @@ class TestGrid:
 
         assert not page.is_algorithm_select_error_visible()
 
-    @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes', [
-        (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5)),
-        (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5)),
-        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1)),
-        (None, 'Breadth-First Search', (10, 1, 8), (3, 8, 5))
+    @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
+        (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5), 10),
+        (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5), 82),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
+        (None, 'Breadth-First Search', (10, 1, 8), (3, 8, 5), 10),
+        (None, 'A* Search', (10, 1, 8), (3, 8, 5), 10)
     ],
         indirect=['url'],
-        ids=['dijkstra', 'dfs', 'dfssp', 'bfs'])
-    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm, grid_props, wall_nodes):
+        ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*'])
+    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm, grid_props, wall_nodes, cost):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
@@ -186,13 +187,14 @@ class TestGrid:
         page.click_run()
 
         # The algorithm runs and the user sees explored nodes around the start node
-        page.wait_for_node_to_be_of_type(start + 1, start, 'visited', timeout=2)
+        page.wait_for_node_to_be_of_type(start + 1, start, 'visited', timeout=5)
 
-        # The algorithm completes and the user sees path nodes at the start and end nodes
+        # The algorithm completes and the user sees path nodes at the start and end nodes, along with the path cost
         page.wait_until_complete()
         movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         assert any(page.is_node_of_type(start + dr, start + dc, 'path') for dr, dc in movements)
         assert any(page.is_node_of_type(end + dr, end + dc, 'path') for dr, dc in movements)
+        assert page.get_cost() == cost
 
         # The user also notices that the wall nodes have not been changed either
         self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')

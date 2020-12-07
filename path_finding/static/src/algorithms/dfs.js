@@ -3,32 +3,33 @@ const BaseAlgorithm = require('./base_algorithm');
 class DFS extends BaseAlgorithm {
     async run(callback) {
         const startNode = this.grid.getStartNode();
-        await this.runHelper(startNode.row, startNode.col, null);
-        callback();
+        const cost = await this.runHelper(startNode.row, startNode.col, 0, null);
+        callback(cost);
     }
 
-    async runHelper(row, col, prevNode) {
+    async runHelper(row, col, cost, prevNode) {
         if (this.grid.isInvalidSpace(row, col)) {
-            return false;
+            return null;
         }
 
         const node = this.grid.getNode(row, col);
         if (node.visited) {
-            return false;
+            return null;
         }
 
         await this.visit(node, prevNode);
         if (node.isEndNode()) {
-            return true;
+            return cost;
         }
 
         for (let i = 0; i < this.dr.length; i++) {
-            if (await this.runHelper(row + this.dr[i], col + this.dc[i], node)) {
-                return true;
+            const pathCost = await this.runHelper(row + this.dr[i], col + this.dc[i], cost + 1, node);
+            if (pathCost != null) {
+                return pathCost;
             }
         }
 
-        return false;
+        return null;
     }
 
     async visit(node, prevNode) {

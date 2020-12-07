@@ -1,15 +1,17 @@
 const BaseAlgorithm = require('./base_algorithm');
 const NodeMinHeap = require('../utils/node_min_heap');
 
-class Dijkstra extends BaseAlgorithm {
+class AStarSearch extends BaseAlgorithm {
     async run(callback) {
-        const visiting = new NodeMinHeap();
+        const endNode = this.grid.getEndNode();
         const startNode = this.grid.getStartNode();
+        const heap = new NodeMinHeap('astarScore');
         startNode.totalCost = 0;
-        visiting.insert(startNode);
+        startNode.astarScore = this.calcHeuristic(startNode, endNode);
+        heap.insert(startNode);
 
-        while (!visiting.isEmpty()) {
-            const node = visiting.pop();
+        while (!heap.isEmpty()) {
+            const node = heap.pop();
             await this.visit(node);
 
             if (node.isEndNode()) {
@@ -27,21 +29,27 @@ class Dijkstra extends BaseAlgorithm {
                 const candidateNode = this.grid.getNode(row, col);
                 const cost = node.totalCost + candidateNode.cost;
                 if (candidateNode.totalCost > cost) {
-                    if (visiting.contains(candidateNode)) {
-                        visiting.update(candidateNode, cost);
+                    const astarScore = cost + this.calcHeuristic(candidateNode, endNode);
+                    if (heap.contains(candidateNode)) {
+                        heap.update(candidateNode, astarScore);
                     } else {
-                        candidateNode.totalCost = cost;
-                        visiting.insert(candidateNode);
+                        candidateNode.astarScore = astarScore;
+                        heap.insert(candidateNode);
                         await this.visiting(candidateNode);
                     }
 
+                    candidateNode.totalCost = cost;
                     candidateNode.prev = node;
                 }
             }
         }
 
-        callback(this.grid.getEndNode().totalCost);
+        callback(endNode.totalCost);
+    }
+
+    calcHeuristic(node1, node2) {
+        return Math.sqrt(Math.pow(node1.row - node2.row, 2) + Math.pow(node1.col - node2.col, 2));
     }
 }
 
-module.exports = Dijkstra;
+module.exports = AStarSearch;

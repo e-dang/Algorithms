@@ -4,7 +4,7 @@ const Queue = require('../utils/queue');
 class BFS extends BaseAlgorithm {
     async run(callback) {
         const startNode = this.grid.getStartNode();
-        startNode.distance = 0;
+        startNode.totalCost = 0;
         const queue = new Queue();
         queue.push(startNode);
 
@@ -25,19 +25,19 @@ class BFS extends BaseAlgorithm {
                 }
 
                 const child = this.grid.getNode(row, col);
-                const cost = node.distance + 1;
-                if (child.distance > cost) {
+                const cost = node.totalCost + child.cost;
+                if (child.totalCost > cost) {
                     await this.visiting(child, cost, node);
                     queue.push(child);
                 }
             }
         }
 
-        callback();
+        callback(this.grid.getEndNode().totalCost);
     }
 
     async visiting(node, cost, prevNode) {
-        node.distance = cost;
+        node.totalCost = cost;
         node.prev = prevNode;
         await super.visiting(node);
     }
