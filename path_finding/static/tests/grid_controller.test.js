@@ -196,9 +196,11 @@ describe('GridControllerTest', () => {
     describe('test _handleCompleteAlgorithm and _handleReset', () => {
         let element;
         beforeEach(() => {
-            element = document.createElement('p');
-            element.id = 'algComplete';
-            document.body.appendChild(element);
+            document.body.innerHTML = `
+            <p id='algComplete' hidden>Complete!</p>
+            <p id='cost' hidden></p>
+            `;
+            element = document.getElementById('algComplete');
         });
 
         test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {

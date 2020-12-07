@@ -59,7 +59,14 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        this._algorithmFromString().run(() => this._handleCompleteAlgorithm());
+        const callback = (cost) => {
+            this._handleCompleteAlgorithm();
+            const element = document.getElementById('cost');
+            element.hidden = false;
+            element.innerHTML = cost;
+        };
+
+        this._algorithmFromString().run((cost) => callback(cost));
     }
 
     _handleGridInputError() {
@@ -97,6 +104,7 @@ class GridController {
 
     _handleReset() {
         document.getElementById('algComplete').hidden = true;
+        document.getElementById('cost').hidden = true;
         this.grid.clear();
         this.grid.draw();
     }
