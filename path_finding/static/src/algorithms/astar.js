@@ -44,7 +44,7 @@ class AStarSearch extends BaseAlgorithm {
             }
         }
 
-        callback();
+        callback(endNode.distance);
     }
 
     calcHeuristic(node1, node2) {

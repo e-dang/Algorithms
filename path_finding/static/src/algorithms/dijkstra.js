@@ -39,7 +39,7 @@ class Dijkstra extends BaseAlgorithm {
             }
         }
 
-        callback();
+        callback(this.grid.getEndNode().distance);
     }
 }
 

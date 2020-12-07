@@ -33,7 +33,7 @@ class BFS extends BaseAlgorithm {
             }
         }
 
-        callback();
+        callback(this.grid.getEndNode().distance);
     }
 
     async visiting(node, cost, prevNode) {

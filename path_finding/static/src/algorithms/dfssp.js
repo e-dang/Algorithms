@@ -4,7 +4,7 @@ class DFSShortestPath extends BaseAlgorithm {
     async run(callback) {
         const startNode = this.grid.getStartNode();
         await this.runHelper(startNode.row, startNode.col, 0, null);
-        callback();
+        callback(this.grid.getEndNode().distance);
     }
 
     async runHelper(row, col, cost, prevNode) {
