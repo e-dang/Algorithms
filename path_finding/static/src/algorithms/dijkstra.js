@@ -12,6 +12,10 @@ class Dijkstra extends BaseAlgorithm {
             const node = visiting.pop();
             await this.visit(node);
 
+            if (node.isEndNode()) {
+                break;
+            }
+
             for (let i = 0; i < this.dr.length; i++) {
                 const row = node.row + this.dr[i];
                 const col = node.col + this.dc[i];
@@ -21,21 +25,18 @@ class Dijkstra extends BaseAlgorithm {
                 }
 
                 const candidateNode = this.grid.getNode(row, col);
-                if (candidateNode.distance > node.distance + 1) {
+                const cost = node.distance + 1;
+                if (candidateNode.distance > cost) {
                     if (visiting.contains(candidateNode)) {
-                        visiting.update(candidateNode, node.distance + 1);
+                        visiting.update(candidateNode, cost);
                     } else {
-                        candidateNode.distance = node.distance + 1;
+                        candidateNode.distance = cost;
                         visiting.insert(candidateNode);
                         await this.visiting(candidateNode);
                     }
 
                     candidateNode.prev = node;
                 }
-            }
-
-            if (node === this.grid.getEndNode()) {
-                break;
             }
         }
 

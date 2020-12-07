@@ -35,11 +35,11 @@ class AStarSearch extends BaseAlgorithm {
                     } else {
                         candidateNode.astarScore = astarScore;
                         heap.insert(candidateNode);
+                        await this.visiting(candidateNode);
                     }
 
                     candidateNode.distance = cost;
                     candidateNode.prev = node;
-                    await this.visiting(candidateNode);
                 }
             }
         }
