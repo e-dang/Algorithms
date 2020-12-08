@@ -12,4 +12,5 @@ const controller = new GridController(rows, cols, startRow, startCol, endRow, en
     .addUpdateGridEventListenerOnChange()
     .addUpdateAlgorithmEventListener()
     .addRunAlgorithmEventListener()
-    .addResetEventListener();
+    .addResetEventListener()
+    .addResetPathButtonEventListener();
