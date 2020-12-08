@@ -15,6 +15,15 @@ class GridController {
         this.grid.draw();
     }
 
+    addEventListeners() {
+        this.addUpdateGridEventListener()
+            .addUpdateGridEventListenerOnChange()
+            .addUpdateAlgorithmEventListener()
+            .addRunAlgorithmEventListener()
+            .addResetEventListener()
+            .addResetPathButtonEventListener();
+    }
+
     addUpdateGridEventListener() {
         document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
 
