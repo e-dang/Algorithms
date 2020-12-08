@@ -274,4 +274,22 @@ describe('GridControllerTest', () => {
 
         expect(controller.grid.clearPath).toHaveBeenCalledTimes(1);
     });
+
+    test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
+        const element = document.getElementById('algComplete');
+        element.hidden = false;
+
+        controller._removeAlgorithmCompleteMessages();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_removeAlgorithmCompleteMessages sets cost element to hidden', () => {
+        const element = document.getElementById('cost');
+        element.hidden = false;
+
+        controller._removeAlgorithmCompleteMessages();
+
+        expect(element).not.toBeVisible();
+    });
 });

@@ -120,16 +120,19 @@ class GridController {
     }
 
     _handleReset() {
-        document.getElementById('algComplete').hidden = true;
-        document.getElementById('cost').hidden = true;
+        this._removeAlgorithmCompleteMessages();
         this.grid.clear();
         this.grid.draw();
     }
 
     _handleResetPath() {
+        this._removeAlgorithmCompleteMessages();
+        this.grid.clearPath();
+    }
+
+    _removeAlgorithmCompleteMessages() {
         document.getElementById('algComplete').hidden = true;
         document.getElementById('cost').hidden = true;
-        this.grid.clearPath();
     }
 }
 
