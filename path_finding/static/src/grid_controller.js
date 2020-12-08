@@ -45,6 +45,12 @@ class GridController {
         return this;
     }
 
+    addResetPathButtonEventListener() {
+        document.getElementById('resetPathButton').addEventListener('click', () => this._handleResetPath());
+
+        return this;
+    }
+
     _handleUpdateGrid() {
         const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
         if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
@@ -113,6 +119,12 @@ class GridController {
         document.getElementById('cost').hidden = true;
         this.grid.clear();
         this.grid.draw();
+    }
+
+    _handleResetPath() {
+        document.getElementById('algComplete').hidden = true;
+        document.getElementById('cost').hidden = true;
+        this.grid.clearPath();
     }
 }
 

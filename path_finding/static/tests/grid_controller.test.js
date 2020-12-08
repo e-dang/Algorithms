@@ -249,4 +249,19 @@ describe('GridControllerTest', () => {
 
         expect(controller._handleReset).toHaveBeenCalledTimes(1);
     });
+
+    test('_handleResetPath gets called when resetPathButton is pressed', () => {
+        controller._handleResetPath = jest.fn();
+        controller.addResetPathButtonEventListener();
+
+        document.getElementById('resetPathButton').click();
+
+        expect(controller._handleResetPath).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleResetPath calls clearPath on grid', () => {
+        controller._handleResetPath();
+
+        expect(controller.grid.clearPath).toHaveBeenCalledTimes(1);
+    });
 });
