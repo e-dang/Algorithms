@@ -64,6 +64,7 @@ class GridController {
         const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
         if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
             this.grid.reset(nRows, nCols);
+            this._removeAlgorithmCompleteMessages();
         } else {
             this._handleGridInputError();
         }
