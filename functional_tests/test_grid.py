@@ -254,9 +254,9 @@ class TestGrid:
         self.driver.get(url)
         page = GridPage(self.driver)
 
-        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search and
+        # The user notices a drop down menu to select algorithms to visualize and selects A* Search and
         # runs it
-        page.select_algorithm('Breadth-First Search')
+        page.select_algorithm('A* Search')
         page.click_run()
 
         # The user then tries to add wall nodes during the current run, but does not see them change
@@ -272,18 +272,18 @@ class TestGrid:
         start_row, start_col = grid_params['start_row'], grid_params['start_col']
         end_row, end_col = grid_params['end_row'], grid_params['end_col']
         page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, 'visited', timeout=5)
+                                         start_col, ['visited', 'visiting'], timeout=5)
 
         page.click_reset_path()
         page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, 'visited', timeout=5)
+                                         start_col, ['visited', 'visiting'], timeout=5)
 
         # The user then tries to enter new grid dimensions, but again the algorithm continues to run
         dims = 10
         page.dims_input = self.make_form_input(dims, dims)
         assert not page.grid_has_dimensions(dims, dims)
         page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, 'visited', timeout=5)
+                                         start_col, ['visited', 'visiting'], timeout=5)
 
         # The algorithm then completes normally and the user sees a path
         page.wait_until_complete()
