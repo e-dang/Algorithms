@@ -12,6 +12,7 @@ class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
         this.alg = alg;
+        this.isAlgRunning = false;
         this.grid.draw();
     }
 
@@ -63,13 +64,15 @@ class GridController {
     }
 
     _handleUpdateGrid() {
-        const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
-        if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
-            this.grid.reset(nRows, nCols);
-            this._removeAlgorithmCompleteMessages();
-        } else {
-            this._handleGridInputError();
-        }
+        this._callbackWrapper(() => {
+            const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
+            if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
+                this.grid.reset(nRows, nCols);
+                this._removeAlgorithmCompleteMessages();
+            } else {
+                this._handleGridInputError();
+            }
+        });
     }
 
     _handleUpdateAlgorithm() {
@@ -79,8 +82,11 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        this.grid.isAlgRunning = true;
-        this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
+        this._callbackWrapper(() => {
+            this.isAlgRunning = true;
+            this.grid.isAlgRunning = true;
+            this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
+        });
     }
 
     _handleGridInputError() {
@@ -88,11 +94,13 @@ class GridController {
     }
 
     _handleUpdateGridOnKeyPress(event) {
-        if (event.keyCode === 13) {
-            this._handleUpdateGrid();
-        } else {
-            document.getElementById('gridErrorMessage').hidden = true;
-        }
+        this._callbackWrapper(() => {
+            if (event.keyCode === 13) {
+                this._handleUpdateGrid();
+            } else {
+                document.getElementById('gridErrorMessage').hidden = true;
+            }
+        });
     }
 
     _parseInput(element) {
@@ -121,6 +129,7 @@ class GridController {
 
     _handleCompleteAlgorithm(cost) {
         this.grid.drawPath();
+        this.isAlgRunning = false;
         this.grid.isAlgRunning = false;
         document.getElementById('algComplete').hidden = false;
         const costElement = document.getElementById('cost');
@@ -129,19 +138,29 @@ class GridController {
     }
 
     _handleReset() {
-        this._removeAlgorithmCompleteMessages();
-        this.grid.clear();
-        this.grid.draw();
+        this._callbackWrapper(() => {
+            this._removeAlgorithmCompleteMessages();
+            this.grid.clear();
+            this.grid.draw();
+        });
     }
 
     _handleResetPath() {
-        this._removeAlgorithmCompleteMessages();
-        this.grid.clearPath();
+        this._callbackWrapper(() => {
+            this._removeAlgorithmCompleteMessages();
+            this.grid.clearPath();
+        });
     }
 
     _removeAlgorithmCompleteMessages() {
         document.getElementById('algComplete').hidden = true;
         document.getElementById('cost').hidden = true;
+    }
+
+    _callbackWrapper(callback) {
+        if (!this.isAlgRunning) {
+            callback();
+        }
     }
 }
 
