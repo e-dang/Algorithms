@@ -67,7 +67,19 @@ describe('NodeTest', () => {
     });
 
     test('constructor initializes heuristicScore to be undefined', () => {
-        expect(node.heuristicScore).toBe(undefined);
+        expect(node.heuristicScore).toBe(Infinity);
+    });
+
+    test('constructor sets otherPrev to null', () => {
+        expect(node.otherPrev).toBe(null);
+    });
+
+    test('constructor sets otherTotalCost to Infinity', () => {
+        expect(node.otherTotalCost).toBe(Infinity);
+    });
+
+    test('constructor sets otherHeuristicScore to Infinity', () => {
+        expect(node.otherHeuristicScore).toBe(Infinity);
     });
 
     test('addEventListener adds event listener to dom element', () => {

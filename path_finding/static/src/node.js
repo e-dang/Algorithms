@@ -1,9 +1,16 @@
 class Node {
     constructor(row, col, grid, cost = 1) {
+        // for unidirectional
         this.prev = null;
-        this.cost = cost;
         this.totalCost = Infinity;
-        this.heuristicScore = undefined;
+        this.heuristicScore = Infinity;
+
+        // for bidirectional
+        this.otherPrev = null;
+        this.otherTotalCost = Infinity;
+        this.otherHeuristicScore = Infinity;
+
+        this.cost = cost;
         this.visited = false;
         this.row = row;
         this.col = col;
