@@ -96,13 +96,32 @@ describe('GridControllerTest', () => {
         });
     });
 
-    test('_handleUpdateGridOnChange is called when user starts typing in input', () => {
-        controller._handleUpdateGridOnChange = jest.fn();
-        controller.addUpdateGridEventListenerOnChange();
+    test('_handleUpdateGridOnKeyPress is called when user starts typing in input', () => {
+        controller._handleUpdateGridOnKeyPress = jest.fn();
+        controller.addUpdateGridEventListenerOnKeyPress();
 
-        document.getElementById('dimensionsInput').dispatchEvent(new Event('change'));
+        document.getElementById('dimensionsInput').dispatchEvent(new Event('keypress'));
 
-        expect(controller._handleUpdateGridOnChange).toHaveBeenCalledTimes(1);
+        expect(controller._handleUpdateGridOnKeyPress).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateGridOnKeyPress calls _handleUpdateGrid when Enter is pressed', () => {
+        controller._handleUpdateGrid = jest.fn();
+        const event = new Event('keypress');
+        event.keyCode = 13;
+
+        controller._handleUpdateGridOnKeyPress(event);
+
+        expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateGridOnKeyPress sets gridErrorMessage to hidden when a non-Enter key is pressed', () => {
+        const element = document.getElementById('gridErrorMessage');
+        element.hidden = false;
+
+        controller._handleUpdateGridOnKeyPress(new Event('keypress'));
+
+        expect(element).not.toBeVisible();
     });
 
     test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
@@ -192,53 +211,63 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
-    describe('test _handleCompleteAlgorithm and _handleReset', () => {
-        let element;
-        beforeEach(() => {
-            document.body.innerHTML = `
-            <p id='algComplete' hidden>Complete!</p>
-            <p id='cost' hidden></p>
-            `;
-            element = document.getElementById('algComplete');
-        });
+    test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = true;
 
-        test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
-            element.hidden = true;
+        controller._handleCompleteAlgorithm();
 
-            controller._handleCompleteAlgorithm();
+        expect(element).toBeVisible();
+    });
 
-            expect(element).toBeVisible();
-        });
+    test('_handleCompleteAlgorithm sets cost element to visible', () => {
+        element = document.getElementById('cost');
+        element.hidden = true;
 
-        test('_handleCompleteAlgorithm calls grid.drawPath', () => {
-            controller._handleCompleteAlgorithm();
+        controller._handleCompleteAlgorithm();
 
-            expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
-        });
+        expect(element).toBeVisible();
+    });
 
-        test('_handleReset sets algComplete element to be invisible', () => {
-            element.hidden = false;
+    test('_handleCompleteAlgorithm sets cost element html to equal cost parameter', () => {
+        element = document.getElementById('cost');
+        element.innerHTML = '';
+        const cost = 10;
 
-            controller._handleReset();
+        controller._handleCompleteAlgorithm(cost);
 
-            expect(element).not.toBeVisible();
-        });
+        expect(element).toHaveTextContent(cost);
+    });
 
-        test('_handleReset calls grid.draw()', () => {
-            controller.grid.draw = jest.fn();
+    test('_handleCompleteAlgorithm calls grid.drawPath', () => {
+        controller._handleCompleteAlgorithm();
 
-            controller._handleReset();
+        expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
+    });
 
-            expect(controller.grid.draw).toHaveBeenCalledTimes(1);
-        });
+    test('_handleReset sets algComplete element to be invisible', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = false;
 
-        test('_handleReset calls grid.clear()', () => {
-            controller.grid.clear = jest.fn();
+        controller._handleReset();
 
-            controller._handleReset();
+        expect(element).not.toBeVisible();
+    });
 
-            expect(controller.grid.clear).toHaveBeenCalledTimes(1);
-        });
+    test('_handleReset calls grid.draw()', () => {
+        controller.grid.draw = jest.fn();
+
+        controller._handleReset();
+
+        expect(controller.grid.draw).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleReset calls grid.clear()', () => {
+        controller.grid.clear = jest.fn();
+
+        controller._handleReset();
+
+        expect(controller.grid.clear).toHaveBeenCalledTimes(1);
     });
 
     test('clicking resetButton calls _handleReset', () => {
@@ -263,5 +292,23 @@ describe('GridControllerTest', () => {
         controller._handleResetPath();
 
         expect(controller.grid.clearPath).toHaveBeenCalledTimes(1);
+    });
+
+    test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
+        const element = document.getElementById('algComplete');
+        element.hidden = false;
+
+        controller._removeAlgorithmCompleteMessages();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_removeAlgorithmCompleteMessages sets cost element to hidden', () => {
+        const element = document.getElementById('cost');
+        element.hidden = false;
+
+        controller._removeAlgorithmCompleteMessages();
+
+        expect(element).not.toBeVisible();
     });
 });
