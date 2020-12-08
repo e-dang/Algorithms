@@ -17,6 +17,7 @@ class Node {
         this.element = document.createElement('div');
         this.setAsEmptyNode();
         this.id = `n${grid.children.length}`;
+        this.element.ondragstart = () => false;
         this.element.id = this.id;
 
         grid.appendChild(this.element);
