@@ -8,6 +8,10 @@ const createPsuedoNodes = (vals) => {
     return vals.map((val) => createPsuedoNode(val));
 };
 
+const extractData = (nodes) => {
+    return nodes.map((node) => node.data);
+};
+
 describe('TestModeMinHeap', () => {
     let heap;
 
@@ -23,25 +27,6 @@ describe('TestModeMinHeap', () => {
         const retVal = heap.keyExtractor(node);
 
         expect(retVal).toBe(1289);
-    });
-
-    test('pop remove minimum and maintains heap order', () => {
-        heap.heap = createPsuedoNodes([6, 7, 9, 10, 8]);
-
-        expect(heap.pop()).toEqual(createPsuedoNode(6));
-        expect(heap.heap).toEqual(createPsuedoNodes([7, 8, 9, 10]));
-
-        expect(heap.pop()).toEqual(createPsuedoNode(7));
-        expect(heap.heap).toEqual(createPsuedoNodes([8, 10, 9]));
-
-        expect(heap.pop()).toEqual(createPsuedoNode(8));
-        expect(heap.heap).toEqual(createPsuedoNodes([9, 10]));
-
-        expect(heap.pop()).toEqual(createPsuedoNode(9));
-        expect(heap.heap).toEqual(createPsuedoNodes([10]));
-
-        expect(heap.pop()).toEqual(createPsuedoNode(10));
-        expect(heap.heap).toEqual(createPsuedoNodes([]));
     });
 
     test('pop returns undefined if empty', () => {
@@ -76,27 +61,44 @@ describe('TestModeMinHeap', () => {
         test('insertions maintain heap order', () => {
             const expected = createPsuedoNodes([6, 7, 9, 10, 8]);
 
-            expect(heap.heap).toEqual(expected);
+            expect(extractData(heap.heap)).toEqual(expected);
+        });
+
+        test('pop remove minimum and maintains heap order', () => {
+            expect(heap.pop()).toEqual(createPsuedoNode(6));
+            expect(extractData(heap.heap)).toEqual(createPsuedoNodes([7, 8, 9, 10]));
+
+            expect(heap.pop()).toEqual(createPsuedoNode(7));
+            expect(extractData(heap.heap)).toEqual(createPsuedoNodes([8, 10, 9]));
+
+            expect(heap.pop()).toEqual(createPsuedoNode(8));
+            expect(extractData(heap.heap)).toEqual(createPsuedoNodes([9, 10]));
+
+            expect(heap.pop()).toEqual(createPsuedoNode(9));
+            expect(extractData(heap.heap)).toEqual(createPsuedoNodes([10]));
+
+            expect(heap.pop()).toEqual(createPsuedoNode(10));
+            expect(extractData(heap.heap)).toEqual(createPsuedoNodes([]));
         });
 
         test('update reorders nodes upward correctly', () => {
-            const node = heap.heap[3];
+            const node = heap.heap[3].data;
             const expected = createPsuedoNodes([-1, 6, 9, 7, 8]);
             expected[0] = node;
 
             heap.update(node, -1);
 
-            expect(heap.heap).toEqual(expected);
+            expect(extractData(heap.heap)).toEqual(expected);
         });
 
         test('update reorders nodes downward correctly', () => {
-            const node = heap.heap[1];
+            const node = heap.heap[1].data;
             const expected = createPsuedoNodes([6, 8, 9, 10, 12]);
             expected[expected.length - 1] = node;
 
             heap.update(node, 12);
 
-            expect(heap.heap).toEqual(expected);
+            expect(extractData(heap.heap)).toEqual(expected);
         });
     });
 });
