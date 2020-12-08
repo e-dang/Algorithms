@@ -180,7 +180,7 @@ class TestGrid:
         page.dims_input = self.make_form_input(dims, dims)
         page.click_submit()
 
-        # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
+        # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
         page.select_algorithm(algorithm)
 
         # The user clicks and drags on some empty nodes and converts them to wall nodes
@@ -225,7 +225,7 @@ class TestGrid:
         page.dims_input = self.make_form_input(dims, dims)
         page.click_submit()
 
-        # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
+        # The user notices a drop down menu to select algorithms to visualize and selects Greedy Best-First Search
         page.select_algorithm('Greedy Best-First Search')
 
         # The user clicks and drags on some empty nodes and converts them to wall nodes
@@ -248,3 +248,37 @@ class TestGrid:
                     assert page.is_node_of_type(row, col, 'end')
                 else:
                     assert page.is_node_of_type(row, col, ['empty', 'wall'])
+
+    def test_user_cannot_update_grid_or_reset_while_algorithm_is_running(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search and
+        # runs it
+        page.select_algorithm('Breadth-First Search')
+        page.click_run()
+
+        # The user then tries to add wall nodes during the current run, but does not see them change
+        w_start_row, w_end_row, col = 35, 36, 40
+        page.click_node(w_start_row, col)
+        assert not page.is_node_of_type(w_start_row, col, 'wall')
+
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'empty')
+
+        # The user then tries to click the reset buttons, but the algorithm continues to run
+        page.click_reset()
+        page.wait_for_node_to_be_of_type(grid_params['start_row'] + 1,
+                                         grid_params['start_col'], ['visited', 'visiting'], timeout=5)
+
+        page.click_reset_path()
+        page.wait_for_node_to_be_of_type(grid_params['start_row'] + 1,
+                                         grid_params['start_col'], ['visited', 'visiting'], timeout=5)
+
+        # The user then tries to enter new grid dimensions, but again the algorithm continues to run
+        dims = 10
+        page.dims_input = self.make_form_input(dims, dims)
+        assert not page.grid_has_dimensions(dims, dims)
+        page.wait_for_node_to_be_of_type(grid_params['start_row'] + 1,
+                                         grid_params['start_col'], ['visited', 'visiting'], timeout=5)
