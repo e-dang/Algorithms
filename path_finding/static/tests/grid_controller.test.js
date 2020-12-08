@@ -191,6 +191,22 @@ describe('GridControllerTest', () => {
         expect(controller._handleRunAlgorithm).toHaveBeenCalledTimes(1);
     });
 
+    test('_handleRunAlgorithm sets isAlgRunning to true', () => {
+        controller.isAlgRunning = false;
+
+        controller._handleRunAlgorithm();
+
+        expect(controller.isAlgRunning).toBe(true);
+    });
+
+    test('_handleRunAlgorithm sets isAlgRunning to true on grid', () => {
+        controller.grid.isAlgRunning = false;
+
+        controller._handleRunAlgorithm();
+
+        expect(controller.grid.isAlgRunning).toBe(true);
+    });
+
     test('_handleUpdateAlgorithm sets the alg property to the current selection', () => {
         const selection = document.getElementById('algorithmSelect');
         const option = selection.children[1];
@@ -245,6 +261,22 @@ describe('GridControllerTest', () => {
         expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
     });
 
+    test('_handleCompleteAlgorithm sets isAlgRunning to false', () => {
+        controller.isAlgRunning = true;
+
+        controller._handleCompleteAlgorithm();
+
+        expect(controller.isAlgRunning).toBe(false);
+    });
+
+    test('_handleCompleteAlgorithm sets isAlgRunning to false on grid', () => {
+        controller.grid.isAlgRunning = true;
+
+        controller._handleCompleteAlgorithm();
+
+        expect(controller.grid.isAlgRunning).toBe(false);
+    });
+
     test('_handleReset sets algComplete element to be invisible', () => {
         element = document.getElementById('algComplete');
         element.hidden = false;
@@ -270,6 +302,21 @@ describe('GridControllerTest', () => {
         expect(controller.grid.clear).toHaveBeenCalledTimes(1);
     });
 
+    // test('_handleReset doesnt call grid.clear, grid.draw, or _removeAlgorithmCompleteMessages when isAlgRunning is true', () => {
+    //     controller.isAlgRunning = true;
+    //     controller._removeAlgorithmCompleteMessages = jest.fn();
+    //     controller.grid = {
+    //         clear: jest.fn(),
+    //         draw: jest.fn(),
+    //     };
+
+    //     controller._handleReset();
+
+    //     expect(controller._removeAlgorithmCompleteMessages).not.toHaveBeenCalled();
+    //     expect(controller.grid.clear).not.toHaveBeenCalled();
+    //     expect(controller.grid.draw).not.toHaveBeenCalled();
+    // });
+
     test('clicking resetButton calls _handleReset', () => {
         controller._handleReset = jest.fn();
         controller.addResetEventListener();
@@ -294,6 +341,19 @@ describe('GridControllerTest', () => {
         expect(controller.grid.clearPath).toHaveBeenCalledTimes(1);
     });
 
+    // test('_handleResetPath doesnt call removeAlgorithmCompleteMessages or grid.clearPath when isAlgRunning is true', () => {
+    //     controller.isAlgRunning = true;
+    //     controller._removeAlgorithmCompleteMessages = jest.fn();
+    //     controller.grid = {
+    //         clearPath: jest.fn(),
+    //     };
+
+    //     controller._handleResetPath();
+
+    //     expect(controller._removeAlgorithmCompleteMessages).not.toHaveBeenCalled();
+    //     expect(controller.grid.clearPath).not.toHaveBeenCalled();
+    // });
+
     test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
         const element = document.getElementById('algComplete');
         element.hidden = false;
@@ -310,5 +370,23 @@ describe('GridControllerTest', () => {
         controller._removeAlgorithmCompleteMessages();
 
         expect(element).not.toBeVisible();
+    });
+
+    test('_callbackWrapper doesnt call function if isAlgRunning is true', () => {
+        const func = jest.fn();
+        controller.isAlgRunning = true;
+
+        controller._callbackWrapper(func);
+
+        expect(func).not.toHaveBeenCalled();
+    });
+
+    test('_callbackWrapper calls function if isAlgRunning is false', () => {
+        const func = jest.fn();
+        controller.isAlgRunning = false;
+
+        controller._callbackWrapper(func);
+
+        expect(func).toHaveBeenCalledTimes(1);
     });
 });
