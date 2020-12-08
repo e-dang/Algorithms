@@ -96,13 +96,32 @@ describe('GridControllerTest', () => {
         });
     });
 
-    test('_handleUpdateGridOnChange is called when user starts typing in input', () => {
-        controller._handleUpdateGridOnChange = jest.fn();
-        controller.addUpdateGridEventListenerOnChange();
+    test('_handleUpdateGridOnKeyPress is called when user starts typing in input', () => {
+        controller._handleUpdateGridOnKeyPress = jest.fn();
+        controller.addUpdateGridEventListenerOnKeyPress();
 
-        document.getElementById('dimensionsInput').dispatchEvent(new Event('change'));
+        document.getElementById('dimensionsInput').dispatchEvent(new Event('keypress'));
 
-        expect(controller._handleUpdateGridOnChange).toHaveBeenCalledTimes(1);
+        expect(controller._handleUpdateGridOnKeyPress).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateGridOnKeyPress calls _handleUpdateGrid when Enter is pressed', () => {
+        controller._handleUpdateGrid = jest.fn();
+        const event = new Event('keypress');
+        event.keyCode = 13;
+
+        controller._handleUpdateGridOnKeyPress(event);
+
+        expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateGridOnKeyPress sets gridErrorMessage to hidden when a non-Enter key is pressed', () => {
+        const element = document.getElementById('gridErrorMessage');
+        element.hidden = false;
+
+        controller._handleUpdateGridOnKeyPress(new Event('keypress'));
+
+        expect(element).not.toBeVisible();
     });
 
     test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {

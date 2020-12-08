@@ -17,7 +17,7 @@ class GridController {
 
     addEventListeners() {
         this.addUpdateGridEventListener()
-            .addUpdateGridEventListenerOnChange()
+            .addUpdateGridEventListenerOnKeyPress()
             .addUpdateAlgorithmEventListener()
             .addRunAlgorithmEventListener()
             .addResetEventListener()
@@ -30,8 +30,10 @@ class GridController {
         return this;
     }
 
-    addUpdateGridEventListenerOnChange() {
-        document.getElementById('dimensionsInput').addEventListener('change', () => this._handleUpdateGridOnChange());
+    addUpdateGridEventListenerOnKeyPress() {
+        document
+            .getElementById('dimensionsInput')
+            .addEventListener('keypress', (event) => this._handleUpdateGridOnKeyPress(event));
 
         return this;
     }
@@ -84,8 +86,12 @@ class GridController {
         document.getElementById('gridErrorMessage').hidden = false;
     }
 
-    _handleUpdateGridOnChange() {
-        document.getElementById('gridErrorMessage').hidden = true;
+    _handleUpdateGridOnKeyPress(event) {
+        if (event.keyCode === 13) {
+            this._handleUpdateGrid();
+        } else {
+            document.getElementById('gridErrorMessage').hidden = true;
+        }
     }
 
     _parseInput(element) {
