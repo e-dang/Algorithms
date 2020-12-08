@@ -9,6 +9,7 @@ class Grid {
         this.endRow = endRow;
         this.endCol = endCol;
         this.isMouseDown = false;
+        this.isAlgRunning = false;
         this.setNodeType = null;
         this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
@@ -110,13 +111,15 @@ class Grid {
     }
 
     _handleMouseMove(node) {
-        if (this.isMouseDown) {
+        if (this.isMouseDown && !this.isAlgRunning) {
             this.setNodeType(node);
         }
     }
 
     _handleClick(node) {
-        node.toggleNodeType();
+        if (!this.isAlgRunning) {
+            node.toggleNodeType();
+        }
     }
 
     _handleMouseDown(event) {

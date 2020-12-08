@@ -233,9 +233,10 @@ describe('TestGrid', () => {
         });
     });
 
-    test('_handleMouseMove calls setNodeType with node if isMouseDown is true', () => {
+    test('_handleMouseMove calls setNodeType with node if isMouseDown is true and isAlgRunning is false', () => {
         const node = new Node();
         grid.isMouseDown = true;
+        grid.isAlgRunning = false;
         grid.setNodeType = jest.fn();
 
         grid._handleMouseMove(node);
@@ -244,12 +245,44 @@ describe('TestGrid', () => {
         expect(grid.setNodeType).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleClick calls toggleNodeType', () => {
+    test('_handleMouseMove doesnt call setNodeType with node if isMouseDown is false', () => {
         const node = new Node();
+        grid.isMouseDown = false;
+        grid.isAlgRunning = false;
+        grid.setNodeType = jest.fn();
+
+        grid._handleMouseMove(node);
+
+        expect(grid.setNodeType).not.toHaveBeenCalled();
+    });
+
+    test('_handleMouseMove doesnt call setNodeType with node if isAlgRunning is true', () => {
+        const node = new Node();
+        grid.isMouseDown = true;
+        grid.isAlgRunning = true;
+        grid.setNodeType = jest.fn();
+
+        grid._handleMouseMove(node);
+
+        expect(grid.setNodeType).not.toHaveBeenCalled();
+    });
+
+    test('_handleClick calls toggleNodeType when isAlgRunning is false', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
 
         grid._handleClick(node);
 
         expect(node.toggleNodeType).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick doesnt call toggleNodeType when isAlgRunning is true', () => {
+        const node = new Node();
+        grid.isAlgRunning = true;
+
+        grid._handleClick(node);
+
+        expect(node.toggleNodeType).not.toHaveBeenCalled();
     });
 
     test('_handleMouseDown sets isMouseDown to true', () => {
