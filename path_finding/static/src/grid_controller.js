@@ -76,14 +76,7 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
-        const callback = (cost) => {
-            this._handleCompleteAlgorithm();
-            const element = document.getElementById('cost');
-            element.hidden = false;
-            element.innerHTML = cost;
-        };
-
-        this._algorithmFromString().run((cost) => callback(cost));
+        this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
     }
 
     _handleGridInputError() {
@@ -118,9 +111,12 @@ class GridController {
         }
     }
 
-    _handleCompleteAlgorithm() {
+    _handleCompleteAlgorithm(cost) {
         this.grid.drawPath();
         document.getElementById('algComplete').hidden = false;
+        const costElement = document.getElementById('cost');
+        costElement.hidden = false;
+        costElement.textContent = cost;
     }
 
     _handleReset() {

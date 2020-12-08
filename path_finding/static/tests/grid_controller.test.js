@@ -201,6 +201,25 @@ describe('GridControllerTest', () => {
         expect(element).toBeVisible();
     });
 
+    test('_handleCompleteAlgorithm sets cost element to visible', () => {
+        element = document.getElementById('cost');
+        element.hidden = true;
+
+        controller._handleCompleteAlgorithm();
+
+        expect(element).toBeVisible();
+    });
+
+    test('_handleCompleteAlgorithm sets cost element html to equal cost parameter', () => {
+        element = document.getElementById('cost');
+        element.innerHTML = '';
+        const cost = 10;
+
+        controller._handleCompleteAlgorithm(cost);
+
+        expect(element).toHaveTextContent(cost);
+    });
+
     test('_handleCompleteAlgorithm calls grid.drawPath', () => {
         controller._handleCompleteAlgorithm();
 
