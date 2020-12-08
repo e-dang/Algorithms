@@ -49,7 +49,7 @@ class TestGrid:
         # The user enters a new grid size and submits the form.
         rows, cols = 10, 11
         page.dims_input = self.make_form_input(rows, cols)
-        page.click_submit()
+        page.submit_grid_dims()
 
         # A new grid appears with the correct dimensions
         assert page.grid_has_dimensions(rows, cols)

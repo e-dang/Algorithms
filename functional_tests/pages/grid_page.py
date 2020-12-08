@@ -1,4 +1,5 @@
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
@@ -86,6 +87,9 @@ class GridPage(BasePage):
         submit_button = self.driver.find_element_by_id('submitButton')
         submit_button.click()
         self._calculate_grid_dimensions()
+
+    def submit_grid_dims(self):
+        self.driver.find_element_by_id('dimensionsInput').send_keys(Keys.ENTER)
 
     def click_run(self):
         self.driver.find_element_by_id('runButton').click()
