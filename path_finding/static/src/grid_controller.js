@@ -79,6 +79,7 @@ class GridController {
     }
 
     _handleRunAlgorithm() {
+        this.grid.isAlgRunning = true;
         this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
     }
 
@@ -120,6 +121,7 @@ class GridController {
 
     _handleCompleteAlgorithm(cost) {
         this.grid.drawPath();
+        this.grid.isAlgRunning = false;
         document.getElementById('algComplete').hidden = false;
         const costElement = document.getElementById('cost');
         costElement.hidden = false;
