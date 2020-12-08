@@ -192,53 +192,44 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
-    describe('test _handleCompleteAlgorithm and _handleReset', () => {
-        let element;
-        beforeEach(() => {
-            document.body.innerHTML = `
-            <p id='algComplete' hidden>Complete!</p>
-            <p id='cost' hidden></p>
-            `;
-            element = document.getElementById('algComplete');
-        });
+    test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = true;
 
-        test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
-            element.hidden = true;
+        controller._handleCompleteAlgorithm();
 
-            controller._handleCompleteAlgorithm();
+        expect(element).toBeVisible();
+    });
 
-            expect(element).toBeVisible();
-        });
+    test('_handleCompleteAlgorithm calls grid.drawPath', () => {
+        controller._handleCompleteAlgorithm();
 
-        test('_handleCompleteAlgorithm calls grid.drawPath', () => {
-            controller._handleCompleteAlgorithm();
+        expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
+    });
 
-            expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
-        });
+    test('_handleReset sets algComplete element to be invisible', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = false;
 
-        test('_handleReset sets algComplete element to be invisible', () => {
-            element.hidden = false;
+        controller._handleReset();
 
-            controller._handleReset();
+        expect(element).not.toBeVisible();
+    });
 
-            expect(element).not.toBeVisible();
-        });
+    test('_handleReset calls grid.draw()', () => {
+        controller.grid.draw = jest.fn();
 
-        test('_handleReset calls grid.draw()', () => {
-            controller.grid.draw = jest.fn();
+        controller._handleReset();
 
-            controller._handleReset();
+        expect(controller.grid.draw).toHaveBeenCalledTimes(1);
+    });
 
-            expect(controller.grid.draw).toHaveBeenCalledTimes(1);
-        });
+    test('_handleReset calls grid.clear()', () => {
+        controller.grid.clear = jest.fn();
 
-        test('_handleReset calls grid.clear()', () => {
-            controller.grid.clear = jest.fn();
+        controller._handleReset();
 
-            controller._handleReset();
-
-            expect(controller.grid.clear).toHaveBeenCalledTimes(1);
-        });
+        expect(controller.grid.clear).toHaveBeenCalledTimes(1);
     });
 
     test('clicking resetButton calls _handleReset', () => {
