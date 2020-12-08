@@ -8,6 +8,9 @@ const BFS = require('../src/algorithms/bfs');
 const AStarSearch = require('../src/algorithms/astar');
 const GreedyBestFirstSearch = require('../src/algorithms/greedy-bfs.js');
 const BidirectionalSearch = require('../src/algorithms/bidirectional');
+const fs = require('fs');
+const path = require('path');
+const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
 
 jest.mock('../src/grid');
 
@@ -22,6 +25,7 @@ describe('GridControllerTest', () => {
     let controller;
 
     beforeEach(() => {
+        document.documentElement.innerHTML = html.toString();
         controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg);
     });
 
@@ -48,13 +52,10 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleUpdateGrid is called when submit button is pressed', () => {
-        button = document.createElement('button');
-        button.id = 'submitButton';
-        document.body.appendChild(button);
         controller._handleUpdateGrid = jest.fn();
         controller.addUpdateGridEventListener();
 
-        button.click();
+        document.getElementById('submitButton').click();
 
         expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
     });
@@ -96,13 +97,10 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleUpdateGridOnChange is called when user starts typing in input', () => {
-        const element = document.createElement('input');
-        element.id = 'dimensionsInput';
-        document.body.append(element);
         controller._handleUpdateGridOnChange = jest.fn();
         controller.addUpdateGridEventListenerOnChange();
 
-        element.dispatchEvent(new Event('change'));
+        document.getElementById('dimensionsInput').dispatchEvent(new Event('change'));
 
         expect(controller._handleUpdateGridOnChange).toHaveBeenCalledTimes(1);
     });
@@ -167,38 +165,25 @@ describe('GridControllerTest', () => {
 
     test('_handleRunAlgorithm gets called when runButton is clicked', () => {
         controller._handleRunAlgorithm = jest.fn();
-        const button = document.createElement('button');
-        button.id = 'runButton';
-        document.body.append(button);
         controller.addRunAlgorithmEventListener();
 
-        button.click();
+        document.getElementById('runButton').click();
 
         expect(controller._handleRunAlgorithm).toHaveBeenCalledTimes(1);
     });
 
     test('_handleUpdateAlgorithm sets the alg property to the current selection', () => {
-        const selection = document.createElement('select');
-        const option = document.createElement('option');
-        const value = 'Blah blah blah';
-        const p = document.createElement('p');
-        p.id = 'algorithmSelectErrorMessage';
-        selection.id = 'algorithmSelect';
-        option.value = value;
-        selection.appendChild(option);
-        selection.options[0].selected = true;
-        document.body.appendChild(selection);
-        document.body.appendChild(p);
+        const selection = document.getElementById('algorithmSelect');
+        const option = selection.children[1];
+        option.selected = true;
 
         controller._handleUpdateAlgorithm();
 
-        expect(controller.alg).toBe(value);
+        expect(controller.alg).toBe(option.value);
     });
 
     test('_handleUpdateAlgorithm gets called when algorithm selection is chosen', () => {
-        const selection = document.createElement('select');
-        selection.id = 'algorithmSelect';
-        document.body.appendChild(selection);
+        const selection = document.getElementById('algorithmSelect');
         controller._handleUpdateAlgorithm = jest.fn();
         controller.addUpdateAlgorithmEventListener();
 
@@ -257,13 +242,10 @@ describe('GridControllerTest', () => {
     });
 
     test('clicking resetButton calls _handleReset', () => {
-        const resetButton = document.createElement('button');
-        resetButton.id = 'resetButton';
-        document.body.appendChild(resetButton);
         controller._handleReset = jest.fn();
         controller.addResetEventListener();
 
-        resetButton.click();
+        document.getElementById('resetButton').click();
 
         expect(controller._handleReset).toHaveBeenCalledTimes(1);
     });
