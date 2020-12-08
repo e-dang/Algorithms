@@ -1,5 +1,19 @@
 class Node {
     constructor(row, col, grid, cost = 1) {
+        this.row = row;
+        this.col = col;
+        this.cost = cost;
+        this.id = `n${grid.children.length}`;
+        this.element = document.createElement('div');
+        this.element.id = this.id;
+        this.element.ondragstart = () => false;
+        this.reset();
+        this.setAsEmptyNode();
+
+        grid.appendChild(this.element);
+    }
+
+    reset() {
         // for unidirectional
         this.prev = null;
         this.totalCost = Infinity;
@@ -10,16 +24,11 @@ class Node {
         this.otherTotalCost = Infinity;
         this.otherHeuristicScore = Infinity;
 
-        this.cost = cost;
         this.visited = false;
-        this.row = row;
-        this.col = col;
-        this.element = document.createElement('div');
-        this.setAsEmptyNode();
-        this.id = `n${grid.children.length}`;
-        this.element.id = this.id;
 
-        grid.appendChild(this.element);
+        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode()) {
+            this.setAsEmptyNode();
+        }
     }
 
     setAsStartNode() {

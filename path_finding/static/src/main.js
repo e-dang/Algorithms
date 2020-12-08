@@ -7,9 +7,4 @@ const startCol = parseInt(document.currentScript.getAttribute('startCol'));
 const endRow = parseInt(document.currentScript.getAttribute('endRow'));
 const endCol = parseInt(document.currentScript.getAttribute('endCol'));
 const alg = document.getElementById('algorithmSelect').value;
-const controller = new GridController(rows, cols, startRow, startCol, endRow, endCol, alg)
-    .addUpdateGridEventListener()
-    .addUpdateGridEventListenerOnChange()
-    .addUpdateAlgorithmEventListener()
-    .addRunAlgorithmEventListener()
-    .addResetEventListener();
+const controller = new GridController(rows, cols, startRow, startCol, endRow, endCol, alg).addEventListeners();

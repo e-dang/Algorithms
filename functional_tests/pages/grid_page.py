@@ -53,12 +53,20 @@ class GridPage(BasePage):
         width, height = self._extract_pixel_dimensions(node)
         return width == height
 
-    def is_node_of_type(self, row, col, n_type):
+    def is_node_of_type(self, row, col, n_types):
         if row < 0 or col < 0 or row >= self.num_rows or col >= self.num_cols:
             return False
 
         grid = self._get_grid()
-        return grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class') == f'node {n_type}'
+        if not isinstance(n_types, list):
+            n_types = [n_types]
+
+        bools = []
+        for n_type in n_types:
+            bools.append(grid.find_element_by_id(self._make_node_id(
+                row, col)).get_attribute('class') == f'node {n_type}')
+
+        return any(bools)
 
     def click_node(self, row, col):
         grid = self._get_grid()
@@ -84,6 +92,9 @@ class GridPage(BasePage):
 
     def click_reset(self):
         self.driver.find_element_by_id('resetButton').click()
+
+    def click_reset_path(self):
+        self.driver.find_element_by_id('resetPathButton').click()
 
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(

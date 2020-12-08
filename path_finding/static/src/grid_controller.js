@@ -15,6 +15,15 @@ class GridController {
         this.grid.draw();
     }
 
+    addEventListeners() {
+        this.addUpdateGridEventListener()
+            .addUpdateGridEventListenerOnChange()
+            .addUpdateAlgorithmEventListener()
+            .addRunAlgorithmEventListener()
+            .addResetEventListener()
+            .addResetPathButtonEventListener();
+    }
+
     addUpdateGridEventListener() {
         document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
 
@@ -41,6 +50,12 @@ class GridController {
 
     addResetEventListener() {
         document.getElementById('resetButton').addEventListener('click', () => this._handleReset());
+
+        return this;
+    }
+
+    addResetPathButtonEventListener() {
+        document.getElementById('resetPathButton').addEventListener('click', () => this._handleResetPath());
 
         return this;
     }
@@ -113,6 +128,12 @@ class GridController {
         document.getElementById('cost').hidden = true;
         this.grid.clear();
         this.grid.draw();
+    }
+
+    _handleResetPath() {
+        document.getElementById('algComplete').hidden = true;
+        document.getElementById('cost').hidden = true;
+        this.grid.clearPath();
     }
 }
 

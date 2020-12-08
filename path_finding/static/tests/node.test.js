@@ -30,10 +30,6 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${grid.children.length - 1}`);
     });
 
-    test('constructor initializes totalCost to Infinity', () => {
-        expect(node.totalCost).toBe(Infinity);
-    });
-
     test('constructor sets cost prop to cost param', () => {
         const cost = 10;
 
@@ -44,10 +40,6 @@ describe('NodeTest', () => {
 
     test('constructor sets cost prop to default 1', () => {
         expect(node.cost).toBe(1);
-    });
-
-    test('constructor initializes prev to null', () => {
-        expect(node.prev).toBe(null);
     });
 
     test('constructor initializes row property with row param', () => {
@@ -62,24 +54,110 @@ describe('NodeTest', () => {
         expect(node.id).toBe(node.element.id);
     });
 
-    test('constructor initializes visited property to false', () => {
+    test('constructor calls reset', () => {
+        const origReset = Node.prototype.reset;
+        Node.prototype.reset = jest.fn();
+
+        node = new Node(row, col, grid);
+
+        expect(node.reset).toHaveBeenCalledTimes(1);
+        Node.prototype.reset = origReset;
+    });
+
+    test('reset sets visited property to false', () => {
+        node.visited = true;
+
+        node.reset();
+
         expect(node.visited).toBe(false);
     });
 
-    test('constructor initializes heuristicScore to be undefined', () => {
+    test('reset sets prev to null', () => {
+        node.prev = {};
+
+        node.reset();
+
+        expect(node.prev).toBe(null);
+    });
+
+    test('reset sets totalCost to Infinity', () => {
+        node.totalCost = 4;
+
+        node.reset();
+
+        expect(node.totalCost).toBe(Infinity);
+    });
+
+    test('reset sets heuristicScore to be undefined', () => {
+        node.heuristicScore = 0;
+
+        node.reset();
+
         expect(node.heuristicScore).toBe(Infinity);
     });
 
-    test('constructor sets otherPrev to null', () => {
+    test('reset sets otherPrev to null', () => {
+        node.otherPrev = {};
+
+        node.reset();
+
         expect(node.otherPrev).toBe(null);
     });
 
-    test('constructor sets otherTotalCost to Infinity', () => {
+    test('reset sets otherTotalCost to Infinity', () => {
+        node.otherTotalCost = 4;
+
+        node.reset();
+
         expect(node.otherTotalCost).toBe(Infinity);
     });
 
-    test('constructor sets otherHeuristicScore to Infinity', () => {
+    test('reset sets otherHeuristicScore to Infinity', () => {
+        node.otherHeuristicScore = 0;
+
+        node.reset();
+
         expect(node.otherHeuristicScore).toBe(Infinity);
+    });
+
+    test('reset sets node to empty node if node is a visited node', () => {
+        node.setAsVisitedNode();
+
+        node.reset();
+
+        expect(node.element.className).toBe('node empty');
+    });
+
+    test('reset sets node to empty node if node is a visiting node', () => {
+        node.setAsVisitingNode();
+
+        node.reset();
+
+        expect(node.element.className).toBe('node empty');
+    });
+
+    test('reset doesnt set node to empty node if node is a start node', () => {
+        node.setAsStartNode();
+
+        node.reset();
+
+        expect(node.isStartNode()).toBe(true);
+    });
+
+    test('reset doesnt set node to empty node if node is an end node', () => {
+        node.setAsEndNode();
+
+        node.reset();
+
+        expect(node.isEndNode()).toBe(true);
+    });
+
+    test('reset doesnt set node to empty node if node is a wall node', () => {
+        node.setAsWallNode();
+
+        node.reset();
+
+        expect(node.isWallNode()).toBe(true);
     });
 
     test('addEventListener adds event listener to dom element', () => {

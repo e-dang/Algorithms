@@ -63,6 +63,10 @@ class Grid {
         this.nodes = [];
     }
 
+    clearPath() {
+        this.nodes.forEach((node) => node.reset());
+    }
+
     getNode(row, col) {
         return this.nodes[row * this.nCols + col];
     }

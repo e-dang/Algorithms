@@ -1,5 +1,4 @@
 const Grid = require('../src/grid');
-const GridController = require('../src/grid_controller');
 const Node = require('../src/node');
 
 jest.mock('../src/node');
@@ -482,5 +481,17 @@ describe('TestGrid', () => {
         expect(node3.setAsPathNode).not.toHaveBeenCalled();
         expect(node2.setAsPathNode).not.toHaveBeenCalled();
         expect(node1.setAsPathNode).not.toHaveBeenCalled();
+    });
+
+    test('clearPath calls reset on all nodes', () => {
+        for (let i = 0; i < nRows; i++) {
+            grid.nodes.push(new Node());
+        }
+
+        grid.clearPath();
+
+        for (let i = 0; i < nRows; i++) {
+            expect(grid.nodes[i].reset).toHaveBeenCalledTimes(1);
+        }
     });
 });
