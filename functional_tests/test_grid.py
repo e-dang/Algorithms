@@ -5,6 +5,9 @@ from path_finding.views import DEFAULT_GRID_PARAMS as grid_params
 
 from .pages.grid_page import GridPage
 
+GRID_PROPS = (10, 1, 8)
+WALL_NODES = (3, 8, 5)
+
 
 @pytest.mark.functional
 @pytest.mark.usefixtures("driver_init")
@@ -157,13 +160,13 @@ class TestGrid:
         assert not page.is_algorithm_select_error_visible()
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
-        (None, "Dijkstra's Algorithm", (10, 1, 8), (3, 8, 5), 10),
-        (None, 'Depth-First Search', (10, 1, 8), (3, 8, 5), 82),
+        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 10),
+        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 82),
         (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
-        (None, 'Breadth-First Search', (10, 1, 8), (3, 8, 5), 10),
-        (None, 'A* Search', (10, 1, 8), (3, 8, 5), 10),
-        (None, 'Greedy Best-First Search', (10, 1, 8), (3, 8, 5), 11),
-        (None, 'Bidirectional Search', (10, 1, 8), (3, 8, 5), 10),
+        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 10),
+        (None, 'A* Search', GRID_PROPS, WALL_NODES, 10),
+        (None, 'Greedy Best-First Search', GRID_PROPS, WALL_NODES, 11),
+        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 10),
     ],
         indirect=['url'],
         ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
@@ -211,3 +214,37 @@ class TestGrid:
                     assert page.is_node_of_type(row, col, 'end')
                 else:
                     assert page.is_node_of_type(row, col, 'empty')
+
+    def test_user_can_reset_path_but_maintain_wall_nodes(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # Resize the grid to something small so the test runs faster
+        dims, start, end = GRID_PROPS  # start and end are known from scaling calculation in js
+        page.dims_input = self.make_form_input(dims, dims)
+        page.click_submit()
+
+        # The user notices a drop down menu to select algorithms to visualize and selects Dijkstra's algorithm
+        page.select_algorithm('Greedy Best-First Search')
+
+        # The user clicks and drags on some empty nodes and converts them to wall nodes
+        w_start_row, w_end_row, col = WALL_NODES
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
+
+        # The user sees a button that runs the algorithm on the grid and presses it
+        page.click_run()
+        page.wait_until_complete()
+
+        # The user sees a button to reset the path on the graph and clicks it. The path is now gone but the wall
+        # nodes remain.
+        page.click_reset_path()
+        for row in range(dims):
+            for col in range(dims):
+                if row == start and col == start:
+                    assert page.is_node_of_type(row, col, 'start')
+                elif row == end and col == end:
+                    assert page.is_node_of_type(row, col, 'end')
+                else:
+                    assert page.is_node_of_type(row, col, ['empty', 'wall'])

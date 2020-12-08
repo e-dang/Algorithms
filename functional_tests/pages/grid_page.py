@@ -85,6 +85,9 @@ class GridPage(BasePage):
     def click_reset(self):
         self.driver.find_element_by_id('resetButton').click()
 
+    def click_reset_path(self):
+        self.driver.find_element_by_id('resetPathButton').click()
+
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
             EC.visibility_of(self.driver.find_element_by_id('algComplete')))
