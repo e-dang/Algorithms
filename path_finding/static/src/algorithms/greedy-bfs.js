@@ -2,12 +2,17 @@ const BaseAlgorithm = require('./base_algorithm');
 const NodeMinHeap = require('../utils/node_min_heap');
 
 class GreedyBestFirstSearch extends BaseAlgorithm {
+    constructor(grid, heuristic) {
+        super(grid);
+        this.heuristic = heuristic;
+    }
+
     async run(callback) {
         const endNode = this.grid.getEndNode();
         const startNode = this.grid.getStartNode();
         const heap = new NodeMinHeap('heuristicScore');
         startNode.totalCost = 0;
-        startNode.heuristicScore = this.calcHeuristic(startNode, endNode);
+        startNode.heuristicScore = this.heuristic(startNode, endNode);
         heap.insert(startNode);
 
         while (!heap.isEmpty()) {
@@ -29,7 +34,7 @@ class GreedyBestFirstSearch extends BaseAlgorithm {
                 const candidateNode = this.grid.getNode(row, col);
                 const cost = node.totalCost + candidateNode.cost;
                 if (candidateNode.totalCost > cost) {
-                    const heuristicScore = this.calcHeuristic(candidateNode, endNode);
+                    const heuristicScore = this.heuristic(candidateNode, endNode);
                     if (heap.contains(candidateNode)) {
                         heap.update(candidateNode, heuristicScore);
                     } else {
@@ -45,10 +50,6 @@ class GreedyBestFirstSearch extends BaseAlgorithm {
         }
 
         callback(endNode.totalCost);
-    }
-
-    calcHeuristic(node1, node2) {
-        return Math.sqrt(Math.pow(node1.row - node2.row, 2) + Math.pow(node1.col - node2.col, 2));
     }
 }
 
