@@ -8,6 +8,7 @@ const AStarSearch = require('./algorithms/astar');
 const GreedyBestFirstSearch = require('./algorithms/greedy-bfs');
 const BidirectionalSearch = require('./algorithms/bidirectional');
 const heuristics = require('./utils/heuristics');
+const RandomizedDFS = require('./maze_generators/rand_dfs');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -25,7 +26,8 @@ class GridController {
             .addRunAlgorithmEventListener()
             .addResetEventListener()
             .addResetPathButtonEventListener()
-            .addHeuristicSelectEventListener();
+            .addHeuristicSelectEventListener()
+            .addMazeGenerationEventHandler();
     }
 
     addUpdateGridEventListener() {
@@ -68,6 +70,12 @@ class GridController {
 
     addHeuristicSelectEventListener() {
         document.getElementById('heuristicSelect').addEventListener('change', () => this._handleUpdateHeuristic());
+
+        return this;
+    }
+
+    addMazeGenerationEventHandler() {
+        document.getElementById('mazeGenerationSelect').addEventListener('change', () => this._handleMazeGeneration());
 
         return this;
     }
@@ -166,6 +174,10 @@ class GridController {
         });
     }
 
+    _handleMazeGeneration() {
+        this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
+    }
+
     _removeAlgorithmCompleteMessages() {
         document.getElementById('algComplete').hidden = true;
         document.getElementById('cost').hidden = true;
@@ -188,6 +200,12 @@ class GridController {
             document.getElementById('heuristicSelect').hidden = true;
         } else if (this.alg == 'a*' || this.alg == 'greedy-bfs') {
             document.getElementById('heuristicSelect').hidden = false;
+        }
+    }
+
+    _mazeGeneratorFromString(generatorStr) {
+        if (generatorStr === 'rand-dfs') {
+            return new RandomizedDFS();
         }
     }
 }
