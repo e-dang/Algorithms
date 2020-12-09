@@ -1,4 +1,4 @@
-const MinHeap = require('./min_heap');
+const MinHeap = require('./min_heap').MinHeap;
 
 class NodeMinHeap extends MinHeap {
     constructor(key = 'totalCost') {
@@ -20,7 +20,7 @@ class NodeMinHeap extends MinHeap {
 
         this.map[retVal.id] = undefined;
         if (!this.isEmpty()) {
-            this.map[this.heap[0].id] = 0;
+            this.map[this._get(0).id] = 0;
         }
 
         return retVal;
@@ -43,8 +43,8 @@ class NodeMinHeap extends MinHeap {
     }
 
     _swap(idx1, idx2) {
-        this.map[this.heap[idx1].id] = idx2;
-        this.map[this.heap[idx2].id] = idx1;
+        this.map[this._get(idx1).id] = idx2;
+        this.map[this._get(idx2).id] = idx1;
         super._swap(idx1, idx2);
     }
 }

@@ -11,6 +11,7 @@ const BidirectionalSearch = require('../src/algorithms/bidirectional');
 const fs = require('fs');
 const path = require('path');
 const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
+const heuristics = require('../src/utils/heuristics');
 
 jest.mock('../src/grid');
 
@@ -227,6 +228,14 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
+    test('_handleUpdateAlgorithm calls _displayHeuristicSelect', () => {
+        controller._displayHeuristicSelect = jest.fn();
+
+        controller._handleUpdateAlgorithm();
+
+        expect(controller._displayHeuristicSelect).toHaveBeenCalledTimes(1);
+    });
+
     test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
         element = document.getElementById('algComplete');
         element.hidden = true;
@@ -302,21 +311,6 @@ describe('GridControllerTest', () => {
         expect(controller.grid.clear).toHaveBeenCalledTimes(1);
     });
 
-    // test('_handleReset doesnt call grid.clear, grid.draw, or _removeAlgorithmCompleteMessages when isAlgRunning is true', () => {
-    //     controller.isAlgRunning = true;
-    //     controller._removeAlgorithmCompleteMessages = jest.fn();
-    //     controller.grid = {
-    //         clear: jest.fn(),
-    //         draw: jest.fn(),
-    //     };
-
-    //     controller._handleReset();
-
-    //     expect(controller._removeAlgorithmCompleteMessages).not.toHaveBeenCalled();
-    //     expect(controller.grid.clear).not.toHaveBeenCalled();
-    //     expect(controller.grid.draw).not.toHaveBeenCalled();
-    // });
-
     test('clicking resetButton calls _handleReset', () => {
         controller._handleReset = jest.fn();
         controller.addResetEventListener();
@@ -340,19 +334,6 @@ describe('GridControllerTest', () => {
 
         expect(controller.grid.clearPath).toHaveBeenCalledTimes(1);
     });
-
-    // test('_handleResetPath doesnt call removeAlgorithmCompleteMessages or grid.clearPath when isAlgRunning is true', () => {
-    //     controller.isAlgRunning = true;
-    //     controller._removeAlgorithmCompleteMessages = jest.fn();
-    //     controller.grid = {
-    //         clearPath: jest.fn(),
-    //     };
-
-    //     controller._handleResetPath();
-
-    //     expect(controller._removeAlgorithmCompleteMessages).not.toHaveBeenCalled();
-    //     expect(controller.grid.clearPath).not.toHaveBeenCalled();
-    // });
 
     test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
         const element = document.getElementById('algComplete');
@@ -388,5 +369,101 @@ describe('GridControllerTest', () => {
         controller._callbackWrapper(func);
 
         expect(func).toHaveBeenCalledTimes(1);
+    });
+
+    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dijkstra', () => {
+        controller.alg = 'dijkstra';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = false;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfs', () => {
+        controller.alg = 'dfs';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = false;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfssp', () => {
+        controller.alg = 'dfssp';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = false;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bfs', () => {
+        controller.alg = 'bfs';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = false;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bidirectional', () => {
+        controller.alg = 'bidirectional';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = false;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_displayHeuristicSelect displays heuristicSelect when alg prop is a*', () => {
+        controller.alg = 'a*';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = true;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).toBeVisible();
+    });
+
+    test('_displayHeuristicSelect displays heuristicSelect when alg prop is greedy-bfs', () => {
+        controller.alg = 'greedy-bfs';
+        const element = document.getElementById('heuristicSelect');
+        element.hidden = true;
+
+        controller._displayHeuristicSelect();
+
+        expect(element).toBeVisible();
+    });
+
+    test('_handleUpdateHeuristic sets heuristic prop to l1Norm function if select heuristic is l1Norm', () => {
+        document.getElementById('heuristicSelect').value = 'l1Norm';
+
+        controller._handleUpdateHeuristic();
+
+        expect(controller.heuristic).toBe(heuristics.l1Norm);
+    });
+
+    test('_handleUpdateHeuristic sets heuristic prop to l2Norm function if select heuristic is l2Norm', () => {
+        document.getElementById('heuristicSelect').value = 'l2Norm';
+
+        controller._handleUpdateHeuristic();
+
+        expect(controller.heuristic).toBe(heuristics.l2Norm);
+    });
+
+    test('_handleUpdateHeuristic is called when a new heuristic is selected', () => {
+        const element = document.getElementById('heuristicSelect');
+        controller._handleUpdateHeuristic = jest.fn();
+        controller.addHeuristicSelectEventListener();
+
+        element.dispatchEvent(new Event('change'));
+
+        expect(controller._handleUpdateHeuristic).toHaveBeenCalledTimes(1);
     });
 });

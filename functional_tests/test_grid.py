@@ -160,13 +160,13 @@ class TestGrid:
         assert not page.is_algorithm_select_error_visible()
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
-        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 10),
+        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 14),
         (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 82),
-        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
-        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 10),
-        (None, 'A* Search', GRID_PROPS, WALL_NODES, 10),
-        (None, 'Greedy Best-First Search', GRID_PROPS, WALL_NODES, 11),
-        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 10),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 4),
+        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 14),
+        (None, 'A* Search', GRID_PROPS, WALL_NODES, 14),
+        (None, 'Greedy Best-First Search', GRID_PROPS, WALL_NODES, 14),
+        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 14),
     ],
         indirect=['url'],
         ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
@@ -291,3 +291,26 @@ class TestGrid:
         assert any(page.is_node_of_type(start_row + dr, start_col + dc, 'path') for dr, dc in movements)
         assert any(page.is_node_of_type(end_row + dr, end_col + dc, 'path') for dr, dc in movements)
         assert page.get_cost()
+
+    def test_user_can_select_heuristic_function(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user notices a drop down menue to select an algorithm and selects Breadth-First Search
+        page.select_algorithm('Breadth-First Search')
+
+        # The user doesn't see an option for selecting a heuristic
+        assert not page.can_select_heuristic()
+
+        # The user then selects the A* Search algorithm and now sees the option to select a heuristic
+        page.select_algorithm('A* Search')
+        assert page.can_select_heuristic()
+
+        # The user selects a heuristic
+        page.select_heuristic('Manhattan Distance')
+
+        # The user then runs the algorithm and waits for it to complete. They see that the heuristic has been used.
+        page.click_run()
+        page.wait_until_complete()
+        assert page.get_cost() == 62
