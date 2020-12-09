@@ -11,6 +11,7 @@ const BidirectionalSearch = require('../src/algorithms/bidirectional');
 const fs = require('fs');
 const path = require('path');
 const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
+const heuristics = require('../src/utils/heuristics');
 
 jest.mock('../src/grid');
 
@@ -438,5 +439,31 @@ describe('GridControllerTest', () => {
         controller._displayHeuristicSelect();
 
         expect(element).toBeVisible();
+    });
+
+    test('_handleUpdateHeuristic sets heuristic prop to l1Norm function if select heuristic is l1Norm', () => {
+        document.getElementById('heuristicSelect').value = 'l1Norm';
+
+        controller._handleUpdateHeuristic();
+
+        expect(controller.heuristic).toBe(heuristics.l1Norm);
+    });
+
+    test('_handleUpdateHeuristic sets heuristic prop to l2Norm function if select heuristic is l2Norm', () => {
+        document.getElementById('heuristicSelect').value = 'l2Norm';
+
+        controller._handleUpdateHeuristic();
+
+        expect(controller.heuristic).toBe(heuristics.l2Norm);
+    });
+
+    test('_handleUpdateHeuristic is called when a new heuristic is selected', () => {
+        const element = document.getElementById('heuristicSelect');
+        controller._handleUpdateHeuristic = jest.fn();
+        controller.addHeuristicSelectEventListener();
+
+        element.dispatchEvent(new Event('change'));
+
+        expect(controller._handleUpdateHeuristic).toHaveBeenCalledTimes(1);
     });
 });

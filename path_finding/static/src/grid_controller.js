@@ -7,12 +7,14 @@ const BFS = require('./algorithms/bfs');
 const AStarSearch = require('./algorithms/astar');
 const GreedyBestFirstSearch = require('./algorithms/greedy-bfs');
 const BidirectionalSearch = require('./algorithms/bidirectional');
+const heuristics = require('./utils/heuristics');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
         this.alg = alg;
         this.isAlgRunning = false;
+        this._handleUpdateHeuristic();
         this.grid.draw();
     }
 
@@ -22,7 +24,8 @@ class GridController {
             .addUpdateAlgorithmEventListener()
             .addRunAlgorithmEventListener()
             .addResetEventListener()
-            .addResetPathButtonEventListener();
+            .addResetPathButtonEventListener()
+            .addHeuristicSelectEventListener();
     }
 
     addUpdateGridEventListener() {
@@ -59,6 +62,12 @@ class GridController {
 
     addResetPathButtonEventListener() {
         document.getElementById('resetPathButton').addEventListener('click', () => this._handleResetPath());
+
+        return this;
+    }
+
+    addHeuristicSelectEventListener() {
+        document.getElementById('heuristicSelect').addEventListener('change', () => this._handleUpdateHeuristic());
 
         return this;
     }
@@ -104,6 +113,10 @@ class GridController {
         });
     }
 
+    _handleUpdateHeuristic() {
+        this.heuristic = heuristics[document.getElementById('heuristicSelect').value];
+    }
+
     _parseInput(element) {
         return element.value.split(',').map((value) => parseInt(value));
     }
@@ -118,9 +131,9 @@ class GridController {
         } else if (this.alg == 'bfs') {
             return new BFS(this.grid);
         } else if (this.alg == 'a*') {
-            return new AStarSearch(this.grid);
+            return new AStarSearch(this.grid, this.heuristic);
         } else if (this.alg == 'greedy-bfs') {
-            return new GreedyBestFirstSearch(this.grid);
+            return new GreedyBestFirstSearch(this.grid, this.heuristic);
         } else if (this.alg == 'bidirectional') {
             return new BidirectionalSearch(this.grid);
         } else {
