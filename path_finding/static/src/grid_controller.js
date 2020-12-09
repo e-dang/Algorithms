@@ -9,6 +9,7 @@ const GreedyBestFirstSearch = require('./algorithms/greedy-bfs');
 const BidirectionalSearch = require('./algorithms/bidirectional');
 const heuristics = require('./utils/heuristics');
 const RandomizedDFS = require('./maze_generators/rand_dfs');
+const RandomizedPrims = require('./maze_generators/prim');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -208,6 +209,8 @@ class GridController {
     _mazeGeneratorFromString(generatorStr) {
         if (generatorStr === 'rand-dfs') {
             return new RandomizedDFS(this.grid);
+        } else if (generatorStr === 'prims') {
+            return new RandomizedPrims(this.grid);
         }
     }
 }

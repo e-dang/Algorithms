@@ -13,6 +13,7 @@ const path = require('path');
 const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
 const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
+const RandomizedPrims = require('../src/maze_generators/prim');
 
 jest.mock('../src/grid');
 
@@ -502,5 +503,13 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomizedDFS);
+    });
+
+    test('_mazeGeneratorFromString returns RandomizedPrims when parameter is "prims"', () => {
+        const generator = 'prims';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RandomizedPrims);
     });
 });
