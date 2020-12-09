@@ -79,6 +79,7 @@ class GridController {
         this.alg = document.getElementById('algorithmSelect').value;
         document.getElementById('algorithmSelectErrorMessage').hidden = true;
         document.getElementById('algorithmSelect').className = '';
+        this._displayHeuristicSelect();
     }
 
     _handleRunAlgorithm() {
@@ -160,6 +161,20 @@ class GridController {
     _callbackWrapper(callback) {
         if (!this.isAlgRunning) {
             callback();
+        }
+    }
+
+    _displayHeuristicSelect() {
+        if (
+            this.alg == 'dijkstra' ||
+            this.alg == 'dfs' ||
+            this.alg == 'dfssp' ||
+            this.alg == 'bfs' ||
+            this.alg == 'bidirectional'
+        ) {
+            document.getElementById('heuristicSelect').hidden = true;
+        } else if (this.alg == 'a*' || this.alg == 'greedy-bfs') {
+            document.getElementById('heuristicSelect').hidden = false;
         }
     }
 }
