@@ -125,6 +125,10 @@ class GridPage(BasePage):
     def can_select_heuristic(self):
         return self.driver.find_element_by_id('heuristicSelect').is_displayed()
 
+    def select_heuristic(self, heuristic):
+        select = Select(self.driver.find_element_by_id('heuristicSelect'))
+        select.select_by_visible_text(heuristic)
+
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 
