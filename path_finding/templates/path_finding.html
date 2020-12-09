@@ -43,10 +43,17 @@
                 </select>
                 <p id="algorithmSelectErrorMessage" hidden>Please select an algorithm.</p>
             </div>
+
             <div class="col">
                 <select hidden id="heuristicSelect">
                     <option selected value="l1Norm">Manhattan Distance</option>
                     <option value="l2Norm">Euclidean Distance</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <select hidden id="mazeGenerationSelect">
+                    <option selected value="rand-dfs">Randomized DFS</option>
                 </select>
             </div>
         </div>
