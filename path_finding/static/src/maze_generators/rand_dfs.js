@@ -1,12 +1,7 @@
+const BaseGenerator = require('./base_generator');
 const utils = require('../utils/utils');
 
-class RandomizedDFS {
-    constructor(grid) {
-        this.grid = grid;
-        this.dr = [2, 0, -2, 0];
-        this.dc = [0, 2, 0, -2];
-    }
-
+class RandomizedDFS extends BaseGenerator {
     async generate() {
         this.grid.nodes.forEach((node) => node.setAsWallNode());
         await this.generateHelper(this.grid.getStartNode());
