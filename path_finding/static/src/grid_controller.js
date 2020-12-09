@@ -175,7 +175,9 @@ class GridController {
     }
 
     _handleMazeGeneration() {
+        const element = document.getElementById('mazeGenerationSelect');
         this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
+        element.options[0].selected = true;
     }
 
     _removeAlgorithmCompleteMessages() {
