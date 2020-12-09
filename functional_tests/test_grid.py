@@ -314,3 +314,18 @@ class TestGrid:
         page.click_run()
         page.wait_until_complete()
         assert page.get_cost() == 62
+
+    def test_user_can_generate_maze(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+
+        # The user notices a drop down menu to generate mazes and selects Randomized DFS
+        page.select_maze_generation('Randomized DFS')
+
+        # The user sees a maze being generated
+        start_row, start_col = grid_params['start_row'], grid_params['start_col']
+        end_row, end_col = grid_params['end_row'], grid_params['end_col']
+        movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        assert any(page.is_node_of_type(start_row + dr, start_col + dc, 'wall') for dr, dc in movements)
+        assert any(page.is_node_of_type(end_row + dr, end_col + dc, 'wall') for dr, dc in movements)

@@ -129,6 +129,10 @@ class GridPage(BasePage):
         select = Select(self.driver.find_element_by_id('heuristicSelect'))
         select.select_by_visible_text(heuristic)
 
+    def select_maze_generation(self, algorithm):
+        select = Select(self.driver.find_element_by_id('mazeGenerationSelect'))
+        select.select_by_visible_text(algorithm)
+
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 
