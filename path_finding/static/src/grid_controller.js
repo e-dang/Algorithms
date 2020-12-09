@@ -205,7 +205,7 @@ class GridController {
 
     _mazeGeneratorFromString(generatorStr) {
         if (generatorStr === 'rand-dfs') {
-            return new RandomizedDFS();
+            return new RandomizedDFS(this.grid);
         }
     }
 }
