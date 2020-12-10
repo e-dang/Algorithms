@@ -4,7 +4,6 @@ class BaseGenerator {
         this.grid = grid;
         this.dr = [2, 0, -2, 0];
         this.dc = [0, 2, 0, -2];
-        this.grid.nodes.forEach((node) => node.setAsWallNode());
     }
 
     async connect(node1, node2) {

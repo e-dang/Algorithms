@@ -3,6 +3,7 @@ const utils = require('../utils/utils');
 
 class RandomizedPrims extends BaseGenerator {
     async generate() {
+        this.grid.nodes.forEach((node) => node.setAsWallNode());
         const isWallNode = (node) => node.isWallNode();
         const isPassageNode = (node) => !node.isWallNode();
 
