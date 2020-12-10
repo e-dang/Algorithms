@@ -12,6 +12,9 @@ const fs = require('fs');
 const path = require('path');
 const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
 const heuristics = require('../src/utils/heuristics');
+const RandomizedDFS = require('../src/maze_generators/rand_dfs');
+const RandomizedPrims = require('../src/maze_generators/prim');
+const RandomMaze = require('../src/maze_generators/random');
 
 jest.mock('../src/grid');
 
@@ -465,5 +468,57 @@ describe('GridControllerTest', () => {
         element.dispatchEvent(new Event('change'));
 
         expect(controller._handleUpdateHeuristic).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMazeGeneration gets called when a maze generation algorithm is selected', () => {
+        const element = document.getElementById('mazeGenerationSelect');
+        controller._handleMazeGeneration = jest.fn();
+        controller.addMazeGenerationEventHandler();
+
+        element.dispatchEvent(new Event('change'));
+
+        expect(controller._handleMazeGeneration).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleMazeGeneration calls _mazeGeneratorFromString with value of mazeGenerationSelect', () => {
+        const element = document.getElementById('mazeGenerationSelect');
+        controller._mazeGeneratorFromString = jest.fn().mockReturnValueOnce({generate: jest.fn()});
+
+        controller._handleMazeGeneration();
+
+        expect(controller._mazeGeneratorFromString).toHaveBeenCalledWith(element.value);
+    });
+
+    test('_handleMazeGeneration calls generate() on return value of _mazeGeneratorFromString', () => {
+        const mockRetVal = {generate: jest.fn()};
+        controller._mazeGeneratorFromString = jest.fn().mockReturnValueOnce(mockRetVal);
+
+        controller._handleMazeGeneration();
+
+        expect(mockRetVal.generate).toHaveBeenCalledTimes(1);
+    });
+
+    test('_mazeGeneratorFromString returns RandomizedDFS when parameter is "rand-dfs"', () => {
+        const generator = 'rand-dfs';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RandomizedDFS);
+    });
+
+    test('_mazeGeneratorFromString returns RandomizedPrims when parameter is "prims"', () => {
+        const generator = 'prims';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RandomizedPrims);
+    });
+
+    test('_mazeGeneratorFromString returns Random when parameter is "random"', () => {
+        const generator = 'random';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RandomMaze);
     });
 });

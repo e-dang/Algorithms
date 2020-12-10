@@ -244,6 +244,30 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe('node empty');
         });
 
+        test('setAsEmptyNode sets class list to "node empty" when force is true', () => {
+            node.setAsStartNode();
+
+            node.setAsEmptyNode(true);
+
+            expect(node.element.className).toBe('node empty');
+        });
+
+        test('setAsEmptyNode doesnt change class list if node is a start node and force is false', () => {
+            node.setAsStartNode();
+
+            node.setAsEmptyNode();
+
+            expect(node.isStartNode()).toBe(true);
+        });
+
+        test('setAsEmptyNode doesnt change class list if node is a end node and force is false', () => {
+            node.setAsEndNode();
+
+            node.setAsEmptyNode();
+
+            expect(node.isEndNode()).toBe(true);
+        });
+
         test('setAsWallNode sets class list to "node wall"', () => {
             node.setAsWallNode();
 

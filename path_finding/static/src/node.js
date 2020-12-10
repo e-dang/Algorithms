@@ -39,8 +39,10 @@ class Node {
         this._setNodeType('end');
     }
 
-    setAsEmptyNode() {
-        this._setNodeType('empty');
+    setAsEmptyNode(force = false) {
+        if (force || (!this.isStartNode() && !this.isEndNode())) {
+            this._setNodeType('empty');
+        }
     }
 
     setAsWallNode() {

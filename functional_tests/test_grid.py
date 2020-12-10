@@ -314,3 +314,24 @@ class TestGrid:
         page.click_run()
         page.wait_until_complete()
         assert page.get_cost() == 62
+
+    @pytest.mark.parametrize('url, alg', [
+        (None, 'Randomized DFS'),
+        (None, 'Randomized Prim\'s Algorithm'),
+        (None, 'Random')
+    ],
+        indirect=['url'],
+        ids=['dfs', 'prims', 'random'])
+    def test_user_can_generate_maze(self, url, alg):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+
+        # The user notices a drop down menu to generate mazes and selects Randomized DFS
+        page.select_maze_generation(alg)
+
+        # The user sees a maze being generated
+        for i in range(grid_params['num_rows']):
+            for j in range(grid_params['num_cols']):
+                if page.is_node_of_type(i, j, 'wall'):
+                    return

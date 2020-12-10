@@ -8,6 +8,9 @@ const AStarSearch = require('./algorithms/astar');
 const GreedyBestFirstSearch = require('./algorithms/greedy-bfs');
 const BidirectionalSearch = require('./algorithms/bidirectional');
 const heuristics = require('./utils/heuristics');
+const RandomizedDFS = require('./maze_generators/rand_dfs');
+const RandomizedPrims = require('./maze_generators/prim');
+const RandomMaze = require('./maze_generators/random');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
@@ -25,7 +28,8 @@ class GridController {
             .addRunAlgorithmEventListener()
             .addResetEventListener()
             .addResetPathButtonEventListener()
-            .addHeuristicSelectEventListener();
+            .addHeuristicSelectEventListener()
+            .addMazeGenerationEventHandler();
     }
 
     addUpdateGridEventListener() {
@@ -68,6 +72,12 @@ class GridController {
 
     addHeuristicSelectEventListener() {
         document.getElementById('heuristicSelect').addEventListener('change', () => this._handleUpdateHeuristic());
+
+        return this;
+    }
+
+    addMazeGenerationEventHandler() {
+        document.getElementById('mazeGenerationSelect').addEventListener('change', () => this._handleMazeGeneration());
 
         return this;
     }
@@ -166,6 +176,12 @@ class GridController {
         });
     }
 
+    _handleMazeGeneration() {
+        const element = document.getElementById('mazeGenerationSelect');
+        this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
+        element.options[0].selected = true;
+    }
+
     _removeAlgorithmCompleteMessages() {
         document.getElementById('algComplete').hidden = true;
         document.getElementById('cost').hidden = true;
@@ -188,6 +204,16 @@ class GridController {
             document.getElementById('heuristicSelect').hidden = true;
         } else if (this.alg == 'a*' || this.alg == 'greedy-bfs') {
             document.getElementById('heuristicSelect').hidden = false;
+        }
+    }
+
+    _mazeGeneratorFromString(generatorStr) {
+        if (generatorStr === 'rand-dfs') {
+            return new RandomizedDFS(this.grid);
+        } else if (generatorStr === 'prims') {
+            return new RandomizedPrims(this.grid);
+        } else if (generatorStr === 'random') {
+            return new RandomMaze(this.grid);
         }
     }
 }

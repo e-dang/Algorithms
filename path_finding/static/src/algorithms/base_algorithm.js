@@ -1,3 +1,5 @@
+const utils = require('../utils/utils');
+
 const TIMEOUT = 10;
 
 class BaseAlgorithm {
@@ -13,18 +15,14 @@ class BaseAlgorithm {
     }
 
     async visit(node) {
-        await sleep(TIMEOUT);
+        await utils.sleep(TIMEOUT);
         node.setAsVisitedNode();
     }
 
     async visiting(node) {
-        await sleep(TIMEOUT);
+        await utils.sleep(TIMEOUT);
         node.setAsVisitingNode();
     }
-}
-
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = BaseAlgorithm;

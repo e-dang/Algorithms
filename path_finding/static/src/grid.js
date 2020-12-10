@@ -87,7 +87,7 @@ class Grid {
 
     setAsStartNode(node) {
         if (!node.isEndNode()) {
-            this.getStartNode().setAsEmptyNode();
+            this.getStartNode().setAsEmptyNode(true);
             this.startRow = node.row;
             this.startCol = node.col;
             node.setAsStartNode();
@@ -96,7 +96,7 @@ class Grid {
 
     setAsEndNode(node) {
         if (!node.isStartNode()) {
-            this.getEndNode().setAsEmptyNode();
+            this.getEndNode().setAsEmptyNode(true);
             this.endRow = node.row;
             this.endCol = node.col;
             node.setAsEndNode();
