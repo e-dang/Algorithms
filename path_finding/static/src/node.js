@@ -1,16 +1,16 @@
 class Node {
-    constructor(row, col, grid, cost = 1) {
+    constructor(row, col, idx, gridRow, cost = 1) {
         this.row = row;
         this.col = col;
         this.cost = cost;
-        this.id = `n${grid.children.length}`;
-        this.element = document.createElement('div');
+        this.id = `n${idx}`;
+        this.element = document.createElement('td');
         this.element.id = this.id;
         this.element.ondragstart = () => false;
         this.reset();
         this.setAsEmptyNode();
 
-        grid.appendChild(this.element);
+        gridRow.appendChild(this.element);
     }
 
     reset() {

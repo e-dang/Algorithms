@@ -36,7 +36,6 @@ describe('TestGrid', () => {
         let mockSetter;
         beforeEach(() => {
             mockSetter = jest.fn();
-            grid._setGridWidthHeight = mockSetter;
         });
 
         test('draw constructs a grid element and constructs nRows * nCols Nodes with it', () => {
@@ -44,7 +43,6 @@ describe('TestGrid', () => {
 
             expect(document.getElementById('grid')).toBeTruthy();
             expect(Node).toHaveBeenCalledTimes(nRows * nCols);
-            expect(Node).toHaveBeenCalledWith(0, 0, document.getElementById('grid'));
         });
 
         test('draw push nRows * nCols Nodes to node property', () => {
@@ -53,12 +51,6 @@ describe('TestGrid', () => {
             grid.draw();
 
             expect(grid.nodes.push).toHaveBeenCalledTimes(nRows * nCols);
-        });
-
-        test('draw calls _setGridWidthHeight', () => {
-            grid.draw();
-
-            expect(mockSetter).toHaveBeenCalledWith(document.getElementById('grid'));
         });
     });
 
@@ -357,37 +349,6 @@ describe('TestGrid', () => {
         grid._handleMouseUp();
 
         expect(grid.isMouseDown).toBe(false);
-    });
-
-    describe('test _setGridWidthHeight', () => {
-        let node;
-        let mockGrid;
-
-        beforeEach(() => {
-            node = document.createElement('div');
-            node.className = 'node';
-            document.body.appendChild(node);
-            grid.nodes.push({element: node});
-            mockGrid = {style: {width: undefined, height: undefined}};
-        });
-
-        test('_setGridWidthHeight sets grid width to nCols * nodeWidth', () => {
-            const widthPx = getComputedStyle(node).width;
-            const nodeWidth = parseInt(widthPx.substring(0, widthPx.length - 1));
-
-            grid._setGridWidthHeight(mockGrid);
-
-            expect(mockGrid.style.width).toBe(`${grid.nCols * (nodeWidth + 1)}px`);
-        });
-
-        test('_setGridWidthHeight sets grid height to nRows * nodeHeight', () => {
-            const heightPx = getComputedStyle(node).height;
-            const nodeHeight = parseInt(heightPx.substring(0, heightPx.length - 1));
-
-            grid._setGridWidthHeight(mockGrid);
-
-            expect(mockGrid.style.height).toBe(`${grid.nRows * (nodeHeight + 1)}px`);
-        });
     });
 
     test('isInvalidSpace returns true when row < 0', () => {

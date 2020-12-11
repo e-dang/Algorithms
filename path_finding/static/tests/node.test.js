@@ -1,17 +1,20 @@
 const Node = require('../src/node');
 
 describe('NodeTest', () => {
-    let row = 3;
-    let col = 1;
+    let row;
+    let col;
+    let idx;
     let node;
-    let grid;
+    let gridRow;
 
     beforeEach(() => {
-        grid = document.createElement('div');
-        grid.id = 'grid';
-        grid.nodeSize = '10px';
-        document.body.appendChild(grid);
-        node = new Node(row, col, grid);
+        row = 3;
+        col = 1;
+        idx = 4;
+        gridRow = document.createElement('tr');
+        gridRow.id = 'gridRow';
+        document.body.appendChild(gridRow);
+        node = new Node(row, col, idx, gridRow);
     });
 
     afterEach(() => {
@@ -22,18 +25,18 @@ describe('NodeTest', () => {
         expect(node.element.className).toBe('node empty');
     });
 
-    test('constructor sets dom element as child of grid', () => {
-        expect(document.getElementById('grid').children).toContainEqual(node.element);
+    test('constructor sets dom element as child of gridRow', () => {
+        expect(document.getElementById('gridRow').children).toContainEqual(node.element);
     });
 
-    test('constructor sets node dom element id to "n${length of grid - 1}"', () => {
-        expect(node.element.id).toBe(`n${grid.children.length - 1}`);
+    test('constructor sets node dom element id to "n${idx}"', () => {
+        expect(node.element.id).toBe(`n${idx}`);
     });
 
     test('constructor sets cost prop to cost param', () => {
         const cost = 10;
 
-        node = new Node(row, col, grid, cost);
+        node = new Node(row, col, idx, gridRow, cost);
 
         expect(node.cost).toBe(cost);
     });
@@ -58,7 +61,7 @@ describe('NodeTest', () => {
         const origReset = Node.prototype.reset;
         Node.prototype.reset = jest.fn();
 
-        node = new Node(row, col, grid);
+        node = new Node(row, col, idx, gridRow);
 
         expect(node.reset).toHaveBeenCalledTimes(1);
         Node.prototype.reset = origReset;
