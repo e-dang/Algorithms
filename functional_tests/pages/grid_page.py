@@ -137,13 +137,7 @@ class GridPage(BasePage):
         return self.driver.find_element_by_id('grid')
 
     def _extract_pixel_dimensions(self, element):
-        width = int(element.value_of_css_property('width')[:-2])
-        height = int(element.value_of_css_property('height')[:-2])
-        return width, height
-
-    def _get_table_row_text(self):
-        table = self.driver.find_element_by_id('gridInfo')
-        return [row.text for row in table.find_elements_by_tag_name('tr')]
+        return element.size['width'], element.size['height']
 
     def _make_node_id(self, row, col):
         if self.num_cols is None:
@@ -152,10 +146,7 @@ class GridPage(BasePage):
 
     def _calculate_grid_dimensions(self):
         grid = self._get_grid()
-        g_width, g_height = self._extract_pixel_dimensions(grid)
-        node = grid.find_elements_by_class_name('node')[0]
-        n_widths, n_heights = self._extract_pixel_dimensions(node)
-
-        # add 1 for border widths
-        self.num_rows = g_height // (n_heights + 1)
-        self.num_cols = g_width // (n_widths + 1)
+        rows = grid.find_elements_by_tag_name('tr')
+        cols = rows[0].find_elements_by_tag_name('td')
+        self.num_rows = len(rows)
+        self.num_cols = len(cols)
