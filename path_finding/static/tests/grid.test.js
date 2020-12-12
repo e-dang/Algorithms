@@ -441,7 +441,7 @@ describe('TestGrid', () => {
         expect(result).toBe(node);
     });
 
-    test('drawPath calls setAsPathNode on linked list of nodes starting at end node prev', () => {
+    test('drawPath calls setAsPathNode on linked list of nodes starting at end node prev', async () => {
         node1 = new Node();
         node2 = new Node();
         node3 = new Node();
@@ -452,7 +452,7 @@ describe('TestGrid', () => {
         grid.endRow = 0;
         grid.endCol = 2;
 
-        grid.drawPath();
+        await grid.drawPath();
 
         expect(node3.setAsPathNode).not.toHaveBeenCalled();
         expect(node2.setAsPathNode).toHaveBeenCalledTimes(1);

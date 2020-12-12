@@ -1,5 +1,5 @@
 const Node = require('./node');
-
+const utils = require('./utils/utils');
 class Grid {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
         this.nRows = nRows;
@@ -43,9 +43,10 @@ class Grid {
         this.gridWrapper.appendChild(grid);
     }
 
-    drawPath() {
+    async drawPath() {
         let node = this.getEndNode().prev;
         while (node != null) {
+            await utils.sleep(10);
             node.setAsPathNode();
             node = node.prev;
         }
