@@ -1,3 +1,5 @@
+from time import sleep
+
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -103,6 +105,7 @@ class GridPage(BasePage):
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
             EC.visibility_of(self.driver.find_element_by_id('algComplete')))
+        sleep(1)  # wait for animations
 
     def wait_for_node_to_be_of_type(self, row, col, n_types, timeout=None):
         if not isinstance(n_types, list):

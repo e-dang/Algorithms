@@ -113,7 +113,7 @@ class TestGrid:
         page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
 
         # The user clicks on an empty node in the grid and immediately sees it turn to a wall node.
-        row, col = 5, 5
+        row, col = 10, 10
         assert page.is_node_of_type(row, col, 'empty')
         page.click_node(row, col)
         assert page.is_node_of_type(row, col, 'wall')
@@ -124,7 +124,7 @@ class TestGrid:
 
         # The user then clicks and holds down on an empty node in the grid and drags their mouse across multiple
         # nodes which causes each node to turn black
-        start_row, end_row, col = 0, 10, 4
+        start_row, end_row, col = 0, 10, 10
         for i in range(start_row, end_row + 1):
             assert page.is_node_of_type(i, col, 'empty')
         page.click_and_hold_nodes(start_row, col, end_row, col)
@@ -260,7 +260,7 @@ class TestGrid:
         page.click_run()
 
         # The user then tries to add wall nodes during the current run, but does not see them change
-        w_start_row, w_end_row, col = 35, 36, 40
+        w_start_row, w_end_row, col = 35, 36, 35
         page.click_node(w_start_row, col)
         assert not page.is_node_of_type(w_start_row, col, 'wall')
 
@@ -313,7 +313,7 @@ class TestGrid:
         # The user then runs the algorithm and waits for it to complete. They see that the heuristic has been used.
         page.click_run()
         page.wait_until_complete()
-        assert page.get_cost() == 62
+        assert page.get_cost() == 64
 
     @pytest.mark.parametrize('url, alg', [
         (None, 'Randomized DFS'),

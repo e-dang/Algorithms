@@ -1,12 +1,12 @@
 from django.shortcuts import render
 
 DEFAULT_GRID_PARAMS = {
-    'num_rows': 50,
-    'num_cols': 50,
-    'start_row': 9,
-    'start_col': 9,
-    'end_row': 40,
-    'end_col': 40
+    'num_rows': 40,
+    'num_cols': 40,
+    'start_row': 4,
+    'start_col': 4,
+    'end_row': 36,
+    'end_col': 36
 }
 
 

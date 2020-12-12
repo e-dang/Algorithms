@@ -13,10 +13,10 @@ def driver_init(request, pytestconfig):
         opts = FirefoxOptions()
         opts.add_argument("--headless")
         request.cls.driver = webdriver.Firefox(options=opts)
-        request.cls.driver.set_window_size(1500, 1000)
     else:
         request.cls.driver = webdriver.Firefox()
 
+    request.cls.driver.set_window_size(1500, 1500)
     yield
 
     request.cls.driver.quit()
