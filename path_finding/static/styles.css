@@ -1,8 +1,7 @@
 .grid-wrapper {
-    width: 100%;
-    height: 100%;
     table-layout: fixed;
     border-collapse: collapse;
+    display: inline-table;
 }
 
 .algorithm-grid {
@@ -13,8 +12,10 @@
 .node {
     border: 1px solid #000000;
     border-width: 0 1px 1px 0;
-    width: 13px;
-    height: 13px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
     padding: 0px;
 }
 
@@ -24,6 +25,10 @@
 
 .node.wall {
     background-color: black;
+    animation-name: toWall;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: -0.75s;
 }
 
 .node.start {
@@ -36,16 +41,68 @@
 
 .node.visited {
     background-color: yellow;
+    animation-name: toVisited;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
 }
 
 .node.visiting {
     background-color: orange;
+    animation-name: toVisiting;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
 }
 
 .node.path {
     background-color: blue;
+    animation-name: toPath;
+    animation-duration: 3s;
 }
 
 .error-select {
     border-color: red;
+}
+
+@keyframes toVisited {
+    from {
+        background-color: orange;
+    }
+    to {
+        background-color: yellow;
+    }
+}
+
+@keyframes toVisiting {
+    from {
+        background-color: orange;
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes toPath {
+    from {
+        background-color: white;
+        transform: rotateZ(0deg) scale(0.1);
+    }
+    to {
+        background-color: blue;
+        transform: rotateZ(360deg) scale(1);
+    }
+}
+
+@keyframes toWall {
+    from {
+        background-color: white;
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
+
+    to {
+        background-color: black;
+        transform: scale(1);
+    }
 }
