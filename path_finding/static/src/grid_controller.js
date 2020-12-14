@@ -22,20 +22,13 @@ class GridController {
     }
 
     addEventListeners() {
-        this.addUpdateGridEventListener()
-            .addUpdateGridEventListenerOnKeyPress()
+        this.addUpdateGridEventListenerOnKeyPress()
             .addUpdateAlgorithmEventListener()
             .addRunAlgorithmEventListener()
             .addResetEventListener()
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
             .addMazeGenerationEventHandler();
-    }
-
-    addUpdateGridEventListener() {
-        document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
-
-        return this;
     }
 
     addUpdateGridEventListenerOnKeyPress() {

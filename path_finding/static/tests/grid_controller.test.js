@@ -55,15 +55,6 @@ describe('GridControllerTest', () => {
         expect(second).toBe(11);
     });
 
-    test('_handleUpdateGrid is called when submit button is pressed', () => {
-        controller._handleUpdateGrid = jest.fn();
-        controller.addUpdateGridEventListener();
-
-        document.getElementById('submitButton').click();
-
-        expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
-    });
-
     describe('test _handleUpdateGrid with different inputs', () => {
         beforeEach(() => {
             const element = document.createElement('input');

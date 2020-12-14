@@ -84,11 +84,6 @@ class GridPage(BasePage):
         ).move_by_offset(1, 1).move_to_element(end).release().perform()
         actions.reset_actions()
 
-    def click_submit(self):
-        submit_button = self.driver.find_element_by_id('submitButton')
-        submit_button.click()
-        self._calculate_grid_dimensions()
-
     def submit_grid_dims(self):
         self.driver.find_element_by_id('dimensionsInput').send_keys(Keys.ENTER)
 

@@ -60,7 +60,7 @@ class TestGrid:
         # The user then tries to input negative numbers for the dimensions
         invalid_rows, invalid_cols = -1, -1
         page.dims_input = self.make_form_input(invalid_rows, invalid_cols)
-        page.click_submit()
+        page.submit_grid_dims()
 
         # The user sees an error message about invalid input
         assert page.is_grid_input_error_visible()
@@ -178,7 +178,7 @@ class TestGrid:
         # Resize the grid to something small so the test runs faster
         dims, start, end = grid_props  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
-        page.click_submit()
+        page.submit_grid_dims()
 
         # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
         page.select_algorithm(algorithm)
@@ -223,7 +223,7 @@ class TestGrid:
         # Resize the grid to something small so the test runs faster
         dims, start, end = GRID_PROPS  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
-        page.click_submit()
+        page.submit_grid_dims()
 
         # The user notices a drop down menu to select algorithms to visualize and selects Greedy Best-First Search
         page.select_algorithm('Greedy Best-First Search')
