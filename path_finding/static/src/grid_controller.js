@@ -145,13 +145,15 @@ class GridController {
     }
 
     _handleCompleteAlgorithm(cost) {
-        this.grid.drawPath();
         this.isAlgRunning = false;
         this.grid.isAlgRunning = false;
-        document.getElementById('algComplete').hidden = false;
-        const costElement = document.getElementById('cost');
-        costElement.hidden = false;
-        costElement.textContent = cost;
+        if (cost !== null) {
+            this.grid.drawPath();
+            document.getElementById('algComplete').hidden = false;
+            const costElement = document.getElementById('cost');
+            costElement.hidden = false;
+            costElement.textContent = cost;
+        }
     }
 
     _handleReset() {

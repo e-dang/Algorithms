@@ -187,6 +187,8 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleRunAlgorithm sets isAlgRunning to true', () => {
+        const mockReturn = {run: jest.fn()};
+        controller._algorithmFromString = jest.fn().mockReturnValueOnce(mockReturn);
         controller.isAlgRunning = false;
 
         controller._handleRunAlgorithm();
@@ -195,6 +197,8 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleRunAlgorithm sets isAlgRunning to true on grid', () => {
+        const mockReturn = {run: jest.fn()};
+        controller._algorithmFromString = jest.fn().mockReturnValueOnce(mockReturn);
         controller.grid.isAlgRunning = false;
 
         controller._handleRunAlgorithm();
@@ -230,22 +234,40 @@ describe('GridControllerTest', () => {
         expect(controller._displayHeuristicSelect).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
+    test('_handleCompleteAlgorithm sets algComplete element to be visible when cost is not null', () => {
         element = document.getElementById('algComplete');
         element.hidden = true;
 
-        controller._handleCompleteAlgorithm();
+        controller._handleCompleteAlgorithm(1);
 
         expect(element).toBeVisible();
     });
 
-    test('_handleCompleteAlgorithm sets cost element to visible', () => {
+    test('_handleCompleteAlgorithm doesnt set algComplete element to be visible when cost is null', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = true;
+
+        controller._handleCompleteAlgorithm(null);
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_handleCompleteAlgorithm sets cost element to visible when cost is not null', () => {
         element = document.getElementById('cost');
         element.hidden = true;
 
-        controller._handleCompleteAlgorithm();
+        controller._handleCompleteAlgorithm(1);
 
         expect(element).toBeVisible();
+    });
+
+    test('_handleCompleteAlgorithm doesnt set cost element to visible when cost is null', () => {
+        element = document.getElementById('cost');
+        element.hidden = true;
+
+        controller._handleCompleteAlgorithm(null);
+
+        expect(element).not.toBeVisible();
     });
 
     test('_handleCompleteAlgorithm sets cost element html to equal cost parameter', () => {
@@ -258,10 +280,16 @@ describe('GridControllerTest', () => {
         expect(element).toHaveTextContent(cost);
     });
 
-    test('_handleCompleteAlgorithm calls grid.drawPath', () => {
-        controller._handleCompleteAlgorithm();
+    test('_handleCompleteAlgorithm calls grid.drawPath when cost is not null', () => {
+        controller._handleCompleteAlgorithm(1);
 
         expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleCompleteAlgorithm doesnt call grid.drawPath when cost is null', () => {
+        controller._handleCompleteAlgorithm(null);
+
+        expect(controller.grid.drawPath).not.toHaveBeenCalled();
     });
 
     test('_handleCompleteAlgorithm sets isAlgRunning to false', () => {

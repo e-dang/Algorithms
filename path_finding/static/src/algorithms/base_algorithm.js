@@ -12,6 +12,7 @@ class BaseAlgorithm {
     async run(callback) {
         document.getElementById('algorithmSelectErrorMessage').hidden = false;
         document.getElementById('algorithmSelect').classList.add('error-select');
+        callback(null);
     }
 
     async visit(node) {

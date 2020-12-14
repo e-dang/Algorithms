@@ -148,7 +148,7 @@ class TestGrid:
     def test_user_cant_run_algorithm_when_none_are_selected(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
 
         # The user immediately presses run but an error shows up telling the user to select an algorithm
         page.click_run()
@@ -158,6 +158,11 @@ class TestGrid:
         page.select_algorithm("Dijkstra's Algorithm")
 
         assert not page.is_algorithm_select_error_visible()
+
+        # The user then presses run and the algorithm begins to run
+        page.click_run()
+        page.wait_for_node_to_be_of_type(grid_params['start_row'] + 1,
+                                         grid_params['start_col'], ['visited', 'visiting'], timeout=5)
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
         (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 14),
