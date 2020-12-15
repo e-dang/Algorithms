@@ -11,7 +11,7 @@ class BaseAlgorithm {
 
     async run(callback) {
         document.getElementById('algorithmSelectErrorMessage').hidden = false;
-        document.getElementById('algorithmSelect').classList.add('error-select');
+        $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'add');
         callback(null);
     }
 

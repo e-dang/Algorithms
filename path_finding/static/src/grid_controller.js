@@ -77,9 +77,11 @@ class GridController {
 
     _handleUpdateGrid() {
         this._callbackWrapper(() => {
-            const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
+            const element = document.getElementById('dimensionsInput');
+            const [nRows, nCols] = this._parseInput(element);
             if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
                 this.grid.reset(nRows, nCols);
+                element.value = '';
                 this._removeAlgorithmCompleteMessages();
             } else {
                 this._handleGridInputError();
@@ -90,7 +92,7 @@ class GridController {
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
         document.getElementById('algorithmSelectErrorMessage').hidden = true;
-        document.getElementById('algorithmSelect').className = '';
+        $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
         this._displayHeuristicSelect();
     }
 
@@ -104,6 +106,7 @@ class GridController {
 
     _handleGridInputError() {
         document.getElementById('gridErrorMessage').hidden = false;
+        document.getElementById('dimensionsInput').classList.add('is-invalid');
     }
 
     _handleUpdateGridOnKeyPress(event) {
@@ -112,6 +115,7 @@ class GridController {
                 this._handleUpdateGrid();
             } else {
                 document.getElementById('gridErrorMessage').hidden = true;
+                document.getElementById('dimensionsInput').classList.remove('is-invalid');
             }
         });
     }
