@@ -45,9 +45,13 @@ class Node {
         }
     }
 
-    setAsWallNode() {
+    setAsWallNode(animation = true) {
         if (!this.isStartNode() && !this.isEndNode()) {
-            this._setNodeType('wall');
+            if (animation) {
+                this._setNodeType(['animatedWall', 'wall']);
+            } else {
+                this._setNodeType('wall');
+            }
         }
     }
 
@@ -75,15 +79,15 @@ class Node {
     }
 
     isWallNode() {
-        return this.element.className == 'node wall';
+        return this.element.classList.contains('wall');
     }
 
     isStartNode() {
-        return this.element.className == 'node start';
+        return this.element.classList.contains('start');
     }
 
     isEndNode() {
-        return this.element.className == 'node end';
+        return this.element.classList.contains('end');
     }
 
     toggleNodeType() {
@@ -96,7 +100,11 @@ class Node {
 
     _setNodeType(type) {
         this.element.className = '';
-        this.element.classList.add('node', type);
+        if (Array.isArray(type)) {
+            this.element.classList.add('node', ...type);
+        } else {
+            this.element.classList.add('node', type);
+        }
     }
 }
 

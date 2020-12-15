@@ -271,10 +271,16 @@ describe('NodeTest', () => {
             expect(node.isEndNode()).toBe(true);
         });
 
-        test('setAsWallNode sets class list to "node wall"', () => {
-            node.setAsWallNode();
+        test('setAsWallNode sets class list to "node wall" when animation is false', () => {
+            node.setAsWallNode(false);
 
             expect(node.element.className).toBe('node wall');
+        });
+
+        test('setAsWallNode sets class list to "node animatedWall wall" when animation is true', () => {
+            node.setAsWallNode(true);
+
+            expect(node.element.className).toBe('node animatedWall wall');
         });
 
         test('setAsWallNode doesnt change class list if node is a start node', () => {

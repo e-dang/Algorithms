@@ -63,9 +63,10 @@ class GridPage(BasePage):
             n_types = [n_types]
 
         bools = []
+        class_list = grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class')
+
         for n_type in n_types:
-            bools.append(grid.find_element_by_id(self._make_node_id(
-                row, col)).get_attribute('class') == f'node {n_type}')
+            bools.append('node' in class_list and f'{n_type}' in class_list)
 
         return any(bools)
 

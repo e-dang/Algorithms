@@ -25,6 +25,9 @@
 
 .node.wall {
     background-color: black;
+}
+
+.node.animatedWall {
     animation-name: toWall;
     animation-duration: 1s;
     animation-timing-function: ease-in;
