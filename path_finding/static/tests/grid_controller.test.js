@@ -55,15 +55,6 @@ describe('GridControllerTest', () => {
         expect(second).toBe(11);
     });
 
-    test('_handleUpdateGrid is called when submit button is pressed', () => {
-        controller._handleUpdateGrid = jest.fn();
-        controller.addUpdateGridEventListener();
-
-        document.getElementById('submitButton').click();
-
-        expect(controller._handleUpdateGrid).toHaveBeenCalledTimes(1);
-    });
-
     describe('test _handleUpdateGrid with different inputs', () => {
         beforeEach(() => {
             const element = document.createElement('input');
@@ -196,6 +187,8 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleRunAlgorithm sets isAlgRunning to true', () => {
+        const mockReturn = {run: jest.fn()};
+        controller._algorithmFromString = jest.fn().mockReturnValueOnce(mockReturn);
         controller.isAlgRunning = false;
 
         controller._handleRunAlgorithm();
@@ -204,6 +197,8 @@ describe('GridControllerTest', () => {
     });
 
     test('_handleRunAlgorithm sets isAlgRunning to true on grid', () => {
+        const mockReturn = {run: jest.fn()};
+        controller._algorithmFromString = jest.fn().mockReturnValueOnce(mockReturn);
         controller.grid.isAlgRunning = false;
 
         controller._handleRunAlgorithm();
@@ -231,30 +226,48 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleUpdateAlgorithm calls _displayHeuristicSelect', () => {
-        controller._displayHeuristicSelect = jest.fn();
+    test('_handleUpdateAlgorithm calls _toggleHeuristicSelect', () => {
+        controller._toggleHeuristicSelect = jest.fn();
 
         controller._handleUpdateAlgorithm();
 
-        expect(controller._displayHeuristicSelect).toHaveBeenCalledTimes(1);
+        expect(controller._toggleHeuristicSelect).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleCompleteAlgorithm sets algComplete element to be visible', () => {
+    test('_handleCompleteAlgorithm sets algComplete element to be visible when cost is not null', () => {
         element = document.getElementById('algComplete');
         element.hidden = true;
 
-        controller._handleCompleteAlgorithm();
+        controller._handleCompleteAlgorithm(1);
 
         expect(element).toBeVisible();
     });
 
-    test('_handleCompleteAlgorithm sets cost element to visible', () => {
+    test('_handleCompleteAlgorithm doesnt set algComplete element to be visible when cost is null', () => {
+        element = document.getElementById('algComplete');
+        element.hidden = true;
+
+        controller._handleCompleteAlgorithm(null);
+
+        expect(element).not.toBeVisible();
+    });
+
+    test('_handleCompleteAlgorithm sets cost element to visible when cost is not null', () => {
         element = document.getElementById('cost');
         element.hidden = true;
 
-        controller._handleCompleteAlgorithm();
+        controller._handleCompleteAlgorithm(1);
 
         expect(element).toBeVisible();
+    });
+
+    test('_handleCompleteAlgorithm doesnt set cost element to visible when cost is null', () => {
+        element = document.getElementById('cost');
+        element.hidden = true;
+
+        controller._handleCompleteAlgorithm(null);
+
+        expect(element).not.toBeVisible();
     });
 
     test('_handleCompleteAlgorithm sets cost element html to equal cost parameter', () => {
@@ -267,10 +280,16 @@ describe('GridControllerTest', () => {
         expect(element).toHaveTextContent(cost);
     });
 
-    test('_handleCompleteAlgorithm calls grid.drawPath', () => {
-        controller._handleCompleteAlgorithm();
+    test('_handleCompleteAlgorithm calls grid.drawPath when cost is not null', () => {
+        controller._handleCompleteAlgorithm(1);
 
         expect(controller.grid.drawPath).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleCompleteAlgorithm doesnt call grid.drawPath when cost is null', () => {
+        controller._handleCompleteAlgorithm(null);
+
+        expect(controller.grid.drawPath).not.toHaveBeenCalled();
     });
 
     test('_handleCompleteAlgorithm sets isAlgRunning to false', () => {
@@ -374,74 +393,74 @@ describe('GridControllerTest', () => {
         expect(func).toHaveBeenCalledTimes(1);
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dijkstra', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dijkstra', () => {
         controller.alg = 'dijkstra';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfs', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dfs', () => {
         controller.alg = 'dfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfssp', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dfssp', () => {
         controller.alg = 'dfssp';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bfs', () => {
+    test('_toggleHeuristicSelect disables heuristicSelect when alg prop is bfs', () => {
         controller.alg = 'bfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bidirectional', () => {
+    test('_toggleHeuristicSelect disables heuristicSelect when alg prop is bidirectional', () => {
         controller.alg = 'bidirectional';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect displays heuristicSelect when alg prop is a*', () => {
+    test('_toggleHeuristicSelect enables heuristicSelect when alg prop is a*', () => {
         controller.alg = 'a*';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = true;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).toBeVisible();
+        expect(element).toBeEnabled();
     });
 
-    test('_displayHeuristicSelect displays heuristicSelect when alg prop is greedy-bfs', () => {
+    test('_toggleHeuristicSelect enables heuristicSelect when alg prop is greedy-bfs', () => {
         controller.alg = 'greedy-bfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = true;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).toBeVisible();
+        expect(element).toBeEnabled();
     });
 
     test('_handleUpdateHeuristic sets heuristic prop to l1Norm function if select heuristic is l1Norm', () => {

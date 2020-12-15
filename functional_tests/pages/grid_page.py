@@ -1,8 +1,9 @@
+from time import sleep
+
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
-
 from .base import TIMEOUT, BaseInputElement, BasePage
 
 
@@ -41,8 +42,7 @@ class GridPage(BasePage):
         return self.driver.find_element_by_id('gridErrorMessage').is_displayed()
 
     def is_algorithm_select_error_visible(self):
-        return self.driver.find_element_by_id('algorithmSelectErrorMessage').is_displayed() and \
-            len(self.driver.find_elements_by_class_name('error-select')) != 0
+        return self.driver.find_element_by_id('algorithmSelectErrorMessage').is_displayed()
 
     def grid_has_dimensions(self, num_rows, num_cols):
         self._calculate_grid_dimensions()
@@ -63,9 +63,10 @@ class GridPage(BasePage):
             n_types = [n_types]
 
         bools = []
+        class_list = grid.find_element_by_id(self._make_node_id(row, col)).get_attribute('class')
+
         for n_type in n_types:
-            bools.append(grid.find_element_by_id(self._make_node_id(
-                row, col)).get_attribute('class') == f'node {n_type}')
+            bools.append('node' in class_list and f'{n_type}' in class_list)
 
         return any(bools)
 
@@ -83,11 +84,6 @@ class GridPage(BasePage):
         ).move_by_offset(1, 1).move_to_element(end).release().perform()
         actions.reset_actions()
 
-    def click_submit(self):
-        submit_button = self.driver.find_element_by_id('submitButton')
-        submit_button.click()
-        self._calculate_grid_dimensions()
-
     def submit_grid_dims(self):
         self.driver.find_element_by_id('dimensionsInput').send_keys(Keys.ENTER)
 
@@ -103,6 +99,7 @@ class GridPage(BasePage):
     def wait_until_complete(self, timeout=None):
         WebDriverWait(self.driver, timeout or TIMEOUT).until(
             EC.visibility_of(self.driver.find_element_by_id('algComplete')))
+        sleep(1)  # wait for animations
 
     def wait_for_node_to_be_of_type(self, row, col, n_types, timeout=None):
         if not isinstance(n_types, list):
@@ -112,8 +109,7 @@ class GridPage(BasePage):
         )
 
     def select_algorithm(self, algorithm):
-        select = Select(self.driver.find_element_by_id('algorithmSelect'))
-        select.select_by_visible_text(algorithm)
+        self._make_selection('algorithmSelect', algorithm)
 
     def get_cost(self):
         element = self.driver.find_element_by_id('cost')
@@ -123,27 +119,20 @@ class GridPage(BasePage):
         return None
 
     def can_select_heuristic(self):
-        return self.driver.find_element_by_id('heuristicSelect').is_displayed()
+        return self.driver.find_element_by_id('heuristicSelect').is_enabled()
 
     def select_heuristic(self, heuristic):
         select = Select(self.driver.find_element_by_id('heuristicSelect'))
         select.select_by_visible_text(heuristic)
 
     def select_maze_generation(self, algorithm):
-        select = Select(self.driver.find_element_by_id('mazeGenerationSelect'))
-        select.select_by_visible_text(algorithm)
+        self._make_selection('mazeGenerationSelect', algorithm)
 
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 
     def _extract_pixel_dimensions(self, element):
-        width = int(element.value_of_css_property('width')[:-2])
-        height = int(element.value_of_css_property('height')[:-2])
-        return width, height
-
-    def _get_table_row_text(self):
-        table = self.driver.find_element_by_id('gridInfo')
-        return [row.text for row in table.find_elements_by_tag_name('tr')]
+        return element.size['width'], element.size['height']
 
     def _make_node_id(self, row, col):
         if self.num_cols is None:
@@ -152,10 +141,15 @@ class GridPage(BasePage):
 
     def _calculate_grid_dimensions(self):
         grid = self._get_grid()
-        g_width, g_height = self._extract_pixel_dimensions(grid)
-        node = grid.find_elements_by_class_name('node')[0]
-        n_widths, n_heights = self._extract_pixel_dimensions(node)
+        rows = grid.find_elements_by_tag_name('tr')
+        cols = rows[0].find_elements_by_tag_name('td')
+        self.num_rows = len(rows)
+        self.num_cols = len(cols)
 
-        # add 1 for border widths
-        self.num_rows = g_height // (n_heights + 1)
-        self.num_cols = g_width // (n_widths + 1)
+    def _make_selection(self, select_id, option_text):
+        dropdown = self.driver.find_element_by_css_selector(f'button[data-id={select_id}]')
+        dropdown.click()
+        for child in self.driver.find_elements_by_css_selector(f"ul[role=presentation] li a span"):
+            if child.get_attribute('innerHTML') == option_text:
+                child.click()
+                break

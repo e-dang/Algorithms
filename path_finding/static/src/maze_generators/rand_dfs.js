@@ -3,7 +3,7 @@ const utils = require('../utils/utils');
 
 class RandomizedDFS extends BaseGenerator {
     async generate() {
-        this.grid.nodes.forEach((node) => node.setAsWallNode());
+        this.grid.nodes.forEach((node) => node.setAsWallNode(false));
         await this.generateHelper(this.grid.getStartNode());
         this.grid.nodes.forEach((node) => (node.visited = false));
     }

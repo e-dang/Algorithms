@@ -1,5 +1,5 @@
 const Node = require('./node');
-
+const utils = require('./utils/utils');
 class Grid {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
         this.nRows = nRows;
@@ -16,13 +16,16 @@ class Grid {
     }
 
     draw() {
-        const grid = document.createElement('div');
+        const grid = document.createElement('tbody');
         grid.id = 'grid';
         grid.className = 'algorithm-grid';
 
         for (let row = 0; row < this.nRows; row++) {
+            const gridRow = document.createElement('tr');
+            grid.appendChild(gridRow);
             for (let col = 0; col < this.nCols; col++) {
-                let node = new Node(row, col, grid);
+                const idx = row * this.nCols + col;
+                let node = new Node(row, col, idx, gridRow);
                 if (row == this.startRow && col == this.startCol) {
                     node.setAsStartNode();
                 } else if (row == this.endRow && col == this.endCol) {
@@ -38,12 +41,12 @@ class Grid {
         grid.addEventListener('mouseup', () => this._handleMouseUp());
 
         this.gridWrapper.appendChild(grid);
-        this._setGridWidthHeight(grid);
     }
 
-    drawPath() {
+    async drawPath() {
         let node = this.getEndNode().prev;
         while (node != null) {
+            await utils.sleep(10);
             node.setAsPathNode();
             node = node.prev;
         }
@@ -87,7 +90,7 @@ class Grid {
 
     setAsStartNode(node) {
         if (!node.isEndNode()) {
-            this.getStartNode().setAsEmptyNode(true);
+            this.getStartNode().setAsEmptyNode(true, false);
             this.startRow = node.row;
             this.startCol = node.col;
             node.setAsStartNode();
@@ -96,7 +99,7 @@ class Grid {
 
     setAsEndNode(node) {
         if (!node.isStartNode()) {
-            this.getEndNode().setAsEmptyNode(true);
+            this.getEndNode().setAsEmptyNode(true, false);
             this.endRow = node.row;
             this.endCol = node.col;
             node.setAsEndNode();
@@ -138,17 +141,6 @@ class Grid {
 
     _handleMouseUp() {
         this.isMouseDown = false;
-    }
-
-    _setGridWidthHeight(grid) {
-        const style = window.getComputedStyle(this.nodes[0].element);
-        let width = style.getPropertyValue('width');
-        let height = style.getPropertyValue('height');
-        width = parseInt(width.substring(0, width.length - 1));
-        height = parseInt(height.substring(0, height.length - 1));
-
-        grid.style.width = (width + 1) * this.nCols + 'px';
-        grid.style.height = (height + 1) * this.nRows + 'px';
     }
 }
 

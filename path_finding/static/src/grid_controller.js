@@ -22,20 +22,13 @@ class GridController {
     }
 
     addEventListeners() {
-        this.addUpdateGridEventListener()
-            .addUpdateGridEventListenerOnKeyPress()
+        this.addUpdateGridEventListenerOnKeyPress()
             .addUpdateAlgorithmEventListener()
             .addRunAlgorithmEventListener()
             .addResetEventListener()
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
             .addMazeGenerationEventHandler();
-    }
-
-    addUpdateGridEventListener() {
-        document.getElementById('submitButton').addEventListener('click', () => this._handleUpdateGrid());
-
-        return this;
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -84,9 +77,11 @@ class GridController {
 
     _handleUpdateGrid() {
         this._callbackWrapper(() => {
-            const [nRows, nCols] = this._parseInput(document.getElementById('dimensionsInput'));
+            const element = document.getElementById('dimensionsInput');
+            const [nRows, nCols] = this._parseInput(element);
             if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
                 this.grid.reset(nRows, nCols);
+                element.value = '';
                 this._removeAlgorithmCompleteMessages();
             } else {
                 this._handleGridInputError();
@@ -97,8 +92,8 @@ class GridController {
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
         document.getElementById('algorithmSelectErrorMessage').hidden = true;
-        document.getElementById('algorithmSelect').className = '';
-        this._displayHeuristicSelect();
+        $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
+        this._toggleHeuristicSelect();
     }
 
     _handleRunAlgorithm() {
@@ -111,6 +106,7 @@ class GridController {
 
     _handleGridInputError() {
         document.getElementById('gridErrorMessage').hidden = false;
+        document.getElementById('dimensionsInput').classList.add('is-invalid');
     }
 
     _handleUpdateGridOnKeyPress(event) {
@@ -119,6 +115,7 @@ class GridController {
                 this._handleUpdateGrid();
             } else {
                 document.getElementById('gridErrorMessage').hidden = true;
+                document.getElementById('dimensionsInput').classList.remove('is-invalid');
             }
         });
     }
@@ -152,13 +149,15 @@ class GridController {
     }
 
     _handleCompleteAlgorithm(cost) {
-        this.grid.drawPath();
         this.isAlgRunning = false;
         this.grid.isAlgRunning = false;
-        document.getElementById('algComplete').hidden = false;
-        const costElement = document.getElementById('cost');
-        costElement.hidden = false;
-        costElement.textContent = cost;
+        if (cost !== null) {
+            this.grid.drawPath();
+            document.getElementById('algComplete').hidden = false;
+            const costElement = document.getElementById('cost');
+            costElement.hidden = false;
+            costElement.textContent = cost;
+        }
     }
 
     _handleReset() {
@@ -193,7 +192,7 @@ class GridController {
         }
     }
 
-    _displayHeuristicSelect() {
+    _toggleHeuristicSelect() {
         if (
             this.alg == 'dijkstra' ||
             this.alg == 'dfs' ||
@@ -201,10 +200,12 @@ class GridController {
             this.alg == 'bfs' ||
             this.alg == 'bidirectional'
         ) {
-            document.getElementById('heuristicSelect').hidden = true;
+            $('#heuristicSelect').prop('disabled', true);
         } else if (this.alg == 'a*' || this.alg == 'greedy-bfs') {
-            document.getElementById('heuristicSelect').hidden = false;
+            $('#heuristicSelect').prop('disabled', false);
         }
+
+        $('#heuristicSelect').selectpicker('refresh');
     }
 
     _mazeGeneratorFromString(generatorStr) {

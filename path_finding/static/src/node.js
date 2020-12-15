@@ -1,16 +1,15 @@
 class Node {
-    constructor(row, col, grid, cost = 1) {
+    constructor(row, col, idx, gridRow, cost = 1) {
         this.row = row;
         this.col = col;
         this.cost = cost;
-        this.id = `n${grid.children.length}`;
-        this.element = document.createElement('div');
+        this.id = `n${idx}`;
+        this.element = document.createElement('td');
         this.element.id = this.id;
         this.element.ondragstart = () => false;
         this.reset();
-        this.setAsEmptyNode();
 
-        grid.appendChild(this.element);
+        gridRow.appendChild(this.element);
     }
 
     reset() {
@@ -27,7 +26,7 @@ class Node {
         this.visited = false;
 
         if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode()) {
-            this.setAsEmptyNode();
+            this.setAsEmptyNode(false, false);
         }
     }
 
@@ -39,15 +38,23 @@ class Node {
         this._setNodeType('end');
     }
 
-    setAsEmptyNode(force = false) {
+    setAsEmptyNode(force = false, animation = true) {
         if (force || (!this.isStartNode() && !this.isEndNode())) {
-            this._setNodeType('empty');
+            if (animation) {
+                this._setNodeType(['animatedEmpty', 'empty']);
+            } else {
+                this._setNodeType('empty');
+            }
         }
     }
 
-    setAsWallNode() {
+    setAsWallNode(animation = true) {
         if (!this.isStartNode() && !this.isEndNode()) {
-            this._setNodeType('wall');
+            if (animation) {
+                this._setNodeType(['animatedWall', 'wall']);
+            } else {
+                this._setNodeType('wall');
+            }
         }
     }
 
@@ -75,15 +82,15 @@ class Node {
     }
 
     isWallNode() {
-        return this.element.className == 'node wall';
+        return this.element.classList.contains('wall');
     }
 
     isStartNode() {
-        return this.element.className == 'node start';
+        return this.element.classList.contains('start');
     }
 
     isEndNode() {
-        return this.element.className == 'node end';
+        return this.element.classList.contains('end');
     }
 
     toggleNodeType() {
@@ -96,7 +103,11 @@ class Node {
 
     _setNodeType(type) {
         this.element.className = '';
-        this.element.classList.add('node', type);
+        if (Array.isArray(type)) {
+            this.element.classList.add('node', ...type);
+        } else {
+            this.element.classList.add('node', type);
+        }
     }
 }
 

@@ -1,6 +1,17 @@
+:root {
+    --empty-node-color: white;
+    --wall-node-color: black;
+    --start-node-color: green;
+    --end-node-color: red;
+    --visited-node-color: yellow;
+    --visiting-node-color: orange;
+    --path-node-color: blue;
+}
+
 .grid-wrapper {
-    width: 600px;
-    height: 600px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    display: inline-table;
 }
 
 .algorithm-grid {
@@ -11,39 +22,157 @@
 .node {
     border: 1px solid #000000;
     border-width: 0 1px 1px 0;
-    width: 13px;
-    height: 13px;
-    float: left;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    padding: 0px;
 }
 
 .node.empty {
-    background-color: white;
+    background-color: var(--empty-node-color);
+}
+
+.node.animatedEmpty {
+    animation-name: toEmpty;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: -0.75s;
 }
 
 .node.wall {
-    background-color: black;
+    background-color: var(--wall-node-color);
+}
+
+.node.animatedWall {
+    animation-name: toWall;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: -0.75s;
 }
 
 .node.start {
-    background-color: green;
+    background-color: var(--start-node-color);
 }
 
 .node.end {
-    background-color: red;
+    background-color: var(--end-node-color);
 }
 
 .node.visited {
-    background-color: yellow;
+    background-color: var(--visited-node-color);
+    animation-name: toVisited;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
 }
 
 .node.visiting {
-    background-color: orange;
+    background-color: var(--visiting-node-color);
+    animation-name: toVisiting;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
 }
 
 .node.path {
-    background-color: blue;
+    background-color: var(--path-node-color);
+    animation-name: toPath;
+    animation-duration: 3s;
 }
 
-.error-select {
-    border-color: red;
+.sample-empty-node {
+    background-color: var(--empty-node-color);
+    border: 1px solid black;
+    border-width: 1px;
+}
+
+.sample-wall-node {
+    background-color: var(--wall-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-start-node {
+    background-color: var(--start-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-end-node {
+    background-color: var(--end-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-visited-node {
+    background-color: var(--visited-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-visiting-node {
+    background-color: var(--visiting-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-path-node {
+    background-color: var(--path-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+@keyframes toVisited {
+    from {
+        background-color: orange;
+    }
+    to {
+        background-color: yellow;
+    }
+}
+
+@keyframes toVisiting {
+    from {
+        background-color: orange;
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes toPath {
+    from {
+        background-color: white;
+        transform: rotateZ(0deg) scale(0.1);
+    }
+    to {
+        background-color: blue;
+        transform: rotateZ(360deg) scale(1);
+    }
+}
+
+@keyframes toWall {
+    from {
+        background-color: white;
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
+
+    to {
+        background-color: black;
+        transform: scale(1);
+    }
+}
+
+@keyframes toEmpty {
+    from {
+        background-color: black;
+        transform: scale(1);
+    }
+    to {
+        background-color: white;
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
 }
