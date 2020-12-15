@@ -8,7 +8,6 @@ class Node {
         this.element.id = this.id;
         this.element.ondragstart = () => false;
         this.reset();
-        this.setAsEmptyNode();
 
         gridRow.appendChild(this.element);
     }
@@ -27,7 +26,7 @@ class Node {
         this.visited = false;
 
         if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode()) {
-            this.setAsEmptyNode();
+            this.setAsEmptyNode(false, false);
         }
     }
 
@@ -39,9 +38,13 @@ class Node {
         this._setNodeType('end');
     }
 
-    setAsEmptyNode(force = false) {
+    setAsEmptyNode(force = false, animation = true) {
         if (force || (!this.isStartNode() && !this.isEndNode())) {
-            this._setNodeType('empty');
+            if (animation) {
+                this._setNodeType(['animatedEmpty', 'empty']);
+            } else {
+                this._setNodeType('empty');
+            }
         }
     }
 

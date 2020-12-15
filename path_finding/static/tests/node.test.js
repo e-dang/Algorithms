@@ -241,16 +241,30 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe('node end');
         });
 
-        test('setAsEmptyNode sets class list to "node empty"', () => {
-            node.setAsEmptyNode();
+        test('setAsEmptyNode sets class list to "node animatedEmpty empty" when animation is true', () => {
+            node.setAsEmptyNode(false, true);
+
+            expect(node.element.className).toBe('node animatedEmpty empty');
+        });
+
+        test('setAsEmptyNode sets class list to "node animatedEmpty empty" when force is true and animation is true', () => {
+            node.setAsStartNode();
+
+            node.setAsEmptyNode(true);
+
+            expect(node.element.className).toBe('node animatedEmpty empty');
+        });
+
+        test('setAsEmptyNode sets class list to "node empty" when animation is false', () => {
+            node.setAsEmptyNode(false, false);
 
             expect(node.element.className).toBe('node empty');
         });
 
-        test('setAsEmptyNode sets class list to "node empty" when force is true', () => {
+        test('setAsEmptyNode sets class list to "node empty" when force is true and animation is false', () => {
             node.setAsStartNode();
 
-            node.setAsEmptyNode(true);
+            node.setAsEmptyNode(true, false);
 
             expect(node.element.className).toBe('node empty');
         });

@@ -23,6 +23,13 @@
     background-color: white;
 }
 
+.node.animatedEmpty {
+    animation-name: toEmpty;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: -0.75s;
+}
+
 .node.wall {
     background-color: black;
 }
@@ -103,5 +110,17 @@
     to {
         background-color: black;
         transform: scale(1);
+    }
+}
+
+@keyframes toEmpty {
+    from {
+        background-color: black;
+        transform: scale(1);
+    }
+    to {
+        background-color: white;
+        transform: scale(0.1);
+        border-radius: 100%;
     }
 }
