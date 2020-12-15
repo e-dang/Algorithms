@@ -15,21 +15,19 @@
 <body id='body'>
     <div class="container">
         <div class="row">
-            <div class="col jumbotron">
+            <div class="col-auto jumbotron">
                 <div class="text-center">
                     <h1>Path Finding Algorithms</h1>
                 </div>
 
                 <div class="row justify-content-center">
-                    <div class="col-3 form-group">
-                        <div class="form-group">
-                            <label>Dimensions: </label>
-                            <input id="dimensionsInput" class="form-control" type="text" placeholder="e.g. 50,50">
-                            <p id="gridErrorMessage" class="text-danger text-left small" hidden>Invalid input -
-                                number of
-                                cells must be
-                                greater than 2.</p>
-                        </div>
+                    <div class="col-3">
+                        <label class="control-label">Dimensions</label>
+                        <input id="dimensionsInput" class="form-control" type="text" placeholder="e.g. 50,50">
+                        <p id="gridErrorMessage" class="text-danger text-left small" hidden>Invalid input -
+                            number of
+                            cells must be
+                            greater than 2.</p>
                     </div>
 
                     <div class="col-3">
@@ -58,16 +56,15 @@
                             <option value="random">Random</option>
                         </select>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row justify-content-center">
-            <div class="col-1">
-                <select hidden id="heuristicSelect">
-                    <option selected value="l1Norm">Manhattan Distance</option>
-                    <option value="l2Norm">Euclidean Distance</option>
-                </select>
+                    <div class="col-3">
+                        <label class="control-label">Heuristic</label>
+                        <select id="heuristicSelect" class="selectpicker" disabled>
+                            <option selected value="l1Norm">Manhattan Distance</option>
+                            <option value="l2Norm">Euclidean Distance</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 

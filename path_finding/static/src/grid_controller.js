@@ -93,7 +93,7 @@ class GridController {
         this.alg = document.getElementById('algorithmSelect').value;
         document.getElementById('algorithmSelectErrorMessage').hidden = true;
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
-        this._displayHeuristicSelect();
+        this._toggleHeuristicSelect();
     }
 
     _handleRunAlgorithm() {
@@ -192,7 +192,7 @@ class GridController {
         }
     }
 
-    _displayHeuristicSelect() {
+    _toggleHeuristicSelect() {
         if (
             this.alg == 'dijkstra' ||
             this.alg == 'dfs' ||
@@ -200,10 +200,12 @@ class GridController {
             this.alg == 'bfs' ||
             this.alg == 'bidirectional'
         ) {
-            document.getElementById('heuristicSelect').hidden = true;
+            $('#heuristicSelect').prop('disabled', true);
         } else if (this.alg == 'a*' || this.alg == 'greedy-bfs') {
-            document.getElementById('heuristicSelect').hidden = false;
+            $('#heuristicSelect').prop('disabled', false);
         }
+
+        $('#heuristicSelect').selectpicker('refresh');
     }
 
     _mazeGeneratorFromString(generatorStr) {

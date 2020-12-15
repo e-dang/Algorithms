@@ -226,12 +226,12 @@ describe('GridControllerTest', () => {
         expect(controller._handleUpdateAlgorithm).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleUpdateAlgorithm calls _displayHeuristicSelect', () => {
-        controller._displayHeuristicSelect = jest.fn();
+    test('_handleUpdateAlgorithm calls _toggleHeuristicSelect', () => {
+        controller._toggleHeuristicSelect = jest.fn();
 
         controller._handleUpdateAlgorithm();
 
-        expect(controller._displayHeuristicSelect).toHaveBeenCalledTimes(1);
+        expect(controller._toggleHeuristicSelect).toHaveBeenCalledTimes(1);
     });
 
     test('_handleCompleteAlgorithm sets algComplete element to be visible when cost is not null', () => {
@@ -393,74 +393,74 @@ describe('GridControllerTest', () => {
         expect(func).toHaveBeenCalledTimes(1);
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dijkstra', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dijkstra', () => {
         controller.alg = 'dijkstra';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfs', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dfs', () => {
         controller.alg = 'dfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is dfssp', () => {
+    test('_toggleHeuristicSelect hides heuristicSelect when alg prop is dfssp', () => {
         controller.alg = 'dfssp';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disable = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bfs', () => {
+    test('_toggleHeuristicSelect disables heuristicSelect when alg prop is bfs', () => {
         controller.alg = 'bfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect hides heuristicSelect when alg prop is bidirectional', () => {
+    test('_toggleHeuristicSelect disables heuristicSelect when alg prop is bidirectional', () => {
         controller.alg = 'bidirectional';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = false;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).not.toBeVisible();
+        expect(element).toBeDisabled();
     });
 
-    test('_displayHeuristicSelect displays heuristicSelect when alg prop is a*', () => {
+    test('_toggleHeuristicSelect enables heuristicSelect when alg prop is a*', () => {
         controller.alg = 'a*';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = true;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).toBeVisible();
+        expect(element).toBeEnabled();
     });
 
-    test('_displayHeuristicSelect displays heuristicSelect when alg prop is greedy-bfs', () => {
+    test('_toggleHeuristicSelect enables heuristicSelect when alg prop is greedy-bfs', () => {
         controller.alg = 'greedy-bfs';
         const element = document.getElementById('heuristicSelect');
-        element.hidden = true;
+        element.disabled = true;
 
-        controller._displayHeuristicSelect();
+        controller._toggleHeuristicSelect();
 
-        expect(element).toBeVisible();
+        expect(element).toBeEnabled();
     });
 
     test('_handleUpdateHeuristic sets heuristic prop to l1Norm function if select heuristic is l1Norm', () => {
