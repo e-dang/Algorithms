@@ -42,8 +42,7 @@ class GridPage(BasePage):
         return self.driver.find_element_by_id('gridErrorMessage').is_displayed()
 
     def is_algorithm_select_error_visible(self):
-        return self.driver.find_element_by_id('algorithmSelectErrorMessage').is_displayed() and \
-            len(self.driver.find_elements_by_class_name('error-select')) != 0
+        return self.driver.find_element_by_id('algorithmSelectErrorMessage').is_displayed()
 
     def grid_has_dimensions(self, num_rows, num_cols):
         self._calculate_grid_dimensions()
