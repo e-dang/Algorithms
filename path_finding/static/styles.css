@@ -1,3 +1,13 @@
+:root {
+    --empty-node-color: white;
+    --wall-node-color: black;
+    --start-node-color: green;
+    --end-node-color: red;
+    --visited-node-color: yellow;
+    --visiting-node-color: orange;
+    --path-node-color: blue;
+}
+
 .grid-wrapper {
     table-layout: fixed;
     border-collapse: collapse;
@@ -20,7 +30,7 @@
 }
 
 .node.empty {
-    background-color: white;
+    background-color: var(--empty-node-color);
 }
 
 .node.animatedEmpty {
@@ -31,7 +41,7 @@
 }
 
 .node.wall {
-    background-color: black;
+    background-color: var(--wall-node-color);
 }
 
 .node.animatedWall {
@@ -42,31 +52,73 @@
 }
 
 .node.start {
-    background-color: green;
+    background-color: var(--start-node-color);
 }
 
 .node.end {
-    background-color: red;
+    background-color: var(--end-node-color);
 }
 
 .node.visited {
-    background-color: yellow;
+    background-color: var(--visited-node-color);
     animation-name: toVisited;
     animation-duration: 1s;
     animation-timing-function: ease-out;
 }
 
 .node.visiting {
-    background-color: orange;
+    background-color: var(--visiting-node-color);
     animation-name: toVisiting;
     animation-duration: 1s;
     animation-timing-function: ease-out;
 }
 
 .node.path {
-    background-color: blue;
+    background-color: var(--path-node-color);
     animation-name: toPath;
     animation-duration: 3s;
+}
+
+.sample-empty-node {
+    background-color: var(--empty-node-color);
+    border: 1px solid black;
+    border-width: 1px;
+}
+
+.sample-wall-node {
+    background-color: var(--wall-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-start-node {
+    background-color: var(--start-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-end-node {
+    background-color: var(--end-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-visited-node {
+    background-color: var(--visited-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-visiting-node {
+    background-color: var(--visiting-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
+.sample-path-node {
+    background-color: var(--path-node-color);
+    border: 0px solid black;
+    border-width: 0px;
 }
 
 @keyframes toVisited {
