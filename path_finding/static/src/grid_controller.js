@@ -13,10 +13,12 @@ const RandomizedPrims = require('./maze_generators/prim');
 const RandomMaze = require('./maze_generators/random');
 
 class GridController {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
         this.alg = alg;
         this.isAlgRunning = false;
+        this.slider = slider;
+        this.toggle = toggle;
         this._handleUpdateHeuristic();
         this.grid.draw();
     }

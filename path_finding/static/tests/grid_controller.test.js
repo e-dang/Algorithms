@@ -19,18 +19,29 @@ const RandomMaze = require('../src/maze_generators/random');
 jest.mock('../src/grid');
 
 describe('GridControllerTest', () => {
-    const nRows = 10;
-    const nCols = 14;
-    const startRow = 1;
-    const startCol = 1;
-    const endRow = 1;
-    const endCol = 1;
-    const alg = "Dijkstra's Algorithm";
+    let nRows;
+    let nCols;
+    let startRow;
+    let startCol;
+    let endRow;
+    let endCol;
+    let alg;
+    let slider;
+    let toggle;
     let controller;
 
     beforeEach(() => {
+        nRows = 10;
+        nCols = 14;
+        startRow = 1;
+        startCol = 1;
+        endRow = 1;
+        endCol = 1;
+        alg = "Dijkstra's Algorithm";
+        slider = jest.fn();
+        toggle = jest.fn();
         document.documentElement.innerHTML = html.toString();
-        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg);
+        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
     });
 
     afterEach(() => {
@@ -43,6 +54,14 @@ describe('GridControllerTest', () => {
 
     test('constructor sets alg parameter to alg property', () => {
         expect(controller.alg).toBe(alg);
+    });
+
+    test('constructor sets slider property to slider parameter', () => {
+        expect(controller.slider).toBe(slider);
+    });
+
+    test('constructor sets toggle property to toggle parameter', () => {
+        expect(controller.toggle).toBe(toggle);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {
