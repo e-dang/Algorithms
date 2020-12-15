@@ -59,10 +59,6 @@
     animation-duration: 3s;
 }
 
-.error-select {
-    border-color: red;
-}
-
 @keyframes toVisited {
     from {
         background-color: orange;
