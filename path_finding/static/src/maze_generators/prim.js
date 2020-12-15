@@ -5,7 +5,7 @@ class RandomizedPrims extends BaseGenerator {
     async generate() {
         this.grid.nodes.forEach((node) => node.setAsWallNode(false));
         const isWallNode = (node) => node.isWallNode() || node.isEndNode();
-        const isPassageNode = (node) => !node.isWallNode();
+        const isPassageNode = (node) => !node.isWallNode() && !node.isEndNode();
 
         const walls = this.getNeighbors(this.grid.getStartNode(), isWallNode);
         while (walls.length) {
