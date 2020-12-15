@@ -176,6 +176,7 @@ class GridController {
     }
 
     _handleMazeGeneration() {
+        this._handleResetPath();
         const element = document.getElementById('mazeGenerationSelect');
         this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
         element.options[0].selected = true;
