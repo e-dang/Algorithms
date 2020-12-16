@@ -512,7 +512,7 @@ describe('GridControllerTest', () => {
     test('_handleMazeGeneration gets called when a maze generation algorithm is selected', () => {
         const element = document.getElementById('mazeGenerationSelect');
         controller._handleMazeGeneration = jest.fn();
-        controller.addMazeGenerationEventHandler();
+        controller.addMazeGenerationEventListener();
 
         element.dispatchEvent(new Event('change'));
 

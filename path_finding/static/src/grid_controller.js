@@ -30,7 +30,7 @@ class GridController {
             .addResetEventListener()
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
-            .addMazeGenerationEventHandler()
+            .addMazeGenerationEventListener()
             .addUpdateWeightEventListener()
             .addWeightToggleEventListener();
     }
@@ -73,7 +73,7 @@ class GridController {
         return this;
     }
 
-    addMazeGenerationEventHandler() {
+    addMazeGenerationEventListener() {
         document.getElementById('mazeGenerationSelect').addEventListener('change', () => this._handleMazeGeneration());
 
         return this;
