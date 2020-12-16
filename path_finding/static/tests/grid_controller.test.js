@@ -15,6 +15,7 @@ const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
 const RandomMaze = require('../src/maze_generators/random');
+const Slider = require('bootstrap-slider');
 
 jest.mock('../src/grid');
 
@@ -38,9 +39,9 @@ describe('GridControllerTest', () => {
         endRow = 1;
         endCol = 1;
         alg = "Dijkstra's Algorithm";
-        slider = jest.fn();
         toggle = jest.fn();
         document.documentElement.innerHTML = html.toString();
+        slider = new Slider('#weightSlider');
         controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
     });
 
@@ -558,5 +559,23 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomMaze);
+    });
+
+    test('_handleUpdateWeight is called when slider value changes', () => {
+        controller._handleUpdateWeight = jest.fn();
+        controller.addUpdateWeightEventListener();
+
+        controller.slider.setValue(100, false, true);
+
+        expect(controller._handleUpdateWeight).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateWeight sets weight prop on grid to weight parameter', () => {
+        const weight = 12;
+        controller.grid.weight = 50;
+
+        controller._handleUpdateWeight(weight);
+
+        expect(controller.grid.weight).toBe(weight);
     });
 });

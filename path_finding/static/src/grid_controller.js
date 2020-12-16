@@ -30,7 +30,8 @@ class GridController {
             .addResetEventListener()
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
-            .addMazeGenerationEventHandler();
+            .addMazeGenerationEventHandler()
+            .addUpdateWeightEventListener();
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -73,6 +74,12 @@ class GridController {
 
     addMazeGenerationEventHandler() {
         document.getElementById('mazeGenerationSelect').addEventListener('change', () => this._handleMazeGeneration());
+
+        return this;
+    }
+
+    addUpdateWeightEventListener() {
+        this.slider.on('change', (value) => this._handleUpdateWeight(value.newValue));
 
         return this;
     }
@@ -182,6 +189,10 @@ class GridController {
         const element = document.getElementById('mazeGenerationSelect');
         this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
         element.options[0].selected = true;
+    }
+
+    _handleUpdateWeight(weight) {
+        this.grid.weight = weight;
     }
 
     _removeAlgorithmCompleteMessages() {
