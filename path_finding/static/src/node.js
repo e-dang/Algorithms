@@ -25,21 +25,29 @@ class Node {
 
         this.visited = false;
 
-        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode()) {
+        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode() && !this.isWeightNode()) {
             this.setAsEmptyNode(false, false);
         }
     }
 
+    resetWeight() {
+        this.cost = 1;
+        this.element.style.opacity = 1;
+    }
+
     setAsStartNode() {
+        this.resetWeight();
         this._setNodeType('start');
     }
 
     setAsEndNode() {
+        this.resetWeight();
         this._setNodeType('end');
     }
 
     setAsEmptyNode(force = false, animation = true) {
         if (force || (!this.isStartNode() && !this.isEndNode())) {
+            this.resetWeight();
             if (animation) {
                 this._setNodeType(['animatedEmpty', 'empty']);
             } else {
@@ -50,6 +58,7 @@ class Node {
 
     setAsWallNode(animation = true) {
         if (!this.isStartNode() && !this.isEndNode()) {
+            this.resetWeight();
             if (animation) {
                 this._setNodeType(['animatedWall', 'wall']);
             } else {

@@ -155,6 +155,14 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(true);
     });
 
+    test('reset doesnt set node to empty node if node is a weight node', () => {
+        node.setAsWeightNode();
+
+        node.reset();
+
+        expect(node.isWeightNode()).toBe(true);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
@@ -226,6 +234,22 @@ describe('NodeTest', () => {
         node.element.className = 'node';
 
         expect(node.isEndNode()).toBe(false);
+    });
+
+    test('resetWeight sets the cost to 1', () => {
+        node.cost = 12;
+
+        node.resetWeight();
+
+        expect(node.cost).toBe(1);
+    });
+
+    test('resetWeight sets element opacity to 1', () => {
+        node.element.style.opacity = 0.5;
+
+        node.resetWeight();
+
+        expect(node.element.style.opacity).toBe('1');
     });
 
     describe('test node type setter methods', () => {
@@ -434,6 +458,38 @@ describe('NodeTest', () => {
             node.setAsPathNode();
 
             expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsStartNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsStartNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsEndNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsEndNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsWallNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsWallNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsEmptyNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsEmptyNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
         });
     });
 });
