@@ -157,21 +157,21 @@ class GridController {
 
     _algorithmFromString() {
         if (this.alg == 'dijkstra') {
-            return new Dijkstra(this.grid);
+            return new Dijkstra(this.grid, this.moves);
         } else if (this.alg == 'dfs') {
-            return new DFS(this.grid);
+            return new DFS(this.grid, this.moves);
         } else if (this.alg == 'dfssp') {
-            return new DFSShortestPath(this.grid);
+            return new DFSShortestPath(this.grid, this.moves);
         } else if (this.alg == 'bfs') {
-            return new BFS(this.grid);
+            return new BFS(this.grid, this.moves);
         } else if (this.alg == 'a*') {
-            return new AStarSearch(this.grid, this.heuristic);
+            return new AStarSearch(this.grid, this.moves, this.heuristic);
         } else if (this.alg == 'greedy-bfs') {
-            return new GreedyBestFirstSearch(this.grid, this.heuristic);
+            return new GreedyBestFirstSearch(this.grid, this.moves, this.heuristic);
         } else if (this.alg == 'bidirectional') {
-            return new BidirectionalSearch(this.grid);
+            return new BidirectionalSearch(this.grid, this.moves);
         } else {
-            return new BaseAlgorithm(this.grid);
+            return new BaseAlgorithm(this.grid, this.moves);
         }
     }
 

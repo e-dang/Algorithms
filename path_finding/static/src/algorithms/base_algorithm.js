@@ -3,10 +3,11 @@ const utils = require('../utils/utils');
 const TIMEOUT = 10;
 
 class BaseAlgorithm {
-    constructor(grid) {
+    constructor(grid, moves) {
         this.grid = grid;
-        this.dr = [-1, 0, 1, 0];
-        this.dc = [0, -1, 0, 1];
+        Object.assign(this, moves);
+        // this.dr = [-1, 0, 1, 0];
+        // this.dc = [0, -1, 0, 1];
     }
 
     async run(callback) {

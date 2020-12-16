@@ -8,14 +8,16 @@ jest.mock('../../src/algorithms/base_algorithm');
 describe('TestBFS', () => {
     let alg;
     let grid;
+    let moves;
 
     beforeEach(() => {
+        moves = jest.fn();
         grid = jest.fn();
-        alg = new BFS(grid);
+        alg = new BFS(grid, moves);
     });
 
-    test('constructor calls parent constructor with grid param', () => {
-        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
+    test('constructor calls parent constructor with grid and moves param', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid, moves);
     });
 
     describe('test visiting', () => {
