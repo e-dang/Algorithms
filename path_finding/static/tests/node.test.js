@@ -1,4 +1,4 @@
-const Node = require('../src/node');
+const {Node, MAX_WEIGHT, MIN_WEIGHT} = require('../src/node');
 
 describe('NodeTest', () => {
     let row;
@@ -33,16 +33,8 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${idx}`);
     });
 
-    test('constructor sets cost prop to cost param', () => {
-        const cost = 10;
-
-        node = new Node(row, col, idx, gridRow, cost);
-
-        expect(node.cost).toBe(cost);
-    });
-
-    test('constructor sets cost prop to default 1', () => {
-        expect(node.cost).toBe(1);
+    test('constructor sets weight prop to default 1', () => {
+        expect(node.weight).toBe(1);
     });
 
     test('constructor initializes row property with row param', () => {
@@ -163,6 +155,14 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(true);
     });
 
+    test('reset doesnt set node to empty node if node is a weight node', () => {
+        node.setAsWeightNode(MIN_WEIGHT);
+
+        node.reset();
+
+        expect(node.isWeightNode()).toBe(true);
+    });
+
     test('addEventListener adds event listener to dom element', () => {
         const fn = jest.fn();
         node.addEventListener('click', fn);
@@ -184,20 +184,16 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(false);
     });
 
-    test('toggleNodeType switches node type from empty to wall', () => {
-        node.setAsEmptyNode();
+    test('isWeightNode returns true when node class list contains "weight"', () => {
+        node.element.classList = 'node weight';
 
-        node.toggleNodeType();
-
-        expect(node.isWallNode()).toBe(true);
+        expect(node.isWeightNode()).toBe(true);
     });
 
-    test('toggleNodeType switches node type from wall to empty', () => {
-        node.setAsWallNode();
+    test('isWeightNode returns false when node class list doesnt contains "weight"', () => {
+        node.element.classList = 'node weightasdasd';
 
-        node.toggleNodeType();
-
-        expect(node.isWallNode()).toBe(false);
+        expect(node.isWeightNode()).toBe(false);
     });
 
     test('isStartNode returns true when class list is "node start"', () => {
@@ -222,6 +218,22 @@ describe('NodeTest', () => {
         node.element.className = 'node';
 
         expect(node.isEndNode()).toBe(false);
+    });
+
+    test('resetWeight sets the weight to 1', () => {
+        node.weight = 12;
+
+        node.resetWeight();
+
+        expect(node.weight).toBe(1);
+    });
+
+    test('resetWeight sets element opacity to 1', () => {
+        node.element.style.opacity = 0.5;
+
+        node.resetWeight();
+
+        expect(node.element.style.opacity).toBe('1');
     });
 
     describe('test node type setter methods', () => {
@@ -317,6 +329,70 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe(name);
         });
 
+        test('setAsWeightNode sets class list to node "node weight" when animation is false', () => {
+            node.setAsWeightNode(MIN_WEIGHT, false);
+
+            expect(node.element.className).toBe('node weight');
+        });
+
+        test('setAsWeightNode sets class list to node "node animatedWeight weight" when animation is true', () => {
+            node.setAsWeightNode(MIN_WEIGHT, true);
+
+            expect(node.element.className).toBe('node animatedWeight weight');
+        });
+
+        test('setAsWeightNode sets weight prop to weight param', () => {
+            const weight = MAX_WEIGHT - 1;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.weight).toBe(weight);
+        });
+
+        test('setAsWeightNode doesnt set weight prop to weight param if weight is greater than MAX_WEIGHT', () => {
+            const weight = MAX_WEIGHT + 1;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.weight).not.toBe(weight);
+        });
+
+        test('setAsWeightNode doesnt set weight prop to weight param if weight is less than MIN_WEIGHT', () => {
+            const weight = 0;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.weight).not.toBe(weight);
+        });
+
+        test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
+            const weight = MAX_WEIGHT - 5;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.element.style.opacity).toBe(`${weight / MAX_WEIGHT}`);
+        });
+
+        test('setAsWeightNode doesnt change class list if node is a start node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isStartNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWeightNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
+        test('setAsWeightNode doesnt change class list if node is an end node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isEndNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWeightNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
         test('setAsVisitedNode sets class list to "node visited"', () => {
             node.setAsVisitedNode();
 
@@ -382,6 +458,38 @@ describe('NodeTest', () => {
             node.setAsPathNode();
 
             expect(node.element.className).toBe('node start');
+        });
+
+        test('setAsStartNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsStartNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsEndNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsEndNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsWallNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsWallNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
+        });
+
+        test('setAsEmptyNode calls resetWeight', () => {
+            node.resetWeight = jest.fn();
+
+            node.setAsEmptyNode();
+
+            expect(node.resetWeight).toHaveBeenCalledTimes(1);
         });
     });
 });

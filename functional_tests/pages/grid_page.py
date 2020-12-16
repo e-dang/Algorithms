@@ -75,6 +75,11 @@ class GridPage(BasePage):
         element = grid.find_element_by_id(self._make_node_id(row, col))
         element.click()
 
+    def click_weight_node_toggle(self):
+        element = self.driver.find_elements_by_class_name('toggle')[0]
+        element.click()
+        return 'wall' if 'off' in element.get_attribute('class') else 'weight'
+
     def click_and_hold_nodes(self, start_row, start_col, end_row, end_col):
         grid = self._get_grid()
         start = grid.find_element_by_id(self._make_node_id(start_row, start_col))

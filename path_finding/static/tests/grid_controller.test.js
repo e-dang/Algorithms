@@ -15,22 +15,34 @@ const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
 const RandomMaze = require('../src/maze_generators/random');
+const Slider = require('bootstrap-slider');
 
 jest.mock('../src/grid');
 
 describe('GridControllerTest', () => {
-    const nRows = 10;
-    const nCols = 14;
-    const startRow = 1;
-    const startCol = 1;
-    const endRow = 1;
-    const endCol = 1;
-    const alg = "Dijkstra's Algorithm";
+    let nRows;
+    let nCols;
+    let startRow;
+    let startCol;
+    let endRow;
+    let endCol;
+    let alg;
+    let slider;
+    let toggle;
     let controller;
 
     beforeEach(() => {
+        nRows = 10;
+        nCols = 14;
+        startRow = 1;
+        startCol = 1;
+        endRow = 1;
+        endCol = 1;
+        alg = "Dijkstra's Algorithm";
         document.documentElement.innerHTML = html.toString();
-        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg);
+        slider = new Slider('#weightSlider');
+        toggle = $('#weightToggle').bootstrapToggle();
+        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
     });
 
     afterEach(() => {
@@ -38,11 +50,19 @@ describe('GridControllerTest', () => {
     });
 
     test('constructor initializes a new Grid with the passed in dimensions', () => {
-        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol);
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
     });
 
     test('constructor sets alg parameter to alg property', () => {
         expect(controller.alg).toBe(alg);
+    });
+
+    test('constructor sets slider property to slider parameter', () => {
+        expect(controller.slider).toBe(slider);
+    });
+
+    test('constructor sets toggle property to toggle parameter', () => {
+        expect(controller.toggle).toBe(toggle);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {
@@ -492,7 +512,7 @@ describe('GridControllerTest', () => {
     test('_handleMazeGeneration gets called when a maze generation algorithm is selected', () => {
         const element = document.getElementById('mazeGenerationSelect');
         controller._handleMazeGeneration = jest.fn();
-        controller.addMazeGenerationEventHandler();
+        controller.addMazeGenerationEventListener();
 
         element.dispatchEvent(new Event('change'));
 
@@ -539,5 +559,50 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomMaze);
+    });
+
+    test('_handleUpdateWeight is called when slider value changes', () => {
+        controller._handleUpdateWeight = jest.fn();
+        controller.addUpdateWeightEventListener();
+
+        controller.slider.setValue(100, false, true);
+
+        expect(controller._handleUpdateWeight).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleUpdateWeight sets weight prop on grid to weight parameter', () => {
+        const weight = 12;
+        controller.grid.weight = 50;
+
+        controller._handleUpdateWeight(weight);
+
+        expect(controller.grid.weight).toBe(weight);
+    });
+
+    test('_handleWeightToggle is called when toggle is clicked', () => {
+        controller._handleWeightToggle = jest.fn();
+        controller.addWeightToggleEventListener();
+
+        controller.toggle.bootstrapToggle('on');
+
+        expect(controller._handleWeightToggle).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleWeightToggle sets isWeightToggleOn on grid to true when toggle is checked', () => {
+        controller.toggle.bootstrapToggle('on');
+        controller.grid.isWeightToggleOn = false;
+
+        controller._handleWeightToggle();
+
+        expect(controller.grid.isWeightToggleOn).toBe(true);
+    });
+
+    test('_handleWeightToggle sets isWeightToggleOn on grid to false when toggle is not checked', () => {
+        controller.toggle.bootstrapToggle('off');
+        controller.grid.isWeightToggleOn = true;
+
+        controller._handleWeightToggle();
+
+        expect(controller.grid.isWeightToggleOn).toBe(false);
     });
 });

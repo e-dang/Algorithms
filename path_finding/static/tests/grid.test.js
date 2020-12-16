@@ -1,22 +1,30 @@
 const Grid = require('../src/grid');
-const Node = require('../src/node');
+const Node = require('../src/node').Node;
 
 jest.mock('../src/node');
 
 describe('TestGrid', () => {
-    const nRows = 10;
-    const nCols = 20;
-    const startRow = 1;
-    const startCol = 1;
-    const endRow = 8;
-    const endCol = 15;
+    let nRows;
+    let nCols;
+    let startRow;
+    let startCol;
+    let endRow;
+    let endCol;
+    let weight;
     let grid;
 
     beforeEach(() => {
-        const wrapper = document.createElement('div');
+        nRows = 10;
+        nCols = 20;
+        startRow = 1;
+        startCol = 1;
+        endRow = 8;
+        endCol = 15;
+        weight = 20;
+        const wrapper = document.createElement('table');
         wrapper.id = 'gridWrapper';
         document.body.append(wrapper);
-        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
+        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, weight);
     });
 
     afterEach(() => {
@@ -30,6 +38,10 @@ describe('TestGrid', () => {
         expect(grid.startCol).toBe(startCol);
         expect(grid.endRow).toBe(endRow);
         expect(grid.endCol).toBe(endCol);
+    });
+
+    test('constructor sets weight property to weight parameter', () => {
+        expect(grid.weight).toBe(weight);
     });
 
     describe('test draw method', () => {
@@ -259,88 +271,145 @@ describe('TestGrid', () => {
         expect(grid.setNodeType).not.toHaveBeenCalled();
     });
 
-    test('_handleClick calls toggleNodeType when isAlgRunning is false', () => {
+    test('_handleClick calls setAsWeightNode when isAlgRunning is false, isWeightToggleOn is true and node is not a weight node', () => {
         const node = new Node();
         grid.isAlgRunning = false;
+        grid.isWeightToggleOn = true;
+        node.isWeightNode.mockReturnValueOnce(false);
 
         grid._handleClick(node);
 
-        expect(node.toggleNodeType).toHaveBeenCalledTimes(1);
+        expect(node.setAsWeightNode).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleClick doesnt call toggleNodeType when isAlgRunning is true', () => {
+    test('_handleClick calls setAsWallNode when isAlgRunning is false, isWeightToggleOn is false and node is not a wall node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = false;
+        node.isWallNode.mockReturnValueOnce(false);
+
+        grid._handleClick(node);
+
+        expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick calls setAsEmptyNode when isAlgRunning is false and isWeightToggleOn is true and node is a weight node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = true;
+        node.isWeightNode.mockReturnValueOnce(true);
+
+        grid._handleClick(node);
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick calls setAsEmptyNode when isAlgRunning is false and isWeightToggleOn is false and node is a wall node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = false;
+        node.isWallNode.mockReturnValueOnce(true);
+
+        grid._handleClick(node);
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick doesnt call setAsWeightNode, setAsWallNode, or setAsEmptyNode when isAlgRunning is true', () => {
         const node = new Node();
         grid.isAlgRunning = true;
 
         grid._handleClick(node);
 
-        expect(node.toggleNodeType).not.toHaveBeenCalled();
+        expect(node.setAsWeightNode).not.toHaveBeenCalled();
+        expect(node.setAsWallNode).not.toHaveBeenCalled();
+        expect(node.setAsEmptyNode).not.toHaveBeenCalled();
     });
 
-    test('_handleMouseDown sets isMouseDown to true', () => {
-        const mockFn = jest.fn((x) => 0);
-        const event = {target: {id: {substring: mockFn}}};
-        grid.nodes = [new Node()];
-        grid.isMouseDown = false;
+    describe('test _handleMouseDown', () => {
+        let mockFn;
+        let event;
+        let node;
 
-        grid._handleMouseDown(event);
+        beforeEach(() => {
+            mockFn = jest.fn((x) => 0);
+            event = {target: {id: {substring: mockFn}}};
+            node = new Node();
+            grid.nodes = [node];
+        });
 
-        expect(grid.isMouseDown).toBe(true);
-    });
+        test('_handleMouseDown sets isMouseDown to true', () => {
+            grid.isMouseDown = false;
 
-    test('_handleMouseDown sets setNodeType to func that sets node as empty node when node is a wall node', () => {
-        const mockFn = jest.fn((x) => 0);
-        const event = {target: {id: {substring: mockFn}}};
-        const node = new Node();
-        node.isWallNode.mockReturnValueOnce(true);
-        grid.nodes = [node];
+            grid._handleMouseDown(event);
 
-        grid._handleMouseDown(event);
-        grid.setNodeType(node);
+            expect(grid.isMouseDown).toBe(true);
+        });
 
-        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
-    });
+        test('_handleMouseDown sets setNodeType to func that sets node as empty node when node is a wall node and isWightToggleOn is false', () => {
+            node.isWallNode.mockReturnValueOnce(true);
+            node.isStartNode.mockReturnValueOnce(false);
+            node.isEndNode.mockReturnValueOnce(false);
+            grid.isWeightToggleOn = false;
 
-    test('_handleMouseDown sets setNodeType to func that sets node as wall node when node is a empty node', () => {
-        const mockFn = jest.fn((x) => 0);
-        const event = {target: {id: {substring: mockFn}}};
-        const node = new Node();
-        node.isWallNode.mockReturnValueOnce(false);
-        node.isStartNode.mockReturnValueOnce(false);
-        node.isEndNode.mockReturnValueOnce(false);
-        grid.nodes = [node];
+            grid._handleMouseDown(event);
+            grid.setNodeType(node);
 
-        grid._handleMouseDown(event);
-        grid.setNodeType(node);
+            expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+        });
 
-        expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
-    });
+        test('_handleMouseDown sets setNodeType to func that sets node as empty node when node is a weight node and isWightToggleOn is true', () => {
+            node.isWeightNode.mockReturnValueOnce(true);
+            node.isStartNode.mockReturnValueOnce(false);
+            node.isEndNode.mockReturnValueOnce(false);
+            grid.isWeightToggleOn = true;
 
-    test('_handleMouseDown sets setNodeType to setAsStartNode when node is a start node', () => {
-        const mockFn = jest.fn((x) => 0);
-        const event = {target: {id: {substring: mockFn}}};
-        const node = new Node();
-        node.isWallNode.mockReturnValueOnce(false);
-        node.isStartNode.mockReturnValueOnce(true);
-        grid.nodes = [node];
+            grid._handleMouseDown(event);
+            grid.setNodeType(node);
 
-        grid._handleMouseDown(event);
+            expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+        });
 
-        expect(grid.setNodeType).toBe(grid.setAsStartNode);
-    });
+        test('_handleMouseDown sets setNodeType to func that sets node as wall node when node is not a wall node and isWightToggleOn is false', () => {
+            node.isWallNode.mockReturnValueOnce(false);
+            node.isStartNode.mockReturnValueOnce(false);
+            node.isEndNode.mockReturnValueOnce(false);
+            grid.isWeightToggleOn = false;
 
-    test('_handleMouseDown sets setNodeType to setAsEndNode when node is a end node', () => {
-        const mockFn = jest.fn((x) => 0);
-        const event = {target: {id: {substring: mockFn}}};
-        const node = new Node();
-        node.isWallNode.mockReturnValueOnce(false);
-        node.isStartNode.mockReturnValueOnce(false);
-        node.isEndNode.mockReturnValueOnce(true);
-        grid.nodes = [node];
+            grid._handleMouseDown(event);
+            grid.setNodeType(node);
 
-        grid._handleMouseDown(event);
+            expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
+        });
 
-        expect(grid.setNodeType).toBe(grid.setAsEndNode);
+        test('_handleMouseDown sets setNodeType to func that sets node as weight node when node is not a weight node and isWightToggleOn is true', () => {
+            node.isWeightNode.mockReturnValueOnce(false);
+            node.isStartNode.mockReturnValueOnce(false);
+            node.isEndNode.mockReturnValueOnce(false);
+            grid.isWeightToggleOn = true;
+
+            grid._handleMouseDown(event);
+            grid.setNodeType(node);
+
+            expect(node.setAsWeightNode).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleMouseDown sets setNodeType to setAsStartNode when node is a start node', () => {
+            node.isStartNode.mockReturnValueOnce(true);
+
+            grid._handleMouseDown(event);
+
+            expect(grid.setNodeType).toBe(grid.setAsStartNode);
+        });
+
+        test('_handleMouseDown sets setNodeType to setAsEndNode when node is a end node', () => {
+            node.isStartNode.mockReturnValueOnce(false);
+            node.isEndNode.mockReturnValueOnce(true);
+
+            grid._handleMouseDown(event);
+
+            expect(grid.setNodeType).toBe(grid.setAsEndNode);
+        });
     });
 
     test('_handleMouseUp sets isMouseDown to false', () => {

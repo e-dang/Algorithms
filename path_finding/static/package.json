@@ -2,6 +2,8 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.6",
     "bootstrap-select": "^1.13.18",
+    "bootstrap-slider": "^11.0.2",
+    "bootstrap-toggle": "^2.2.2",
     "jest": "^26.6.3",
     "jquery": "^3.5.1",
     "webpack": "^5.6.0",

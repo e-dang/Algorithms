@@ -13,10 +13,12 @@ const RandomizedPrims = require('./maze_generators/prim');
 const RandomMaze = require('./maze_generators/random');
 
 class GridController {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg) {
-        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
+        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
         this.alg = alg;
         this.isAlgRunning = false;
+        this.slider = slider;
+        this.toggle = toggle;
         this._handleUpdateHeuristic();
         this.grid.draw();
     }
@@ -28,7 +30,9 @@ class GridController {
             .addResetEventListener()
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
-            .addMazeGenerationEventHandler();
+            .addMazeGenerationEventListener()
+            .addUpdateWeightEventListener()
+            .addWeightToggleEventListener();
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -69,8 +73,20 @@ class GridController {
         return this;
     }
 
-    addMazeGenerationEventHandler() {
+    addMazeGenerationEventListener() {
         document.getElementById('mazeGenerationSelect').addEventListener('change', () => this._handleMazeGeneration());
+
+        return this;
+    }
+
+    addUpdateWeightEventListener() {
+        this.slider.on('change', (value) => this._handleUpdateWeight(value.newValue));
+
+        return this;
+    }
+
+    addWeightToggleEventListener() {
+        this.toggle.on('change', () => this._handleWeightToggle());
 
         return this;
     }
@@ -180,6 +196,14 @@ class GridController {
         const element = document.getElementById('mazeGenerationSelect');
         this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
         element.options[0].selected = true;
+    }
+
+    _handleUpdateWeight(weight) {
+        this.grid.weight = weight;
+    }
+
+    _handleWeightToggle() {
+        this.grid.isWeightToggleOn = this.toggle.prop('checked');
     }
 
     _removeAlgorithmCompleteMessages() {

@@ -32,7 +32,7 @@ class GreedyBestFirstSearch extends BaseAlgorithm {
                 }
 
                 const candidateNode = this.grid.getNode(row, col);
-                const cost = node.totalCost + candidateNode.cost;
+                const cost = node.totalCost + candidateNode.weight;
                 if (candidateNode.totalCost > cost) {
                     const heuristicScore = this.heuristic(candidateNode, endNode);
                     if (heap.contains(candidateNode)) {

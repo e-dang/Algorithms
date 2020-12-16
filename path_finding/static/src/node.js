@@ -1,8 +1,10 @@
+const MAX_WEIGHT = 20;
+const MIN_WEIGHT = 2;
 class Node {
-    constructor(row, col, idx, gridRow, cost = 1) {
+    constructor(row, col, idx, gridRow) {
         this.row = row;
         this.col = col;
-        this.cost = cost;
+        this.weight = 1;
         this.id = `n${idx}`;
         this.element = document.createElement('td');
         this.element.id = this.id;
@@ -25,21 +27,29 @@ class Node {
 
         this.visited = false;
 
-        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode()) {
+        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode() && !this.isWeightNode()) {
             this.setAsEmptyNode(false, false);
         }
     }
 
+    resetWeight() {
+        this.weight = 1;
+        this.element.style.opacity = 1;
+    }
+
     setAsStartNode() {
+        this.resetWeight();
         this._setNodeType('start');
     }
 
     setAsEndNode() {
+        this.resetWeight();
         this._setNodeType('end');
     }
 
     setAsEmptyNode(force = false, animation = true) {
         if (force || (!this.isStartNode() && !this.isEndNode())) {
+            this.resetWeight();
             if (animation) {
                 this._setNodeType(['animatedEmpty', 'empty']);
             } else {
@@ -50,10 +60,23 @@ class Node {
 
     setAsWallNode(animation = true) {
         if (!this.isStartNode() && !this.isEndNode()) {
+            this.resetWeight();
             if (animation) {
                 this._setNodeType(['animatedWall', 'wall']);
             } else {
                 this._setNodeType('wall');
+            }
+        }
+    }
+
+    setAsWeightNode(weight, animation = true) {
+        if (!this.isStartNode() && !this.isEndNode() && weight <= MAX_WEIGHT && weight >= MIN_WEIGHT) {
+            this.weight = weight;
+            this.element.style.opacity = weight / MAX_WEIGHT;
+            if (animation) {
+                this._setNodeType(['animatedWeight', 'weight']);
+            } else {
+                this._setNodeType('weight');
             }
         }
     }
@@ -85,20 +108,16 @@ class Node {
         return this.element.classList.contains('wall');
     }
 
+    isWeightNode() {
+        return this.element.classList.contains('weight');
+    }
+
     isStartNode() {
         return this.element.classList.contains('start');
     }
 
     isEndNode() {
         return this.element.classList.contains('end');
-    }
-
-    toggleNodeType() {
-        if (this.isWallNode()) {
-            this.setAsEmptyNode();
-        } else {
-            this.setAsWallNode();
-        }
     }
 
     _setNodeType(type) {
@@ -111,4 +130,4 @@ class Node {
     }
 }
 
-module.exports = Node;
+module.exports = {Node, MAX_WEIGHT, MIN_WEIGHT};

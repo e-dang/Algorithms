@@ -1,16 +1,18 @@
-const Node = require('./node');
+const Node = require('./node').Node;
 const utils = require('./utils/utils');
 class Grid {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol, weight) {
         this.nRows = nRows;
         this.nCols = nCols;
         this.startRow = startRow;
         this.startCol = startCol;
         this.endRow = endRow;
         this.endCol = endCol;
+        this.weight = weight;
         this.isMouseDown = false;
         this.isAlgRunning = false;
         this.setNodeType = null;
+        this.isWeightToggleOn = false;
         this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
     }
@@ -121,21 +123,29 @@ class Grid {
 
     _handleClick(node) {
         if (!this.isAlgRunning) {
-            node.toggleNodeType();
+            if (this.isWeightToggleOn && !node.isWeightNode()) {
+                node.setAsWeightNode(this.weight);
+            } else if (!this.isWeightToggleOn && !node.isWallNode()) {
+                node.setAsWallNode();
+            } else {
+                node.setAsEmptyNode();
+            }
         }
     }
 
     _handleMouseDown(event) {
         this.isMouseDown = true;
         const node = this.nodes[event.target.id.substring(1)];
-        if (node.isWallNode()) {
-            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
-        } else if (node.isStartNode()) {
+        if (node.isStartNode()) {
             this.setNodeType = this.setAsStartNode;
         } else if (node.isEndNode()) {
             this.setNodeType = this.setAsEndNode;
-        } else {
+        } else if (this.isWeightToggleOn && !node.isWeightNode()) {
+            this.setNodeType = (currNode) => currNode.setAsWeightNode(this.weight);
+        } else if (!this.isWeightToggleOn && !node.isWallNode()) {
             this.setNodeType = (currNode) => currNode.setAsWallNode();
+        } else {
+            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
         }
     }
 

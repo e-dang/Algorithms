@@ -40,14 +40,17 @@ class BidirectionalSearch extends BaseAlgorithm {
             }
 
             const candidateNode = this.grid.getNode(row, col);
-            if (direction === 'start' && candidateNode.totalCost > node.totalCost + candidateNode.cost) {
+            if (direction === 'start' && candidateNode.totalCost > node.totalCost + candidateNode.weight) {
                 await this.visiting(candidateNode);
-                candidateNode.totalCost = node.totalCost + candidateNode.cost;
+                candidateNode.totalCost = node.totalCost + candidateNode.weight;
                 candidateNode.prev = node;
                 queue.push(candidateNode);
-            } else if (direction === 'end' && candidateNode.otherTotalCost > node.otherTotalCost + candidateNode.cost) {
+            } else if (
+                direction === 'end' &&
+                candidateNode.otherTotalCost > node.otherTotalCost + candidateNode.weight
+            ) {
                 await this.visiting(candidateNode);
-                candidateNode.otherTotalCost = node.otherTotalCost + candidateNode.cost;
+                candidateNode.otherTotalCost = node.otherTotalCost + candidateNode.weight;
                 candidateNode.otherPrev = node;
                 queue.push(candidateNode);
             }
@@ -60,7 +63,7 @@ class BidirectionalSearch extends BaseAlgorithm {
         while (node.otherPrev != null) {
             const nextNode = node.otherPrev;
             nextNode.prev = node;
-            nextNode.totalCost = node.totalCost + nextNode.cost;
+            nextNode.totalCost = node.totalCost + nextNode.weight;
             node = nextNode;
         }
     }
