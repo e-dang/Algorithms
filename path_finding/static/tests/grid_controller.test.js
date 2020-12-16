@@ -16,6 +16,7 @@ const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
 const RandomWallMaze = require('../src/maze_generators/rand_wall_maze');
 const Slider = require('bootstrap-slider');
+const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
 
 jest.mock('../src/grid');
 
@@ -559,6 +560,14 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomWallMaze);
+    });
+
+    test('_mazeGeneratorFromString returns RandomWeightMaze when parameter is "random-weights"', () => {
+        const generator = 'random-weights';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RandomWeightMaze);
     });
 
     test('_handleUpdateWeight is called when slider value changes', () => {
