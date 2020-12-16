@@ -31,6 +31,47 @@ class TestGrid:
     def make_form_input(self, row, col):
         return f'{row},{col}'
 
+    def run_algorithm_test_case(self, page, algorithm, grid_props, wall_nodes, cost):
+        # Resize the grid to something small so the test runs faster
+        dims, start, end = grid_props  # start and end are known from scaling calculation in js
+        page.dims_input = self.make_form_input(dims, dims)
+        page.submit_grid_dims()
+
+        # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
+        page.select_algorithm(algorithm)
+
+        # The user clicks and drags on some empty nodes and converts them to wall nodes
+        w_start_row, w_end_row, col = wall_nodes
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
+
+        # The user sees a button that runs the algorithm on the grid and presses it
+        page.click_run()
+
+        # The algorithm runs and the user sees explored nodes around the start node
+        page.wait_for_node_to_be_of_type(start + 1, start, ['visited', 'visiting'], timeout=5)
+
+        # The algorithm completes and the user sees path nodes at the start and end nodes, along with the path cost
+        page.wait_until_complete()
+        movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        assert any(page.is_node_of_type(start + dr, start + dc, 'path') for dr, dc in movements)
+        assert any(page.is_node_of_type(end + dr, end + dc, 'path') for dr, dc in movements)
+        assert page.get_cost() == cost
+
+        # The user also notices that the wall nodes have not been changed either
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
+
+        # The user sees a button to reset the graph and clicks it. The grid resets.
+        page.click_reset()
+        for row in range(dims):
+            for col in range(dims):
+                if row == start and col == start:
+                    assert page.is_node_of_type(row, col, 'start')
+                elif row == end and col == end:
+                    assert page.is_node_of_type(row, col, 'end')
+                else:
+                    assert page.is_node_of_type(row, col, 'empty')
+
     def test_user_can_customize_grid_through_input_field(self, url):
         # A user goes to the website
         self.driver.get(url)
@@ -225,50 +266,33 @@ class TestGrid:
     ],
         indirect=['url'],
         ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
-    def test_user_can_select_different_algorithms_and_run_them(self, url, algorithm, grid_props, wall_nodes, cost):
+    def test_user_can_select_different_algorithms_and_run_them_with_manhattan_moves(self, url, algorithm, grid_props, wall_nodes, cost):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
 
-        # Resize the grid to something small so the test runs faster
-        dims, start, end = grid_props  # start and end are known from scaling calculation in js
-        page.dims_input = self.make_form_input(dims, dims)
-        page.submit_grid_dims()
+        self.run_algorithm_test_case(page, algorithm, grid_props, wall_nodes, cost)
 
-        # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
-        page.select_algorithm(algorithm)
+    @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
+        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 11),
+        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 64),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 2),
+        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 11),
+        (None, 'A* Search', GRID_PROPS, WALL_NODES, 11),
+        (None, 'Greedy Best-First Search', GRID_PROPS, WALL_NODES, 11),
+        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 11),
+    ],
+        indirect=['url'],
+        ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
+    def test_user_can_select_different_algorithms_and_run_them_with_diagonal_moves(self, url, algorithm, grid_props, wall_nodes, cost):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
 
-        # The user clicks and drags on some empty nodes and converts them to wall nodes
-        w_start_row, w_end_row, col = wall_nodes
-        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
-        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
+        # The user sees a check box to enable diagonal moves and clicks it
+        page.enable_diagonal_moves()
 
-        # The user sees a button that runs the algorithm on the grid and presses it
-        page.click_run()
-
-        # The algorithm runs and the user sees explored nodes around the start node
-        page.wait_for_node_to_be_of_type(start + 1, start, ['visited', 'visiting'], timeout=5)
-
-        # The algorithm completes and the user sees path nodes at the start and end nodes, along with the path cost
-        page.wait_until_complete()
-        movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-        assert any(page.is_node_of_type(start + dr, start + dc, 'path') for dr, dc in movements)
-        assert any(page.is_node_of_type(end + dr, end + dc, 'path') for dr, dc in movements)
-        assert page.get_cost() == cost
-
-        # The user also notices that the wall nodes have not been changed either
-        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
-
-        # The user sees a button to reset the graph and clicks it. The grid resets.
-        page.click_reset()
-        for row in range(dims):
-            for col in range(dims):
-                if row == start and col == start:
-                    assert page.is_node_of_type(row, col, 'start')
-                elif row == end and col == end:
-                    assert page.is_node_of_type(row, col, 'end')
-                else:
-                    assert page.is_node_of_type(row, col, 'empty')
+        self.run_algorithm_test_case(page, algorithm, grid_props, wall_nodes, cost)
 
     def test_weight_nodes_are_calculated_in_path_cost(self, url):
         # The user goes to the website and sees a grid

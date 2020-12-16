@@ -135,6 +135,9 @@ class GridPage(BasePage):
     def select_maze_generation(self, algorithm):
         self._make_selection('mazeGenerationSelect', algorithm)
 
+    def enable_diagonal_moves(self):
+        self.driver.find_element_by_id('diagMovesToggle').click()
+
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 
