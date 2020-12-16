@@ -274,13 +274,13 @@ class TestGrid:
         self.run_algorithm_test_case(page, algorithm, grid_props, wall_nodes, cost)
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
-        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 11),
-        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 64),
-        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 2),
-        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 11),
-        (None, 'A* Search', GRID_PROPS, WALL_NODES, 11),
+        (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 10),
+        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 82),
+        (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
+        (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 10),
+        (None, 'A* Search', GRID_PROPS, WALL_NODES, 10),
         (None, 'Greedy Best-First Search', GRID_PROPS, WALL_NODES, 11),
-        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 11),
+        (None, 'Bidirectional Search', GRID_PROPS, WALL_NODES, 10),
     ],
         indirect=['url'],
         ids=['dijkstra', 'dfs', 'dfssp', 'bfs', 'a*', 'greedy-bfs', 'bidirectional'])
