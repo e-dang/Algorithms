@@ -12,7 +12,7 @@ const RandomizedDFS = require('./maze_generators/rand_dfs');
 const RandomizedPrims = require('./maze_generators/prim');
 const RandomWallMaze = require('./maze_generators/rand_wall_maze');
 const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
-
+const utils = require('./utils/utils');
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
@@ -20,6 +20,7 @@ class GridController {
         this.isAlgRunning = false;
         this.slider = slider;
         this.toggle = toggle;
+        this.moves = utils.manhattan_moves;
         this._handleUpdateHeuristic();
         this.grid.draw();
     }
@@ -33,7 +34,8 @@ class GridController {
             .addHeuristicSelectEventListener()
             .addMazeGenerationEventListener()
             .addUpdateWeightEventListener()
-            .addWeightToggleEventListener();
+            .addWeightToggleEventListener()
+            .addDiagonalMovesToggleEventListener();
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -88,6 +90,14 @@ class GridController {
 
     addWeightToggleEventListener() {
         this.toggle.on('change', () => this._handleWeightToggle());
+
+        return this;
+    }
+
+    addDiagonalMovesToggleEventListener() {
+        document
+            .getElementById('diagMovesToggle')
+            .addEventListener('change', (event) => this._handleDiagonalMovesToggle(event));
 
         return this;
     }
@@ -205,6 +215,10 @@ class GridController {
 
     _handleWeightToggle() {
         this.grid.isWeightToggleOn = this.toggle.prop('checked');
+    }
+
+    _handleDiagonalMovesToggle(event) {
+        this.moves = event.target.checked ? utils.diagonal_moves : utils.manhattan_moves;
     }
 
     _removeAlgorithmCompleteMessages() {
