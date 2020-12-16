@@ -482,5 +482,9 @@ class TestGrid:
                 if page.is_node_of_type(i, j, n_type):
                     obstacles_have_been_generated = True
                     break
+            else:
+                continue
+
+            break
 
         assert obstacles_have_been_generated
