@@ -412,10 +412,11 @@ class TestGrid:
     @pytest.mark.parametrize('url, alg', [
         (None, 'Randomized DFS'),
         (None, 'Randomized Prim\'s Algorithm'),
-        (None, 'Random')
+        (None, 'Random Walls'),
+        (None, 'Random Weights')
     ],
         indirect=['url'],
-        ids=['dfs', 'prims', 'random'])
+        ids=['dfs', 'prims', 'random-walls', 'random-weights'])
     def test_user_can_generate_maze(self, url, alg):
         # The user goes to the website and sees a grid
         self.driver.get(url)
