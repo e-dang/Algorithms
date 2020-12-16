@@ -125,18 +125,24 @@ class GridPage(BasePage):
 
         return None
 
-    def can_select_heuristic(self):
-        return self.driver.find_element_by_id('heuristicSelect').is_enabled()
+    def can_select_heuristic(self, heuristic=None):
+        element = self.driver.find_element_by_id('heuristicSelect')
+        is_enabled = element.is_enabled()
+        if not heuristic:
+            return is_enabled
+
+        return is_enabled and self._get_selection('heuristicSelect', heuristic)
 
     def select_heuristic(self, heuristic):
-        select = Select(self.driver.find_element_by_id('heuristicSelect'))
-        select.select_by_visible_text(heuristic)
+        self._make_selection('heuristicSelect', heuristic)
 
     def select_maze_generation(self, algorithm):
         self._make_selection('mazeGenerationSelect', algorithm)
 
-    def enable_diagonal_moves(self):
-        self.driver.find_element_by_id('diagMovesToggle').click()
+    def toggle_diagonal_moves(self):
+        element = self.driver.find_element_by_id('diagMovesToggle')
+        element.click()
+        return element.get_attribute('checked')
 
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
@@ -157,10 +163,15 @@ class GridPage(BasePage):
         self.num_cols = len(cols)
 
     def _make_selection(self, select_id, option_text):
+        option = self._get_selection(select_id, option_text)
+        if option is None:
+            raise NoSuchElementException
+        else:
+            option.click()
+
+    def _get_selection(self, select_id, option_text):
         dropdown = self.driver.find_element_by_css_selector(f'button[data-id={select_id}]')
         dropdown.click()
         for child in self.driver.find_elements_by_css_selector(f"ul[role=presentation] li a span"):
             if child.get_attribute('innerHTML') == option_text:
-                child.click()
-                return
-        raise NoSuchElementException
+                return child

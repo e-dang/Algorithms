@@ -2,6 +2,7 @@ import os
 
 import pytest
 from path_finding.views import DEFAULT_GRID_PARAMS as grid_params
+from selenium.common.exceptions import NoSuchElementException
 
 from .pages.grid_page import GridPage
 
@@ -290,9 +291,39 @@ class TestGrid:
         page = GridPage(self.driver)
 
         # The user sees a check box to enable diagonal moves and clicks it
-        page.enable_diagonal_moves()
+        page.toggle_diagonal_moves()
 
         self.run_algorithm_test_case(page, algorithm, grid_props, wall_nodes, cost)
+
+    @pytest.mark.parametrize('url, algorithm', [
+        (None, 'Greedy Best-First Search'),
+        (None, 'A* Search')
+    ],
+        indirect=['url'],
+        ids=['greedy-bfs', 'a*'])
+    def test_user_cant_select_manhattan_heuristic_when_diagonal_moves_enabled(self, url, algorithm):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # The user sees a check box to enable diagonal moves and clicks it
+        is_checked = page.toggle_diagonal_moves()
+        assert is_checked
+
+        # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
+        page.select_algorithm(algorithm)
+
+        # The dropdown menu for choosing heuristic is now enabled, but the user can only select euclidean distance
+        assert not page.can_select_heuristic('Manhattan Distance')
+        assert page.can_select_heuristic('Euclidean Distance')
+
+        # The user then unchecks the diagonal moves box
+        is_checked = page.toggle_diagonal_moves()
+        assert not is_checked
+
+        # And the user is now able to select either Manhattan Distance or Euclidean Distance
+        assert page.can_select_heuristic('Manhattan Distance')
+        assert page.can_select_heuristic('Euclidean Distance')
 
     def test_weight_nodes_are_calculated_in_path_cost(self, url):
         # The user goes to the website and sees a grid
