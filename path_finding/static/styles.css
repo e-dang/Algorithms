@@ -6,6 +6,7 @@
     --visited-node-color: yellow;
     --visiting-node-color: orange;
     --path-node-color: blue;
+    --weight-node-color: purple;
 }
 
 .grid-wrapper {
@@ -51,6 +52,17 @@
     animation-delay: -0.75s;
 }
 
+.node.weight {
+    background-color: var(--weight-node-color);
+}
+
+.node.animatedWeight {
+    animation-name: toWeight;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
+    animation-delay: -0.75s;
+}
+
 .node.start {
     background-color: var(--start-node-color);
 }
@@ -91,6 +103,12 @@
     border-width: 0px;
 }
 
+.sample-weight-node {
+    background-color: var(--weight-node-color);
+    border: 0px solid black;
+    border-width: 0px;
+}
+
 .sample-start-node {
     background-color: var(--start-node-color);
     border: 0px solid black;
@@ -123,16 +141,16 @@
 
 @keyframes toVisited {
     from {
-        background-color: orange;
+        background-color: var(--visiting-node-color);
     }
     to {
-        background-color: yellow;
+        background-color: var(--visited-node-color);
     }
 }
 
 @keyframes toVisiting {
     from {
-        background-color: orange;
+        background-color: var(--visiting-node-color);
         transform: scale(0.1);
         border-radius: 100%;
     }
@@ -143,36 +161,49 @@
 
 @keyframes toPath {
     from {
-        background-color: white;
+        background-color: var(--empty-node-color);
         transform: rotateZ(0deg) scale(0.1);
     }
     to {
-        background-color: blue;
+        background-color: var(--path-node-color);
         transform: rotateZ(360deg) scale(1);
     }
 }
 
 @keyframes toWall {
     from {
-        background-color: white;
+        background-color: var(--empty-node-color);
         transform: scale(0.1);
         border-radius: 100%;
     }
 
     to {
-        background-color: black;
+        background-color: var(--wall-node-color);
         transform: scale(1);
     }
 }
 
 @keyframes toEmpty {
     from {
-        background-color: black;
+        background-color: var(--wall-node-color);
         transform: scale(1);
     }
     to {
-        background-color: white;
+        background-color: var(--empty-node-color);
         transform: scale(0.1);
         border-radius: 100%;
+    }
+}
+
+@keyframes toWeight {
+    from {
+        background-color: var(--empty-node-color);
+        transform: scale(0.1);
+        border-radius: 100%;
+    }
+
+    to {
+        background-color: var(--weight-node-color);
+        transform: scale(1);
     }
 }
