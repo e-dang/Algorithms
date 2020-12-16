@@ -409,15 +409,15 @@ class TestGrid:
         page.wait_until_complete()
         assert page.get_cost() == 64
 
-    @pytest.mark.parametrize('url, alg', [
-        (None, 'Randomized DFS'),
-        (None, 'Randomized Prim\'s Algorithm'),
-        (None, 'Random Walls'),
-        (None, 'Random Weights')
+    @pytest.mark.parametrize('url, alg, n_type', [
+        (None, 'Randomized DFS', 'wall'),
+        (None, 'Randomized Prim\'s Algorithm', 'wall'),
+        (None, 'Random Walls', 'wall'),
+        (None, 'Random Weights', 'weight')
     ],
         indirect=['url'],
         ids=['dfs', 'prims', 'random-walls', 'random-weights'])
-    def test_user_can_generate_maze(self, url, alg):
+    def test_user_can_generate_maze(self, url, alg, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
@@ -426,7 +426,11 @@ class TestGrid:
         page.select_maze_generation(alg)
 
         # The user sees a maze being generated
+        obstacles_have_been_generated = False
         for i in range(grid_params['num_rows']):
             for j in range(grid_params['num_cols']):
-                if page.is_node_of_type(i, j, 'wall'):
-                    return
+                if page.is_node_of_type(i, j, n_type):
+                    obstacles_have_been_generated = True
+                    break
+
+        assert obstacles_have_been_generated
