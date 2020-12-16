@@ -8,7 +8,7 @@ const endRow = parseInt(document.currentScript.getAttribute('endRow'));
 const endCol = parseInt(document.currentScript.getAttribute('endCol'));
 const alg = document.getElementById('algorithmSelect').value;
 const slider = new Slider('#weightSlider');
-const toggle = $('#weightWallToggle').bootstrapToggle();
+const toggle = $('#weightToggle').bootstrapToggle();
 const controller = new GridController(
     rows,
     cols,

@@ -31,7 +31,8 @@ class GridController {
             .addResetPathButtonEventListener()
             .addHeuristicSelectEventListener()
             .addMazeGenerationEventHandler()
-            .addUpdateWeightEventListener();
+            .addUpdateWeightEventListener()
+            .addWeightToggleEventListener();
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -80,6 +81,12 @@ class GridController {
 
     addUpdateWeightEventListener() {
         this.slider.on('change', (value) => this._handleUpdateWeight(value.newValue));
+
+        return this;
+    }
+
+    addWeightToggleEventListener() {
+        this.toggle.on('change', () => this._handleWeightToggle());
 
         return this;
     }
@@ -193,6 +200,10 @@ class GridController {
 
     _handleUpdateWeight(weight) {
         this.grid.weight = weight;
+    }
+
+    _handleWeightToggle() {
+        this.grid.isWeightToggleOn = this.toggle.prop('checked');
     }
 
     _removeAlgorithmCompleteMessages() {

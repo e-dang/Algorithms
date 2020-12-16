@@ -39,9 +39,9 @@ describe('GridControllerTest', () => {
         endRow = 1;
         endCol = 1;
         alg = "Dijkstra's Algorithm";
-        toggle = jest.fn();
         document.documentElement.innerHTML = html.toString();
         slider = new Slider('#weightSlider');
+        toggle = $('#weightToggle').bootstrapToggle();
         controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
     });
 
@@ -577,5 +577,32 @@ describe('GridControllerTest', () => {
         controller._handleUpdateWeight(weight);
 
         expect(controller.grid.weight).toBe(weight);
+    });
+
+    test('_handleWeightToggle is called when toggle is clicked', () => {
+        controller._handleWeightToggle = jest.fn();
+        controller.addWeightToggleEventListener();
+
+        controller.toggle.bootstrapToggle('on');
+
+        expect(controller._handleWeightToggle).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleWeightToggle sets isWeightToggleOn on grid to true when toggle is checked', () => {
+        controller.toggle.bootstrapToggle('on');
+        controller.grid.isWeightToggleOn = false;
+
+        controller._handleWeightToggle();
+
+        expect(controller.grid.isWeightToggleOn).toBe(true);
+    });
+
+    test('_handleWeightToggle sets isWeightToggleOn on grid to false when toggle is not checked', () => {
+        controller.toggle.bootstrapToggle('off');
+        controller.grid.isWeightToggleOn = true;
+
+        controller._handleWeightToggle();
+
+        expect(controller.grid.isWeightToggleOn).toBe(false);
     });
 });
