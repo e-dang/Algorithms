@@ -10,7 +10,8 @@ const BidirectionalSearch = require('./algorithms/bidirectional');
 const heuristics = require('./utils/heuristics');
 const RandomizedDFS = require('./maze_generators/rand_dfs');
 const RandomizedPrims = require('./maze_generators/prim');
-const RandomMaze = require('./maze_generators/random');
+const RandomWallMaze = require('./maze_generators/rand_wall_maze');
+const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
@@ -238,8 +239,10 @@ class GridController {
             return new RandomizedDFS(this.grid);
         } else if (generatorStr === 'prims') {
             return new RandomizedPrims(this.grid);
-        } else if (generatorStr === 'random') {
-            return new RandomMaze(this.grid);
+        } else if (generatorStr === 'random-walls') {
+            return new RandomWallMaze(this.grid);
+        } else if (generatorStr == 'random-weights') {
+            return new RandomWeightMaze(this.grid);
         }
     }
 }

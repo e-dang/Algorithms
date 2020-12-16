@@ -115,20 +115,55 @@ describe('NodeTest', () => {
         expect(node.otherHeuristicScore).toBe(Infinity);
     });
 
-    test('reset sets node to empty node if node is a visited node', () => {
+    test('reset sets node to empty node if node is a visited node with empty weight', () => {
         node.setAsVisitedNode();
 
         node.reset();
 
-        expect(node.element.className).toBe('node empty');
+        expect(node.element.classList.contains('empty')).toBe(true);
     });
 
-    test('reset sets node to empty node if node is a visiting node', () => {
+    test('reset sets node to empty node if node is a visiting node with empty weight', () => {
         node.setAsVisitingNode();
 
         node.reset();
 
-        expect(node.element.className).toBe('node empty');
+        expect(node.element.classList.contains('empty')).toBe(true);
+    });
+
+    test('reset sets node to empty node if node is a path node with empty weight', () => {
+        node.setAsPathNode();
+
+        node.reset();
+
+        expect(node.element.classList.contains('empty')).toBe(true);
+    });
+
+    test('reset sets node to weight node if node is a visited node with weight', () => {
+        node.setAsVisitedNode();
+        node.weight = MIN_WEIGHT;
+
+        node.reset();
+
+        expect(node.element.classList.contains('weight')).toBe(true);
+    });
+
+    test('reset sets node to weight node if node is a visiting node with weight', () => {
+        node.setAsVisitingNode();
+        node.weight = MIN_WEIGHT;
+
+        node.reset();
+
+        expect(node.element.classList.contains('weight')).toBe(true);
+    });
+
+    test('reset sets node to weight node if node is a path node with weight', () => {
+        node.setAsPathNode();
+        node.weight = MIN_WEIGHT;
+
+        node.reset();
+
+        expect(node.element.classList.contains('weight')).toBe(true);
     });
 
     test('reset doesnt set node to empty node if node is a start node', () => {

@@ -1,9 +1,11 @@
 from time import sleep
 
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
+
 from .base import TIMEOUT, BaseInputElement, BasePage
 
 
@@ -157,4 +159,5 @@ class GridPage(BasePage):
         for child in self.driver.find_elements_by_css_selector(f"ul[role=presentation] li a span"):
             if child.get_attribute('innerHTML') == option_text:
                 child.click()
-                break
+                return
+        raise NoSuchElementException

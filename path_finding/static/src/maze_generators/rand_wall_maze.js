@@ -1,7 +1,7 @@
 const BaseGenerator = require('./base_generator');
 const utils = require('../utils/utils');
 
-class RandomMaze extends BaseGenerator {
+class RandomWallMaze extends BaseGenerator {
     async generate() {
         const percentChance = 0.35;
         for (const node of this.grid.nodes) {
@@ -13,4 +13,4 @@ class RandomMaze extends BaseGenerator {
     }
 }
 
-module.exports = RandomMaze;
+module.exports = RandomWallMaze;
