@@ -269,6 +269,38 @@ class TestGrid:
                 else:
                     assert page.is_node_of_type(row, col, 'empty')
 
+    def test_weight_nodes_are_calculated_in_path_cost(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver)
+
+        # Resize the grid to something small so the test runs faster
+        dims, start, end = GRID_PROPS  # start and end are known from scaling calculation in js
+        page.dims_input = self.make_form_input(dims, dims)
+        page.submit_grid_dims()
+
+        # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
+        page.select_algorithm('A* Search')
+
+        # The user clicks and drags on some empty nodes and converts them to weight nodes
+        w_start_row, w_end_row, col = 0, dims - 1, dims // 2
+        assert page.click_weight_node_toggle() == 'weight'
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'weight')
+
+        # The user sees a button that runs the algorithm on the grid and presses it
+        page.click_run()
+
+        # The algorithm runs and the user sees explored nodes around the start node
+        page.wait_for_node_to_be_of_type(start + 1, start, ['visited', 'visiting'], timeout=5)
+
+        # The algorithm completes and the user sees path nodes at the start and end nodes, along with the path cost
+        page.wait_until_complete()
+        movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        assert any(page.is_node_of_type(start + dr, start + dc, 'path') for dr, dc in movements)
+        assert any(page.is_node_of_type(end + dr, end + dc, 'path') for dr, dc in movements)
+        assert page.get_cost() == 18
+
     @pytest.mark.parametrize('url, n_type', [
         (None, 'wall'),
         (None, 'weight')
