@@ -130,14 +130,16 @@ class Grid {
     _handleMouseDown(event) {
         this.isMouseDown = true;
         const node = this.nodes[event.target.id.substring(1)];
-        if (node.isWallNode()) {
-            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
-        } else if (node.isStartNode()) {
+        if (node.isStartNode()) {
             this.setNodeType = this.setAsStartNode;
         } else if (node.isEndNode()) {
             this.setNodeType = this.setAsEndNode;
-        } else {
+        } else if (this.isWeightToggleOn && !node.isWeightNode()) {
+            this.setNodeType = (currNode) => currNode.setAsWeightNode(this.weight);
+        } else if (!this.isWeightToggleOn && !node.isWallNode()) {
             this.setNodeType = (currNode) => currNode.setAsWallNode();
+        } else {
+            this.setNodeType = (currNode) => currNode.setAsEmptyNode();
         }
     }
 
