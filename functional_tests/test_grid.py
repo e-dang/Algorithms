@@ -7,6 +7,7 @@ from .pages.grid_page import GridPage
 
 GRID_PROPS = (10, 1, 8)
 WALL_NODES = (3, 8, 5)
+WEIGHT_NODES = (0, 9, 5)
 
 
 @pytest.mark.functional
@@ -283,7 +284,7 @@ class TestGrid:
         page.select_algorithm('A* Search')
 
         # The user clicks and drags on some empty nodes and converts them to weight nodes
-        w_start_row, w_end_row, col = 0, dims - 1, dims // 2
+        w_start_row, w_end_row, col = WEIGHT_NODES
         assert page.click_weight_node_toggle() == 'weight'
         page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
         self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'weight')
@@ -301,19 +302,19 @@ class TestGrid:
         assert any(page.is_node_of_type(end + dr, end + dc, 'path') for dr, dc in movements)
         assert page.get_cost() == 18
 
-    @pytest.mark.parametrize('url, n_type', [
-        (None, 'wall'),
-        (None, 'weight')
+    @pytest.mark.parametrize('url, obstacle_nodes, n_type', [
+        (None, WALL_NODES, 'wall'),
+        (None, WEIGHT_NODES, 'weight')
     ],
         indirect=['url'],
         ids=['wall', 'weight'])
-    def test_user_can_reset_path_but_maintain_wall_nodes(self, url, n_type):
+    def test_user_can_reset_path_but_maintain_wall_and_weight_nodes(self, url, obstacle_nodes, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
 
         # Resize the grid to something small so the test runs faster
-        dims, start, end = GRID_PROPS  # start and end are known from scaling calculation in js
+        dims, *_ = GRID_PROPS  # start and end are known from scaling calculation in js
         page.dims_input = self.make_form_input(dims, dims)
         page.submit_grid_dims()
 
@@ -323,7 +324,7 @@ class TestGrid:
         # The user clicks and drags on some empty nodes and converts them to n_type
         if n_type == 'weight':
             assert n_type == page.click_weight_node_toggle()
-        w_start_row, w_end_row, col = WALL_NODES
+        w_start_row, w_end_row, col = obstacle_nodes
         page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
         self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, n_type)
 
@@ -334,14 +335,7 @@ class TestGrid:
         # The user sees a button to reset the path on the graph and clicks it. The path is now gone but the n_type
         # nodes remain.
         page.click_reset_path()
-        for row in range(dims):
-            for col in range(dims):
-                if row == start and col == start:
-                    assert page.is_node_of_type(row, col, 'start')
-                elif row == end and col == end:
-                    assert page.is_node_of_type(row, col, 'end')
-                else:
-                    assert page.is_node_of_type(row, col, ['empty', n_type])
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, n_type)
 
     def test_user_cannot_update_grid_or_reset_while_algorithm_is_running(self, url):
         # The user goes to the website and sees a grid
