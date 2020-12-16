@@ -276,7 +276,7 @@ class TestGrid:
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
         (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 10),
-        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 82),
+        (None, 'Depth-First Search', GRID_PROPS, WALL_NODES, 81),
         (None, 'Depth-First Search (Shortest Path)', (3, 0, 2), (1, 2, 1), 3),
         (None, 'Breadth-First Search', GRID_PROPS, WALL_NODES, 10),
         (None, 'A* Search', GRID_PROPS, WALL_NODES, 10),
