@@ -8,14 +8,16 @@ jest.mock('../../src/node');
 describe('TestDFS', () => {
     let alg;
     let grid;
+    let moves;
 
     beforeEach(() => {
+        moves = jest.fn();
         grid = jest.fn();
-        alg = new DFS(grid);
+        alg = new DFS(grid, moves);
     });
 
-    test('constructor sets grid parameter as grid property', () => {
-        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
+    test('constructor calls BaseAlgorithm constructor with grid and moves params', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid, moves);
     });
 
     test('visit sets node prev to prevNode', async () => {

@@ -63,9 +63,9 @@
                 <div class="col">
                     <div class="form-row justify-content-center">
                         <label class="control-label">Heuristic</label>
-                        <select id="heuristicSelect" class="selectpicker" disabled>
-                            <option selected value="l1Norm">Manhattan Distance</option>
-                            <option value="l2Norm">Euclidean Distance</option>
+                        <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
+                            <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
+                            <option id="l2Norm" value="l2Norm">Euclidean Distance</option>
                         </select>
                     </div>
                 </div>
@@ -90,6 +90,10 @@
                 </div>
                 <div class="col">
                     <input id="weightToggle" type="checkbox" data-toggle="toggle">
+                </div>
+                <div class="form-check form-check-inline">
+                    <input id="diagMovesToggle" class="form-check-input" type="checkbox" value="true">
+                    <label class="form-check-label" for="diagMovesToggle">Enable Diagonal Moves</label>
                 </div>
             </div>
         </div>

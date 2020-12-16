@@ -7,15 +7,17 @@ describe('TestGreedyBestFirstSearch', () => {
     let alg;
     let grid;
     let heuristic;
+    let moves;
 
     beforeEach(() => {
+        moves = jest.fn();
         grid = jest.fn();
         heuristic = 'stuff';
-        alg = new GreedyBestFirstSearch(grid, heuristic);
+        alg = new GreedyBestFirstSearch(grid, moves, heuristic);
     });
 
-    test('constructor calls parent constructor with grid param', () => {
-        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
+    test('constructor calls parent constructor with grid and moves param', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid, moves);
     });
 
     test('constructor sets heuristic prop to heuristic parameter', () => {

@@ -8,14 +8,16 @@ jest.mock('../../src/node');
 describe('TestDFSShortestPath', () => {
     let alg;
     let grid;
+    let moves;
 
     beforeEach(() => {
+        moves = jest.fn();
         grid = jest.fn();
-        alg = new DFSShortestPath(grid);
+        alg = new DFSShortestPath(grid, moves);
     });
 
-    test('constructor sets grid parameter as grid property', () => {
-        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
+    test('constructor calls BaseAlgorithm constructor with grid and moves params', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid, moves);
     });
 
     describe('test visiting', () => {

@@ -115,13 +115,13 @@ class Grid {
         return false;
     }
 
-    _handleMouseMove(node) {
+    async _handleMouseMove(node) {
         if (this.isMouseDown && !this.isAlgRunning) {
             this.setNodeType(node);
         }
     }
 
-    _handleClick(node) {
+    async _handleClick(node) {
         if (!this.isAlgRunning) {
             if (this.isWeightToggleOn && !node.isWeightNode()) {
                 node.setAsWeightNode(this.weight);
@@ -133,7 +133,7 @@ class Grid {
         }
     }
 
-    _handleMouseDown(event) {
+    async _handleMouseDown(event) {
         this.isMouseDown = true;
         const node = this.nodes[event.target.id.substring(1)];
         if (node.isStartNode()) {
@@ -149,7 +149,7 @@ class Grid {
         }
     }
 
-    _handleMouseUp() {
+    async _handleMouseUp() {
         this.isMouseDown = false;
     }
 }

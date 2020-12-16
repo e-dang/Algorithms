@@ -12,7 +12,7 @@ const RandomizedDFS = require('./maze_generators/rand_dfs');
 const RandomizedPrims = require('./maze_generators/prim');
 const RandomWallMaze = require('./maze_generators/rand_wall_maze');
 const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
-
+const utils = require('./utils/utils');
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
@@ -20,6 +20,7 @@ class GridController {
         this.isAlgRunning = false;
         this.slider = slider;
         this.toggle = toggle;
+        this.moves = utils.manhattan_moves;
         this._handleUpdateHeuristic();
         this.grid.draw();
     }
@@ -33,7 +34,8 @@ class GridController {
             .addHeuristicSelectEventListener()
             .addMazeGenerationEventListener()
             .addUpdateWeightEventListener()
-            .addWeightToggleEventListener();
+            .addWeightToggleEventListener()
+            .addDiagonalMovesToggleEventListener();
     }
 
     addUpdateGridEventListenerOnKeyPress() {
@@ -88,6 +90,14 @@ class GridController {
 
     addWeightToggleEventListener() {
         this.toggle.on('change', () => this._handleWeightToggle());
+
+        return this;
+    }
+
+    addDiagonalMovesToggleEventListener() {
+        document
+            .getElementById('diagMovesToggle')
+            .addEventListener('change', (event) => this._handleDiagonalMovesToggle(event));
 
         return this;
     }
@@ -147,21 +157,21 @@ class GridController {
 
     _algorithmFromString() {
         if (this.alg == 'dijkstra') {
-            return new Dijkstra(this.grid);
+            return new Dijkstra(this.grid, this.moves);
         } else if (this.alg == 'dfs') {
-            return new DFS(this.grid);
+            return new DFS(this.grid, this.moves);
         } else if (this.alg == 'dfssp') {
-            return new DFSShortestPath(this.grid);
+            return new DFSShortestPath(this.grid, this.moves);
         } else if (this.alg == 'bfs') {
-            return new BFS(this.grid);
+            return new BFS(this.grid, this.moves);
         } else if (this.alg == 'a*') {
-            return new AStarSearch(this.grid, this.heuristic);
+            return new AStarSearch(this.grid, this.moves, this.heuristic);
         } else if (this.alg == 'greedy-bfs') {
-            return new GreedyBestFirstSearch(this.grid, this.heuristic);
+            return new GreedyBestFirstSearch(this.grid, this.moves, this.heuristic);
         } else if (this.alg == 'bidirectional') {
-            return new BidirectionalSearch(this.grid);
+            return new BidirectionalSearch(this.grid, this.moves);
         } else {
-            return new BaseAlgorithm(this.grid);
+            return new BaseAlgorithm(this.grid, this.moves);
         }
     }
 
@@ -205,6 +215,22 @@ class GridController {
 
     _handleWeightToggle() {
         this.grid.isWeightToggleOn = this.toggle.prop('checked');
+    }
+
+    _handleDiagonalMovesToggle(event) {
+        if (event.target.checked) {
+            this.moves = utils.diagonal_moves;
+            const element = $('#l1Norm');
+            element.prop('disabled', true);
+            element.prop('selected', false);
+            $('#l2Norm').prop('selected', true);
+        } else {
+            this.moves = utils.manhattan_moves;
+            $('#l1Norm').prop('disabled', false);
+        }
+
+        $('#heuristicSelect').selectpicker('refresh');
+        this._handleUpdateHeuristic();
     }
 
     _removeAlgorithmCompleteMessages() {

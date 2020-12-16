@@ -2,8 +2,8 @@ const BaseAlgorithm = require('./base_algorithm');
 const NodeMinHeap = require('../utils/node_min_heap');
 
 class AStarSearch extends BaseAlgorithm {
-    constructor(grid, heuristic) {
-        super(grid);
+    constructor(grid, moves, heuristic) {
+        super(grid, moves);
         this.heuristic = heuristic;
     }
 

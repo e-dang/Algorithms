@@ -17,6 +17,7 @@ const RandomizedPrims = require('../src/maze_generators/prim');
 const RandomWallMaze = require('../src/maze_generators/rand_wall_maze');
 const Slider = require('bootstrap-slider');
 const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
+const utils = require('../src/utils/utils');
 
 jest.mock('../src/grid');
 
@@ -613,5 +614,30 @@ describe('GridControllerTest', () => {
         controller._handleWeightToggle();
 
         expect(controller.grid.isWeightToggleOn).toBe(false);
+    });
+
+    test('_handleDiagonalMovesToggle gets called when diagMovesToggle check box is clicked', () => {
+        controller._handleDiagonalMovesToggle = jest.fn();
+        controller.addDiagonalMovesToggleEventListener();
+
+        document.getElementById('diagMovesToggle').click();
+
+        expect(controller._handleDiagonalMovesToggle).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleDiagonalMovesToggle sets moves prop to utils.manhattan_moves when diagMovesToggle is not checked', () => {
+        controller.moves = null;
+
+        controller._handleDiagonalMovesToggle({target: {checked: false}});
+
+        expect(controller.moves).toBe(utils.manhattan_moves);
+    });
+
+    test('_handleDiagonalMovesToggle sets moves prop to utils.diagonal_moves when diagMovesToggle is checked', () => {
+        controller.moves = null;
+
+        controller._handleDiagonalMovesToggle({target: {checked: true}});
+
+        expect(controller.moves).toBe(utils.diagonal_moves);
     });
 });

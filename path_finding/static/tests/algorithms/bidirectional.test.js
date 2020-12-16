@@ -6,14 +6,16 @@ jest.mock('../../src/algorithms/base_algorithm');
 describe('TestBidirectionalSearch', () => {
     let alg;
     let grid;
+    let moves;
 
     beforeEach(() => {
+        moves = jest.fn();
         grid = jest.fn();
-        alg = new BidirectionalSearch(grid);
+        alg = new BidirectionalSearch(grid, moves);
     });
 
-    test('constructor calls parent constructor with grid param', () => {
-        expect(BaseAlgorithm).toHaveBeenCalledWith(grid);
+    test('constructor calls parent constructor with grid and moves param', () => {
+        expect(BaseAlgorithm).toHaveBeenCalledWith(grid, moves);
     });
 
     test('buildPath connects prev pointers in doubly linked list', () => {
