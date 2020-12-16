@@ -269,7 +269,13 @@ class TestGrid:
                 else:
                     assert page.is_node_of_type(row, col, 'empty')
 
-    def test_user_can_reset_path_but_maintain_wall_nodes(self, url):
+    @pytest.mark.parametrize('url, n_type', [
+        (None, 'wall'),
+        (None, 'weight')
+    ],
+        indirect=['url'],
+        ids=['wall', 'weight'])
+    def test_user_can_reset_path_but_maintain_wall_nodes(self, url, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
         page = GridPage(self.driver)
@@ -282,16 +288,18 @@ class TestGrid:
         # The user notices a drop down menu to select algorithms to visualize and selects Greedy Best-First Search
         page.select_algorithm('Greedy Best-First Search')
 
-        # The user clicks and drags on some empty nodes and converts them to wall nodes
+        # The user clicks and drags on some empty nodes and converts them to n_type
+        if n_type == 'weight':
+            assert n_type == page.click_weight_node_toggle()
         w_start_row, w_end_row, col = WALL_NODES
         page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
-        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'wall')
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, n_type)
 
         # The user sees a button that runs the algorithm on the grid and presses it
         page.click_run()
         page.wait_until_complete()
 
-        # The user sees a button to reset the path on the graph and clicks it. The path is now gone but the wall
+        # The user sees a button to reset the path on the graph and clicks it. The path is now gone but the n_type
         # nodes remain.
         page.click_reset_path()
         for row in range(dims):
@@ -301,7 +309,7 @@ class TestGrid:
                 elif row == end and col == end:
                     assert page.is_node_of_type(row, col, 'end')
                 else:
-                    assert page.is_node_of_type(row, col, ['empty', 'wall'])
+                    assert page.is_node_of_type(row, col, ['empty', n_type])
 
     def test_user_cannot_update_grid_or_reset_while_algorithm_is_running(self, url):
         # The user goes to the website and sees a grid
