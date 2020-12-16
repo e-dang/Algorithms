@@ -1,10 +1,11 @@
 const MAX_WEIGHT = 20;
 const MIN_WEIGHT = 2;
+const EMPTY_WEIGHT = 1;
 class Node {
     constructor(row, col, idx, gridRow) {
         this.row = row;
         this.col = col;
-        this.weight = 1;
+        this.weight = EMPTY_WEIGHT;
         this.id = `n${idx}`;
         this.element = document.createElement('td');
         this.element.id = this.id;
@@ -27,13 +28,15 @@ class Node {
 
         this.visited = false;
 
-        if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode() && !this.isWeightNode()) {
+        if (this.weight !== EMPTY_WEIGHT) {
+            this.setAsWeightNode(this.weight, false);
+        } else if (!this.isStartNode() && !this.isEndNode() && !this.isWallNode() && !this.isWeightNode()) {
             this.setAsEmptyNode(false, false);
         }
     }
 
     resetWeight() {
-        this.weight = 1;
+        this.weight = EMPTY_WEIGHT;
         this.element.style.opacity = 1;
     }
 
