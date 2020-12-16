@@ -4,7 +4,7 @@ class Node {
     constructor(row, col, idx, gridRow) {
         this.row = row;
         this.col = col;
-        this.cost = 1;
+        this.weight = 1;
         this.id = `n${idx}`;
         this.element = document.createElement('td');
         this.element.id = this.id;
@@ -33,7 +33,7 @@ class Node {
     }
 
     resetWeight() {
-        this.cost = 1;
+        this.weight = 1;
         this.element.style.opacity = 1;
     }
 
@@ -71,7 +71,7 @@ class Node {
 
     setAsWeightNode(weight, animation = true) {
         if (!this.isStartNode() && !this.isEndNode() && weight <= MAX_WEIGHT && weight >= MIN_WEIGHT) {
-            this.cost = weight;
+            this.weight = weight;
             this.element.style.opacity = weight / MAX_WEIGHT;
             if (animation) {
                 this._setNodeType(['animatedWeight', 'weight']);

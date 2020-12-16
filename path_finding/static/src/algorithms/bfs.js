@@ -25,7 +25,7 @@ class BFS extends BaseAlgorithm {
                 }
 
                 const child = this.grid.getNode(row, col);
-                const cost = node.totalCost + child.cost;
+                const cost = node.totalCost + child.weight;
                 if (child.totalCost > cost) {
                     await this.visiting(child, cost, node);
                     queue.push(child);

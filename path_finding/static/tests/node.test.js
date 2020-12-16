@@ -33,8 +33,8 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${idx}`);
     });
 
-    test('constructor sets cost prop to default 1', () => {
-        expect(node.cost).toBe(1);
+    test('constructor sets weight prop to default 1', () => {
+        expect(node.weight).toBe(1);
     });
 
     test('constructor initializes row property with row param', () => {
@@ -220,12 +220,12 @@ describe('NodeTest', () => {
         expect(node.isEndNode()).toBe(false);
     });
 
-    test('resetWeight sets the cost to 1', () => {
-        node.cost = 12;
+    test('resetWeight sets the weight to 1', () => {
+        node.weight = 12;
 
         node.resetWeight();
 
-        expect(node.cost).toBe(1);
+        expect(node.weight).toBe(1);
     });
 
     test('resetWeight sets element opacity to 1', () => {
@@ -341,28 +341,28 @@ describe('NodeTest', () => {
             expect(node.element.className).toBe('node animatedWeight weight');
         });
 
-        test('setAsWeightNode sets cost prop to weight param', () => {
+        test('setAsWeightNode sets weight prop to weight param', () => {
             const weight = MAX_WEIGHT - 1;
 
             node.setAsWeightNode(weight);
 
-            expect(node.cost).toBe(weight);
+            expect(node.weight).toBe(weight);
         });
 
-        test('setAsWeightNode doesnt set cost prop to weight param if weight is greater than MAX_WEIGHT', () => {
+        test('setAsWeightNode doesnt set weight prop to weight param if weight is greater than MAX_WEIGHT', () => {
             const weight = MAX_WEIGHT + 1;
 
             node.setAsWeightNode(weight);
 
-            expect(node.cost).not.toBe(weight);
+            expect(node.weight).not.toBe(weight);
         });
 
-        test('setAsWeightNode doesnt set cost prop to weight param if weight is less than MIN_WEIGHT', () => {
+        test('setAsWeightNode doesnt set weight prop to weight param if weight is less than MIN_WEIGHT', () => {
             const weight = 0;
 
             node.setAsWeightNode(weight);
 
-            expect(node.cost).not.toBe(weight);
+            expect(node.weight).not.toBe(weight);
         });
 
         test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
