@@ -218,7 +218,19 @@ class GridController {
     }
 
     _handleDiagonalMovesToggle(event) {
-        this.moves = event.target.checked ? utils.diagonal_moves : utils.manhattan_moves;
+        if (event.target.checked) {
+            this.moves = utils.diagonal_moves;
+            const element = $('#l1Norm');
+            element.prop('disabled', true);
+            element.prop('selected', false);
+            $('#l2Norm').prop('selected', true);
+        } else {
+            this.moves = utils.manhattan_moves;
+            $('#l1Norm').prop('disabled', false);
+        }
+
+        $('#heuristicSelect').selectpicker('refresh');
+        this._handleUpdateHeuristic();
     }
 
     _removeAlgorithmCompleteMessages() {
