@@ -1,16 +1,18 @@
 const Node = require('./node');
 const utils = require('./utils/utils');
 class Grid {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol) {
+    constructor(nRows, nCols, startRow, startCol, endRow, endCol, weight) {
         this.nRows = nRows;
         this.nCols = nCols;
         this.startRow = startRow;
         this.startCol = startCol;
         this.endRow = endRow;
         this.endCol = endCol;
+        this.weight = weight;
         this.isMouseDown = false;
         this.isAlgRunning = false;
         this.setNodeType = null;
+        this.isWeightToggleOn = false;
         this.gridWrapper = document.getElementById('gridWrapper');
         this.nodes = [];
     }

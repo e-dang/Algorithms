@@ -50,7 +50,7 @@ describe('GridControllerTest', () => {
     });
 
     test('constructor initializes a new Grid with the passed in dimensions', () => {
-        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol);
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
     });
 
     test('constructor sets alg parameter to alg property', () => {

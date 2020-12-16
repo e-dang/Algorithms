@@ -4,19 +4,27 @@ const Node = require('../src/node');
 jest.mock('../src/node');
 
 describe('TestGrid', () => {
-    const nRows = 10;
-    const nCols = 20;
-    const startRow = 1;
-    const startCol = 1;
-    const endRow = 8;
-    const endCol = 15;
+    let nRows;
+    let nCols;
+    let startRow;
+    let startCol;
+    let endRow;
+    let endCol;
+    let weight;
     let grid;
 
     beforeEach(() => {
-        const wrapper = document.createElement('div');
+        nRows = 10;
+        nCols = 20;
+        startRow = 1;
+        startCol = 1;
+        endRow = 8;
+        endCol = 15;
+        weight = 20;
+        const wrapper = document.createElement('table');
         wrapper.id = 'gridWrapper';
         document.body.append(wrapper);
-        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
+        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, weight);
     });
 
     afterEach(() => {
@@ -30,6 +38,10 @@ describe('TestGrid', () => {
         expect(grid.startCol).toBe(startCol);
         expect(grid.endRow).toBe(endRow);
         expect(grid.endCol).toBe(endCol);
+    });
+
+    test('constructor sets weight property to weight parameter', () => {
+        expect(grid.weight).toBe(weight);
     });
 
     describe('test draw method', () => {

@@ -14,7 +14,7 @@ const RandomMaze = require('./maze_generators/random');
 
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
-        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol);
+        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
         this.alg = alg;
         this.isAlgRunning = false;
         this.slider = slider;
