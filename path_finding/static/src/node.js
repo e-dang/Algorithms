@@ -1,8 +1,8 @@
 class Node {
-    constructor(row, col, idx, gridRow, cost = 1) {
+    constructor(row, col, idx, gridRow) {
         this.row = row;
         this.col = col;
-        this.cost = cost;
+        this.cost = 1;
         this.id = `n${idx}`;
         this.element = document.createElement('td');
         this.element.id = this.id;

@@ -33,14 +33,6 @@ describe('NodeTest', () => {
         expect(node.element.id).toBe(`n${idx}`);
     });
 
-    test('constructor sets cost prop to cost param', () => {
-        const cost = 10;
-
-        node = new Node(row, col, idx, gridRow, cost);
-
-        expect(node.cost).toBe(cost);
-    });
-
     test('constructor sets cost prop to default 1', () => {
         expect(node.cost).toBe(1);
     });
