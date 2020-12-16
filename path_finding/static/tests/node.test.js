@@ -1,4 +1,4 @@
-const Node = require('../src/node');
+const {Node, MAX_WEIGHT, MIN_WEIGHT} = require('../src/node');
 
 describe('NodeTest', () => {
     let row;
@@ -156,7 +156,7 @@ describe('NodeTest', () => {
     });
 
     test('reset doesnt set node to empty node if node is a weight node', () => {
-        node.setAsWeightNode();
+        node.setAsWeightNode(MIN_WEIGHT);
 
         node.reset();
 
@@ -330,31 +330,47 @@ describe('NodeTest', () => {
         });
 
         test('setAsWeightNode sets class list to node "node weight" when animation is false', () => {
-            node.setAsWeightNode(1, false);
+            node.setAsWeightNode(MIN_WEIGHT, false);
 
             expect(node.element.className).toBe('node weight');
         });
 
         test('setAsWeightNode sets class list to node "node animatedWeight weight" when animation is true', () => {
-            node.setAsWeightNode(1, true);
+            node.setAsWeightNode(MIN_WEIGHT, true);
 
             expect(node.element.className).toBe('node animatedWeight weight');
         });
 
         test('setAsWeightNode sets cost prop to weight param', () => {
-            const weight = 30;
+            const weight = MAX_WEIGHT - 1;
 
             node.setAsWeightNode(weight);
 
             expect(node.cost).toBe(weight);
         });
 
-        test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
-            const weight = 30;
+        test('setAsWeightNode doesnt set cost prop to weight param if weight is greater than MAX_WEIGHT', () => {
+            const weight = MAX_WEIGHT + 1;
 
             node.setAsWeightNode(weight);
 
-            expect(node.element.style.opacity).toBe(`${weight / 100}`);
+            expect(node.cost).not.toBe(weight);
+        });
+
+        test('setAsWeightNode doesnt set cost prop to weight param if weight is less than MIN_WEIGHT', () => {
+            const weight = 0;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.cost).not.toBe(weight);
+        });
+
+        test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
+            const weight = MAX_WEIGHT - 5;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.element.style.opacity).toBe(`${weight / MAX_WEIGHT}`);
         });
 
         test('setAsWeightNode doesnt change class list if node is a start node', () => {

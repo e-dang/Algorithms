@@ -1,3 +1,5 @@
+const MAX_WEIGHT = 20;
+const MIN_WEIGHT = 2;
 class Node {
     constructor(row, col, idx, gridRow) {
         this.row = row;
@@ -68,9 +70,9 @@ class Node {
     }
 
     setAsWeightNode(weight, animation = true) {
-        if (!this.isStartNode() && !this.isEndNode()) {
+        if (!this.isStartNode() && !this.isEndNode() && weight <= MAX_WEIGHT && weight >= MIN_WEIGHT) {
             this.cost = weight;
-            this.element.style.opacity = weight / 100;
+            this.element.style.opacity = weight / MAX_WEIGHT;
             if (animation) {
                 this._setNodeType(['animatedWeight', 'weight']);
             } else {
@@ -128,4 +130,4 @@ class Node {
     }
 }
 
-module.exports = Node;
+module.exports = {Node, MAX_WEIGHT, MIN_WEIGHT};

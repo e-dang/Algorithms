@@ -1,4 +1,4 @@
-const Node = require('./node');
+const Node = require('./node').Node;
 const utils = require('./utils/utils');
 class Grid {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, weight) {

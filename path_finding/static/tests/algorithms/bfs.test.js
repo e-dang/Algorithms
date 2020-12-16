@@ -1,5 +1,5 @@
 const BFS = require('../../src/algorithms/bfs');
-const Node = require('../../src/node');
+const Node = require('../../src/node').Node;
 const BaseAlgorithm = require('../../src/algorithms/base_algorithm');
 
 jest.mock('../../src/node');

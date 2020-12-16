@@ -1,5 +1,5 @@
 const Grid = require('../src/grid');
-const Node = require('../src/node');
+const Node = require('../src/node').Node;
 
 jest.mock('../src/node');
 
