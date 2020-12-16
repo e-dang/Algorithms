@@ -14,7 +14,7 @@ const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_findi
 const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
-const RandomMaze = require('../src/maze_generators/random');
+const RandomWallMaze = require('../src/maze_generators/rand_wall_maze');
 const Slider = require('bootstrap-slider');
 
 jest.mock('../src/grid');
@@ -553,12 +553,12 @@ describe('GridControllerTest', () => {
         expect(retVal).toBeInstanceOf(RandomizedPrims);
     });
 
-    test('_mazeGeneratorFromString returns Random when parameter is "random"', () => {
-        const generator = 'random';
+    test('_mazeGeneratorFromString returns RandomWallMaze when parameter is "random-walls"', () => {
+        const generator = 'random-walls';
 
         const retVal = controller._mazeGeneratorFromString(generator);
 
-        expect(retVal).toBeInstanceOf(RandomMaze);
+        expect(retVal).toBeInstanceOf(RandomWallMaze);
     });
 
     test('_handleUpdateWeight is called when slider value changes', () => {
