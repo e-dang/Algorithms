@@ -184,6 +184,18 @@ describe('NodeTest', () => {
         expect(node.isWallNode()).toBe(false);
     });
 
+    test('isWeightNode returns true when node class list contains "weight"', () => {
+        node.element.classList = 'node weight';
+
+        expect(node.isWeightNode()).toBe(true);
+    });
+
+    test('isWeightNode returns false when node class list doesnt contains "weight"', () => {
+        node.element.classList = 'node weightasdasd';
+
+        expect(node.isWeightNode()).toBe(false);
+    });
+
     test('toggleNodeType switches node type from empty to wall', () => {
         node.setAsEmptyNode();
 
@@ -313,6 +325,54 @@ describe('NodeTest', () => {
             node.isEndNode = jest.fn().mockReturnValueOnce(true);
 
             node.setAsWallNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
+        test('setAsWeightNode sets class list to node "node weight" when animation is false', () => {
+            node.setAsWeightNode(1, false);
+
+            expect(node.element.className).toBe('node weight');
+        });
+
+        test('setAsWeightNode sets class list to node "node animatedWeight weight" when animation is true', () => {
+            node.setAsWeightNode(1, true);
+
+            expect(node.element.className).toBe('node animatedWeight weight');
+        });
+
+        test('setAsWeightNode sets cost prop to weight param', () => {
+            const weight = 30;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.cost).toBe(weight);
+        });
+
+        test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
+            const weight = 30;
+
+            node.setAsWeightNode(weight);
+
+            expect(node.element.style.opacity).toBe(`${weight / 100}`);
+        });
+
+        test('setAsWeightNode doesnt change class list if node is a start node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isStartNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWeightNode();
+
+            expect(node.element.className).toBe(name);
+        });
+
+        test('setAsWeightNode doesnt change class list if node is an end node', () => {
+            const name = 'stuff';
+            node.element.className = name;
+            node.isEndNode = jest.fn().mockReturnValueOnce(true);
+
+            node.setAsWeightNode();
 
             expect(node.element.className).toBe(name);
         });

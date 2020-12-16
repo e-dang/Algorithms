@@ -58,6 +58,18 @@ class Node {
         }
     }
 
+    setAsWeightNode(weight, animation = true) {
+        if (!this.isStartNode() && !this.isEndNode()) {
+            this.cost = weight;
+            this.element.style.opacity = weight / 100;
+            if (animation) {
+                this._setNodeType(['animatedWeight', 'weight']);
+            } else {
+                this._setNodeType('weight');
+            }
+        }
+    }
+
     setAsVisitedNode() {
         this.visited = true;
         if (!this.isStartNode() && !this.isEndNode()) {
@@ -83,6 +95,10 @@ class Node {
 
     isWallNode() {
         return this.element.classList.contains('wall');
+    }
+
+    isWeightNode() {
+        return this.element.classList.contains('weight');
     }
 
     isStartNode() {
