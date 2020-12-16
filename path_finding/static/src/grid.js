@@ -123,7 +123,13 @@ class Grid {
 
     _handleClick(node) {
         if (!this.isAlgRunning) {
-            node.toggleNodeType();
+            if (this.isWeightToggleOn && !node.isWeightNode()) {
+                node.setAsWeightNode(this.weight);
+            } else if (!this.isWeightToggleOn && !node.isWallNode()) {
+                node.setAsWallNode();
+            } else {
+                node.setAsEmptyNode();
+            }
         }
     }
 

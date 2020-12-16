@@ -271,22 +271,59 @@ describe('TestGrid', () => {
         expect(grid.setNodeType).not.toHaveBeenCalled();
     });
 
-    test('_handleClick calls toggleNodeType when isAlgRunning is false', () => {
+    test('_handleClick calls setAsWeightNode when isAlgRunning is false, isWeightToggleOn is true and node is not a weight node', () => {
         const node = new Node();
         grid.isAlgRunning = false;
+        grid.isWeightToggleOn = true;
+        node.isWeightNode.mockReturnValueOnce(false);
 
         grid._handleClick(node);
 
-        expect(node.toggleNodeType).toHaveBeenCalledTimes(1);
+        expect(node.setAsWeightNode).toHaveBeenCalledTimes(1);
     });
 
-    test('_handleClick doesnt call toggleNodeType when isAlgRunning is true', () => {
+    test('_handleClick calls setAsWallNode when isAlgRunning is false, isWeightToggleOn is false and node is not a wall node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = false;
+        node.isWallNode.mockReturnValueOnce(false);
+
+        grid._handleClick(node);
+
+        expect(node.setAsWallNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick calls setAsEmptyNode when isAlgRunning is false and isWeightToggleOn is true and node is a weight node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = true;
+        node.isWeightNode.mockReturnValueOnce(true);
+
+        grid._handleClick(node);
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick calls setAsEmptyNode when isAlgRunning is false and isWeightToggleOn is false and node is a wall node', () => {
+        const node = new Node();
+        grid.isAlgRunning = false;
+        grid.isWeightToggleOn = false;
+        node.isWallNode.mockReturnValueOnce(true);
+
+        grid._handleClick(node);
+
+        expect(node.setAsEmptyNode).toHaveBeenCalledTimes(1);
+    });
+
+    test('_handleClick doesnt call setAsWeightNode, setAsWallNode, or setAsEmptyNode when isAlgRunning is true', () => {
         const node = new Node();
         grid.isAlgRunning = true;
 
         grid._handleClick(node);
 
-        expect(node.toggleNodeType).not.toHaveBeenCalled();
+        expect(node.setAsWeightNode).not.toHaveBeenCalled();
+        expect(node.setAsWallNode).not.toHaveBeenCalled();
+        expect(node.setAsEmptyNode).not.toHaveBeenCalled();
     });
 
     describe('test _handleMouseDown', () => {

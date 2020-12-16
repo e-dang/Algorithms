@@ -118,14 +118,6 @@ class Node {
         return this.element.classList.contains('end');
     }
 
-    toggleNodeType() {
-        if (this.isWallNode()) {
-            this.setAsEmptyNode();
-        } else {
-            this.setAsWallNode();
-        }
-    }
-
     _setNodeType(type) {
         this.element.className = '';
         if (Array.isArray(type)) {

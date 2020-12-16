@@ -196,22 +196,6 @@ describe('NodeTest', () => {
         expect(node.isWeightNode()).toBe(false);
     });
 
-    test('toggleNodeType switches node type from empty to wall', () => {
-        node.setAsEmptyNode();
-
-        node.toggleNodeType();
-
-        expect(node.isWallNode()).toBe(true);
-    });
-
-    test('toggleNodeType switches node type from wall to empty', () => {
-        node.setAsWallNode();
-
-        node.toggleNodeType();
-
-        expect(node.isWallNode()).toBe(false);
-    });
-
     test('isStartNode returns true when class list is "node start"', () => {
         node.element.className = 'node start';
 
