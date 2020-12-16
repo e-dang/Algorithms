@@ -13,6 +13,7 @@ const RandomizedPrims = require('./maze_generators/prim');
 const RandomWallMaze = require('./maze_generators/rand_wall_maze');
 const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
 const utils = require('./utils/utils');
+const RecursiveDivision = require('./maze_generators/recursive_division');
 class GridController {
     constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
         this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
@@ -267,8 +268,10 @@ class GridController {
             return new RandomizedPrims(this.grid);
         } else if (generatorStr === 'random-walls') {
             return new RandomWallMaze(this.grid);
-        } else if (generatorStr == 'random-weights') {
+        } else if (generatorStr === 'random-weights') {
             return new RandomWeightMaze(this.grid);
+        } else if (generatorStr === 'recursive-wall') {
+            return new RecursiveDivision(this.grid);
         }
     }
 }

@@ -18,6 +18,7 @@ const RandomWallMaze = require('../src/maze_generators/rand_wall_maze');
 const Slider = require('bootstrap-slider');
 const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
 const utils = require('../src/utils/utils');
+const RecursiveDivision = require('../src/maze_generators/recursive_division');
 
 jest.mock('../src/grid');
 
@@ -569,6 +570,14 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomWeightMaze);
+    });
+
+    test('_mazeGeneratorFromString returns RecursiveDivision when parameter is "recursive-wall"', () => {
+        const generator = 'recursive-wall';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RecursiveDivision);
     });
 
     test('_handleUpdateWeight is called when slider value changes', () => {
