@@ -6,6 +6,14 @@ function getRandom(list) {
     return list[Math.floor(Math.random() * list.length)];
 }
 
+function getRandOdd(range) {
+    return Math.floor(Math.random() * Math.floor(range / 2)) * 2 + 1;
+}
+
+function getRandEven(range) {
+    return Math.floor(Math.random() * Math.floor(range / 2)) * 2;
+}
+
 /*
 
 direction |  u  |  ul |  l  |  dl |  d  |  dr  |  r  |  ur |
@@ -30,4 +38,6 @@ module.exports = {
     getRandom,
     manhattan_moves,
     diagonal_moves,
+    getRandOdd,
+    getRandEven,
 };
