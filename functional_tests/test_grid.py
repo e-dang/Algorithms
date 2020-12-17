@@ -462,10 +462,12 @@ class TestGrid:
         (None, 'Randomized DFS', 'wall'),
         (None, 'Randomized Prim\'s Algorithm', 'wall'),
         (None, 'Random Walls', 'wall'),
-        (None, 'Random Weights', 'weight')
+        (None, 'Random Weights', 'weight'),
+        (None, 'Recursive Division (Walls)', 'wall'),
+        (None, 'Recursive Division (Weights)', 'weight')
     ],
         indirect=['url'],
-        ids=['dfs', 'prims', 'random-walls', 'random-weights'])
+        ids=['dfs', 'prims', 'random-walls', 'random-weights', 'recursive-walls', 'recursive-weights'])
     def test_user_can_generate_maze(self, url, alg, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
@@ -481,5 +483,9 @@ class TestGrid:
                 if page.is_node_of_type(i, j, n_type):
                     obstacles_have_been_generated = True
                     break
+            else:
+                continue
+
+            break
 
         assert obstacles_have_been_generated

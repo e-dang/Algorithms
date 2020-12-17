@@ -18,8 +18,10 @@ const RandomWallMaze = require('../src/maze_generators/rand_wall_maze');
 const Slider = require('bootstrap-slider');
 const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
 const utils = require('../src/utils/utils');
+const RecursiveDivision = require('../src/maze_generators/recursive_division');
 
 jest.mock('../src/grid');
+jest.mock('../src/maze_generators/recursive_division');
 
 describe('GridControllerTest', () => {
     let nRows;
@@ -44,6 +46,8 @@ describe('GridControllerTest', () => {
         document.documentElement.innerHTML = html.toString();
         slider = new Slider('#weightSlider');
         toggle = $('#weightToggle').bootstrapToggle();
+        Grid.mockReset();
+        RecursiveDivision.mockReset();
         controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
     });
 
@@ -569,6 +573,38 @@ describe('GridControllerTest', () => {
         const retVal = controller._mazeGeneratorFromString(generator);
 
         expect(retVal).toBeInstanceOf(RandomWeightMaze);
+    });
+
+    test('_mazeGeneratorFromString returns RecursiveDivision when parameter is "recursive-walls"', () => {
+        const generator = 'recursive-walls';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RecursiveDivision);
+    });
+
+    test('_mazeGeneratorFromString constructs RecursiveDivision with useWalls = true when parameter is "recursive-walls"', () => {
+        const generator = 'recursive-walls';
+
+        controller._mazeGeneratorFromString(generator);
+
+        expect(RecursiveDivision).toHaveBeenCalledWith(controller.grid, true);
+    });
+
+    test('_mazeGeneratorFromString returns RecursiveDivision when parameter is "recursive-weights"', () => {
+        const generator = 'recursive-weights';
+
+        const retVal = controller._mazeGeneratorFromString(generator);
+
+        expect(retVal).toBeInstanceOf(RecursiveDivision);
+    });
+
+    test('_mazeGeneratorFromString constructs RecursiveDivision with useWalls = false when parameter is "recursive-weights"', () => {
+        const generator = 'recursive-weights';
+
+        controller._mazeGeneratorFromString(generator);
+
+        expect(RecursiveDivision).toHaveBeenCalledWith(controller.grid, false);
     });
 
     test('_handleUpdateWeight is called when slider value changes', () => {
