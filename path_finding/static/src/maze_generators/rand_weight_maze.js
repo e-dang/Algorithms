@@ -1,5 +1,5 @@
 const BaseGenerator = require('./base_generator');
-const {_, MAX_WEIGHT, MIN_WEIGHT} = require('../node');
+const {MAX_WEIGHT, MIN_WEIGHT} = require('../node');
 const utils = require('../utils/utils');
 
 const WEIGHT_NODE_PROB = 0.55;

@@ -1,5 +1,5 @@
 const GridController = require('./grid_controller');
-const {_, MAX_WEIGHT, MIN_WEIGHT} = require('./node');
+const {MAX_WEIGHT, MIN_WEIGHT} = require('./node');
 
 const rows = parseInt(document.currentScript.getAttribute('rows'));
 const cols = parseInt(document.currentScript.getAttribute('cols'));
