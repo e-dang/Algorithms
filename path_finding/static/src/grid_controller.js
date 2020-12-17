@@ -271,7 +271,9 @@ class GridController {
         } else if (generatorStr === 'random-weights') {
             return new RandomWeightMaze(this.grid);
         } else if (generatorStr === 'recursive-walls') {
-            return new RecursiveDivision(this.grid);
+            return new RecursiveDivision(this.grid, true);
+        } else if (generatorStr === 'recursive-weights') {
+            return new RecursiveDivision(this.grid, false);
         }
     }
 }
