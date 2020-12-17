@@ -572,8 +572,8 @@ describe('GridControllerTest', () => {
         expect(retVal).toBeInstanceOf(RandomWeightMaze);
     });
 
-    test('_mazeGeneratorFromString returns RecursiveDivision when parameter is "recursive-wall"', () => {
-        const generator = 'recursive-wall';
+    test('_mazeGeneratorFromString returns RecursiveDivision when parameter is "recursive-walls"', () => {
+        const generator = 'recursive-walls';
 
         const retVal = controller._mazeGeneratorFromString(generator);
 

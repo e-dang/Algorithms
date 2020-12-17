@@ -6,8 +6,6 @@ class BaseAlgorithm {
     constructor(grid, moves) {
         this.grid = grid;
         Object.assign(this, moves);
-        // this.dr = [-1, 0, 1, 0];
-        // this.dc = [0, -1, 0, 1];
     }
 
     async run(callback) {
