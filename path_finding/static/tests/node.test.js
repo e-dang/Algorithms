@@ -271,6 +271,38 @@ describe('NodeTest', () => {
         expect(node.element.style.opacity).toBe('1');
     });
 
+    test('_calcOpacity returns 0.25 when weight is MIN_WEIGHT', () => {
+        node.weight = MIN_WEIGHT;
+
+        const retVal = node._calcOpacity();
+
+        expect(retVal).toBeCloseTo(0.25, 2);
+    });
+
+    test('_calcOpacity returns 0.75 when weight is MAX_WEIGHT', () => {
+        node.weight = MAX_WEIGHT;
+
+        const retVal = node._calcOpacity();
+
+        expect(retVal).toBeCloseTo(0.75, 2);
+    });
+
+    test('_calcInvertedOpacity returns 0.75 when weight is MIN_WEIGHT', () => {
+        node.weight = MIN_WEIGHT;
+
+        const retVal = node._calcInvertedOpacity();
+
+        expect(retVal).toBeCloseTo(0.75, 2);
+    });
+
+    test('_calcInvertedOpacity returns 0.25 when weight is MAX_WEIGHT', () => {
+        node.weight = MAX_WEIGHT;
+
+        const retVal = node._calcInvertedOpacity();
+
+        expect(retVal).toBeCloseTo(0.25, 2);
+    });
+
     describe('test node type setter methods', () => {
         beforeEach(() => {
             node.element.className = 'blah random stuff';
@@ -400,12 +432,14 @@ describe('NodeTest', () => {
             expect(node.weight).not.toBe(weight);
         });
 
-        test('setAsWeightNode sets opacity of element to the percentage of the weight to the maximum weight', () => {
+        test('setAsWeightNode sets opacity of element to the return value of _calcOpacity', () => {
             const weight = MAX_WEIGHT - 5;
+            const retVal = '100';
+            node._calcOpacity = jest.fn().mockReturnValueOnce(retVal);
 
             node.setAsWeightNode(weight);
 
-            expect(node.element.style.opacity).toBe(`${weight / MAX_WEIGHT}`);
+            expect(node.element.style.opacity).toBe(retVal);
         });
 
         test('setAsWeightNode doesnt change class list if node is a start node', () => {
@@ -479,6 +513,16 @@ describe('NodeTest', () => {
             node.setAsVisitingNode();
 
             expect(node.element.className).toBe('node end');
+        });
+
+        test('setAsVisitingNode sets opacity to retVal of _calcInvertedOpacity if node is a weight node', () => {
+            const retVal = '100';
+            node.isWeightNode = jest.fn().mockReturnValueOnce(true);
+            node._calcInvertedOpacity = jest.fn().mockReturnValueOnce(retVal);
+
+            node.setAsVisitingNode();
+
+            expect(node.element.style.opacity).toBe(retVal);
         });
 
         test('setAsPathNode sets class list to "node path"', () => {
