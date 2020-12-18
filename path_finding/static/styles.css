@@ -229,3 +229,13 @@
 #innerWeightSlider .slider-handle {
     background: black;
 }
+
+.big-checkbox {
+    width: 18px;
+    height: 18px;
+}
+
+#diagMovesToggle {
+    display: table-row;
+    width: 100%;
+}

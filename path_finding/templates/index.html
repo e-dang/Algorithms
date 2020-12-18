@@ -28,7 +28,7 @@
             </div>
 
             <div class="row">
-                <div class="col">
+                <div class="col text-center">
                     <label class="control-label" for="dimensionsInput">Dimensions</label>
                     <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
                         placeholder="e.g. 50,50">
@@ -38,7 +38,7 @@
                         greater than 2.</small>
                 </div>
 
-                <div class="col">
+                <div class="col text-center">
                     <label class="control-label" for="algorithmSelect">Algorithm</label>
                     <select id="algorithmSelect" class="selectpicker">
                         <option selected value="null">Select One...</option>
@@ -55,7 +55,7 @@
                         algorithm.</small>
                 </div>
 
-                <div class="col">
+                <div class="col text-center">
                     <label class="control-label" for="heuristicSelect">Heuristic</label>
                     <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
                         <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
@@ -63,7 +63,7 @@
                     </select>
                 </div>
 
-                <div class="col">
+                <div class="col text-center">
                     <label class="control-label" for="mazeGenerationSelect">Maze Generator</label>
                     <select id="mazeGenerationSelect" class="selectpicker">
                         <option selected value="null">Select One...</option>
@@ -77,23 +77,34 @@
                 </div>
             </div>
 
-            <div class="row align-items-center justify-content-center" style="padding-top: 20px;">
-                <div class="col">
-                    <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="weightToggle">
-                        <label class="custom-control-label" for="weightToggle">Node Type</label>
+            <div class="row  justify-content-around" style="padding-top: 20px;">
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label id="weightToggleLabel">Toggle Weight Node
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="weightToggle">
+                                <label id="innerToggleLabel" class="custom-control-label" for="weightToggle"></label>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
-                <div class="col">
-                    <label id="sliderLabel" for="weightSlider">Adjust Weight</label>
-                    <input id="weightSlider" data-slider-id="innerWeightSlider" type="text" labelledby="sliderLabel"
-                        data-slider-handle="square" />
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label id="sliderLabel" for="innerWeightSlider">Adjust Node Weight</label></br>
+                        <input id="weightSlider" data-slider-id="innerWeightSlider" type="text" labelledby="sliderLabel"
+                            data-slider-handle="round" />
+                    </div>
                 </div>
 
-                <div class="col form-check form-check-inline">
-                    <label class="form-check-label" for="diagMovesToggle">Enable Diagonal Moves</label>
-                    <input id="diagMovesToggle" class="form-check-input" type="checkbox" value="true">
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label class="form-check-label" for="diagMovesToggle">Enable Diagonal
+                            Moves<br>
+                            <input id="diagMovesToggle" class="form-check-input big-checkbox" type="checkbox"
+                                value="true">
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>

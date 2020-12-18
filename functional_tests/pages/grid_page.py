@@ -86,8 +86,7 @@ class GridPage(BasePage):
         element.click()
 
     def click_weight_node_toggle(self):
-        element = self.driver.find_elements_by_css_selector('.custom-control-label')[0]
-        element.click()
+        self.driver.find_element_by_id('weightToggleLabel').click()
         return 'weight' if self.driver.find_element_by_id('weightToggle').get_attribute('checked') == 'true' else 'wall'
 
     def click_and_hold_nodes(self, start_row, start_col, end_row, end_col):
