@@ -13,7 +13,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css"
         integrity="sha512-3q8fi8M0VS+X/3n64Ndpp6Bit7oXSiyCnzmlx6IDBLGlY5euFySyJ46RUlqIVs0DPCGOypqP8IRk/EyPvU28mQ=="
         crossorigin="anonymous" />
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 
@@ -30,72 +29,71 @@
 
             <div class="row">
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Dimensions</label>
-                        <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
-                            placeholder="e.g. 50,50">
-                        <small id="gridErrorMessage" class="text-danger text-left" hidden>Invalid input -
-                            number of
-                            cells must not exceed your screen size and must be
-                            greater than 2.</small>
-                    </div>
+                    <label class="control-label" for="dimensionsInput">Dimensions</label>
+                    <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
+                        placeholder="e.g. 50,50">
+                    <small id="gridErrorMessage" class="text-danger text-left" hidden>Invalid input -
+                        number of
+                        cells must not exceed your screen size and must be
+                        greater than 2.</small>
                 </div>
 
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Algorithm</label>
-                        <select id="algorithmSelect" class="selectpicker">
-                            <option selected value="null">Select One...</option>
-                            <option value="dfs">Depth-First Search</option>
-                            <option value="dfssp">Depth-First Search (Shortest Path)</option>
-                            <option value="bfs">Breadth-First Search</option>
-                            <option value="dijkstra">Dijkstra's Algorithm</option>
-                            <option value="a*">A* Search</option>
-                            <option value="greedy-bfs">Greedy Best-First Search</option>
-                            <option value="bidirectional">Bidirectional Search</option>
-                        </select>
-                        <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left" hidden>Please
-                            select an
-                            algorithm.</small>
-                    </div>
+                    <label class="control-label" for="algorithmSelect">Algorithm</label>
+                    <select id="algorithmSelect" class="selectpicker">
+                        <option selected value="null">Select One...</option>
+                        <option value="dfs">Depth-First Search</option>
+                        <option value="dfssp">Depth-First Search (Shortest Path)</option>
+                        <option value="bfs">Breadth-First Search</option>
+                        <option value="dijkstra">Dijkstra's Algorithm</option>
+                        <option value="a*">A* Search</option>
+                        <option value="greedy-bfs">Greedy Best-First Search</option>
+                        <option value="bidirectional">Bidirectional Search</option>
+                    </select>
+                    <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left" hidden>Please
+                        select an
+                        algorithm.</small>
                 </div>
 
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Heuristic</label>
-                        <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
-                            <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
-                            <option id="l2Norm" value="l2Norm">Euclidean Distance</option>
-                        </select>
-                    </div>
+                    <label class="control-label" for="heuristicSelect">Heuristic</label>
+                    <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
+                        <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
+                        <option id="l2Norm" value="l2Norm">Euclidean Distance</option>
+                    </select>
                 </div>
 
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Maze Generator</label>
-                        <select id="mazeGenerationSelect" class="selectpicker">
-                            <option selected value="null">Select One...</option>
-                            <option value="rand-dfs">Randomized DFS</option>
-                            <option value="prims">Randomized Prim's Algorithm</option>
-                            <option value="random-walls">Random Walls</option>
-                            <option value="random-weights">Random Weights</option>
-                            <option value="recursive-walls">Recursive Division (Walls)</option>
-                            <option value="recursive-weights">Recursive Division (Weights)</option>
-                        </select>
-                    </div>
+                    <label class="control-label" for="mazeGenerationSelect">Maze Generator</label>
+                    <select id="mazeGenerationSelect" class="selectpicker">
+                        <option selected value="null">Select One...</option>
+                        <option value="rand-dfs">Randomized DFS</option>
+                        <option value="prims">Randomized Prim's Algorithm</option>
+                        <option value="random-walls">Random Walls</option>
+                        <option value="random-weights">Random Weights</option>
+                        <option value="recursive-walls">Recursive Division (Walls)</option>
+                        <option value="recursive-weights">Recursive Division (Weights)</option>
+                    </select>
                 </div>
             </div>
 
             <div class="row align-items-center justify-content-center" style="padding-top: 20px;">
                 <div class="col">
-                    <input id="weightSlider" type="text" />
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="weightToggle">
+                        <label class="custom-control-label" for="weightToggle">Node Type</label>
+                    </div>
                 </div>
+
                 <div class="col">
-                    <input id="weightToggle" type="checkbox" data-toggle="toggle">
+                    <label id="sliderLabel" for="weightSlider">Adjust Weight</label>
+                    <input id="weightSlider" data-slider-id="innerWeightSlider" type="text" labelledby="sliderLabel"
+                        data-slider-handle="square" />
                 </div>
-                <div class="form-check form-check-inline">
-                    <input id="diagMovesToggle" class="form-check-input" type="checkbox" value="true">
+
+                <div class="col form-check form-check-inline">
                     <label class="form-check-label" for="diagMovesToggle">Enable Diagonal Moves</label>
+                    <input id="diagMovesToggle" class="form-check-input" type="checkbox" value="true">
                 </div>
             </div>
         </div>
@@ -233,7 +231,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"
     integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA=="
     crossorigin="anonymous"></script>
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="/static/dist/bundle.js"></script>
 
 </html>

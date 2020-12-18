@@ -11,5 +11,4 @@ const slider = new Slider('#weightSlider', {
     ticks: [MIN_WEIGHT, MAX_WEIGHT],
     ticks_labels: [`${MIN_WEIGHT}`, `${MAX_WEIGHT}`],
 });
-const toggle = $('#weightToggle').bootstrapToggle();
-const controller = new GridController(maxRows, maxCols, alg, slider, toggle).addEventListeners();
+const controller = new GridController(maxRows, maxCols, alg, slider).addEventListeners();

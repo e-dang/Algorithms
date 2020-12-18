@@ -28,7 +28,6 @@ describe('GridControllerTest', () => {
     let nCols;
     let alg;
     let slider;
-    let toggle;
     let controller;
 
     beforeEach(() => {
@@ -37,10 +36,9 @@ describe('GridControllerTest', () => {
         alg = "Dijkstra's Algorithm";
         document.documentElement.innerHTML = html.toString();
         slider = new Slider('#weightSlider');
-        toggle = $('#weightToggle').bootstrapToggle();
         Grid.mockReset();
         RecursiveDivision.mockReset();
-        controller = new GridController(nRows, nCols, alg, slider, toggle);
+        controller = new GridController(nRows, nCols, alg, slider);
     });
 
     afterEach(() => {
@@ -57,10 +55,6 @@ describe('GridControllerTest', () => {
 
     test('constructor sets slider property to slider parameter', () => {
         expect(controller.slider).toBe(slider);
-    });
-
-    test('constructor sets toggle property to toggle parameter', () => {
-        expect(controller.toggle).toBe(toggle);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {
@@ -643,25 +637,31 @@ describe('GridControllerTest', () => {
         controller._handleWeightToggle = jest.fn();
         controller.addWeightToggleEventListener();
 
-        controller.toggle.bootstrapToggle('on');
+        document.getElementById('weightToggle').click();
 
         expect(controller._handleWeightToggle).toHaveBeenCalledTimes(1);
     });
 
     test('_handleWeightToggle sets isWeightToggleOn on grid to true when toggle is checked', () => {
-        controller.toggle.bootstrapToggle('on');
+        const element = document.getElementById('weightToggle');
+        element.checked = true;
         controller.grid.isWeightToggleOn = false;
 
-        controller._handleWeightToggle();
+        controller._handleWeightToggle({
+            target: element,
+        });
 
         expect(controller.grid.isWeightToggleOn).toBe(true);
     });
 
     test('_handleWeightToggle sets isWeightToggleOn on grid to false when toggle is not checked', () => {
-        controller.toggle.bootstrapToggle('off');
+        const element = document.getElementById('weightToggle');
+        element.checked = false;
         controller.grid.isWeightToggleOn = true;
 
-        controller._handleWeightToggle();
+        controller._handleWeightToggle({
+            target: element,
+        });
 
         expect(controller.grid.isWeightToggleOn).toBe(false);
     });

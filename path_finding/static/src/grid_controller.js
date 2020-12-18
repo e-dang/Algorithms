@@ -16,12 +16,11 @@ const utils = require('./utils/utils');
 const RecursiveDivision = require('./maze_generators/recursive_division');
 
 class GridController {
-    constructor(nRows, nCols, alg, slider, toggle) {
+    constructor(nRows, nCols, alg, slider) {
         this.grid = new Grid(nRows, nCols, slider.getValue());
         this.alg = alg;
         this.isAlgRunning = false;
         this.slider = slider;
-        this.toggle = toggle;
         this.moves = utils.manhattan_moves;
         this._handleUpdateHeuristic();
         this.grid.draw();
@@ -91,7 +90,7 @@ class GridController {
     }
 
     addWeightToggleEventListener() {
-        this.toggle.on('change', () => this._handleWeightToggle());
+        document.getElementById('weightToggle').addEventListener('change', (event) => this._handleWeightToggle(event));
 
         return this;
     }
@@ -216,8 +215,8 @@ class GridController {
         this.grid.weight = weight;
     }
 
-    _handleWeightToggle() {
-        this.grid.isWeightToggleOn = this.toggle.prop('checked');
+    _handleWeightToggle(event) {
+        this.grid.isWeightToggleOn = event.target.checked;
     }
 
     _handleDiagonalMovesToggle(event) {
