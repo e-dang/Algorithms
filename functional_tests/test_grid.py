@@ -30,9 +30,9 @@ class TestGrid:
     def url(self, live_server):
         staging_server = os.environ.get('STAGING_SERVER')
         if staging_server:
-            return 'http://' + staging_server + '/path-finding/'
+            return 'http://' + staging_server + '/'
         else:
-            return live_server.url + '/path-finding/'
+            return live_server.url + '/'
 
     def assert_line_of_nodes_are_of_type(self, page, start, end, const, n_type, vertical=True):
         for i in range(start, end + 1):

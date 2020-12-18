@@ -10,7 +10,6 @@ const GreedyBestFirstSearch = require('../src/algorithms/greedy-bfs.js');
 const BidirectionalSearch = require('../src/algorithms/bidirectional');
 const fs = require('fs');
 const path = require('path');
-const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
 const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
@@ -20,6 +19,7 @@ const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
 const utils = require('../src/utils/utils');
 const RecursiveDivision = require('../src/maze_generators/recursive_division');
 
+const html = fs.readFileSync(path.resolve(__dirname, '../../templates/index.html'), 'utf8');
 jest.mock('../src/grid');
 jest.mock('../src/maze_generators/recursive_division');
 
