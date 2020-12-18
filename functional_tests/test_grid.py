@@ -123,6 +123,11 @@ class TestGrid:
         page.dims_input = '1'
         assert not page.is_grid_input_error_visible()
 
+        # The user then tries to enter really large numbers into grid dims, and also sees an error
+        page.dims_input = make_form_input(100, 100)
+        page.submit_grid_dims()
+        assert page.is_grid_input_error_visible()
+
     def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
         # The user goes to the website
         self.driver.get(url)
