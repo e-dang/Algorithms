@@ -127,8 +127,7 @@ class GridController {
 
     _handleRunAlgorithm() {
         this._callbackWrapper(() => {
-            this.isAlgRunning = true;
-            this.grid.isAlgRunning = true;
+            this._setIsAlgRunning(true);
             this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
         });
     }
@@ -178,8 +177,7 @@ class GridController {
     }
 
     _handleCompleteAlgorithm(cost) {
-        this.isAlgRunning = false;
-        this.grid.isAlgRunning = false;
+        this._setIsAlgRunning(false);
         if (cost !== null) {
             this.grid.drawPath();
             document.getElementById('algComplete').hidden = false;
@@ -204,11 +202,13 @@ class GridController {
         });
     }
 
-    _handleMazeGeneration() {
+    async _handleMazeGeneration() {
         this._handleReset();
+        this._setIsAlgRunning(true);
         const element = document.getElementById('mazeGenerationSelect');
-        this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
+        await this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
         element.options[0].selected = true;
+        this._setIsAlgRunning(false);
     }
 
     _handleUpdateWeight(weight) {
@@ -276,6 +276,11 @@ class GridController {
         } else if (generatorStr === 'recursive-weights') {
             return new RecursiveDivision(this.grid, false);
         }
+    }
+
+    _setIsAlgRunning(state) {
+        this.isAlgRunning = state;
+        this.grid.isAlgRunning = state;
     }
 }
 
