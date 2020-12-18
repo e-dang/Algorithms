@@ -444,6 +444,39 @@ class TestGrid:
         assert any(page.is_node_of_type(END_ROW + dr, END_COL + dc, 'path') for dr, dc in movements)
         assert page.get_cost()
 
+    def test_user_cannot_update_grid_or_reset_while_maze_generation_is_running(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
+
+        # The user selects a maze generation algorithm
+        page.select_maze_generation('Recursive Division (Walls)')
+
+        # The user then tries to click on some nodes, but doesnt seem them change
+        w_start_row, w_end_row, col = START_ROW + 5, START_ROW + 8, START_COL + 5
+        page.click_node(w_start_row, col)
+        assert not page.is_node_of_type(w_start_row, col, ['wall', 'weight'])
+
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'empty')
+
+        # The user then tries to click the reset buttons, but there are still wall nodes where the user did not click
+        page.click_reset()
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
+
+        page.click_reset_path()
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
+
+        # The user then tries to click the run button, but it does nothing as well
+        page.click_run()
+        assert not page.is_node_of_type(START_ROW + 1, START_COL, ['visited', 'visiting'])
+
+        # The user then tries to enter new grid dimensions, but again the maze generation continues to run
+        dims = 10
+        page.dims_input = make_form_input(dims, dims)
+        assert not page.grid_has_dimensions(dims, dims)
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
+
     def test_user_can_select_heuristic_function(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
