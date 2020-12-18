@@ -384,8 +384,8 @@ class TestGrid:
         page.dims_input = make_form_input(dims, dims)
         page.submit_grid_dims()
 
-        # The user notices a drop down menu to select algorithms to visualize and selects Greedy Best-First Search
-        page.select_algorithm('Greedy Best-First Search')
+        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search
+        page.select_algorithm('Breadth-First Search')
 
         # The user clicks and drags on some empty nodes and converts them to n_type
         if n_type == 'weight':
