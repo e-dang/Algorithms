@@ -48,6 +48,9 @@ class GridPage(BasePage):
     def has_node_of_type(self, n_type):
         return len(self._get_grid().find_elements_by_class_name(f'node.{n_type}')) != 0
 
+    def get_node(self, row, col):
+        return self._get_grid().find_element_by_id(self._make_node_id(row, col))
+
     def is_grid_input_error_visible(self):
         return self.driver.find_element_by_id('gridErrorMessage').is_displayed()
 
@@ -150,6 +153,12 @@ class GridPage(BasePage):
         element = self.driver.find_element_by_id('diagMovesToggle')
         element.click()
         return element.get_attribute('checked')
+
+    def change_node_weights(self, value):
+        element = self.driver.find_elements_by_class_name('slider-handle')[0]
+        action = ActionChains(self.driver)
+        action.click_and_hold(element).move_by_offset(-210, 0).release().perform()
+        action.click_and_hold(element).move_by_offset(value * 9.6, 0).release().perform()
 
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')

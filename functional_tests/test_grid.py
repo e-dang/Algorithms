@@ -536,3 +536,23 @@ class TestGrid:
             break
 
         assert obstacles_have_been_generated
+
+    def test_user_can_change_node_weights(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
+
+        # The user toggles weight nodes, clicks on a node, and notices the opacity of the weight node
+        row, col = START_ROW + 1, START_COL
+        assert 'weight' == page.click_weight_node_toggle()
+        page.click_node(row, col)
+        opacity = page.get_node(row, col).value_of_css_property('opacity')
+
+        # The user notices a slider to adjust the weights
+        page.change_node_weights(10)
+
+        # The user then clicks on another node and notices its opacity is now different than the other node's
+        new_row, new_col = row + 1, col
+        page.click_node(new_row, new_col)
+        new_opacity = page.get_node(new_row, new_col).value_of_css_property('opacity')
+        assert new_opacity != opacity
