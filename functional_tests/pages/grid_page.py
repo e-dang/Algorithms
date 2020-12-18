@@ -4,9 +4,13 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 
 from .base import TIMEOUT, BaseInputElement, BasePage
+
+
+def make_form_input(row, col):
+    return f'{row},{col}'
 
 
 class DimensionsInputElement(BaseInputElement):
@@ -28,8 +32,12 @@ class GridPage(BasePage):
 
     def __init__(self, driver, num_rows=None, num_cols=None):
         super().__init__(driver)
-        self.num_rows = num_rows
-        self.num_cols = num_cols
+        self.num_rows = None
+        self.num_cols = None
+        if num_rows and num_cols:
+            self.dims_input = make_form_input(num_rows, num_cols)
+            self.submit_grid_dims()
+            self._calculate_grid_dimensions()
 
     def has_correct_title(self):
         return 'Path Finding Algorithms' in self.driver.title
