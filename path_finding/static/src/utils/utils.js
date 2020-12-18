@@ -14,7 +14,7 @@ function getRandEven(range) {
     return Math.floor(Math.random() * Math.floor(range / 2)) * 2;
 }
 
-function calcInitialGridDims() {
+function calcMaximumGridDims() {
     const nodeStyle = window.getComputedStyle(document.getElementsByClassName('node')[0]);
     let nodeWidth = nodeStyle.getPropertyValue('width');
     let nodeHeight = nodeStyle.getPropertyValue('height');
@@ -28,8 +28,8 @@ function calcInitialGridDims() {
     const height = document.documentElement.clientHeight;
 
     return {
-        rows: Math.floor((height - containerHeight) / nodeHeight) - 2,
-        cols: Math.floor(width / nodeWidth) - 2,
+        maxRows: Math.floor((height - containerHeight) / nodeHeight) - 2,
+        maxCols: Math.floor(width / nodeWidth) - 2,
     };
 }
 
@@ -59,5 +59,5 @@ module.exports = {
     diagonal_moves,
     getRandOdd,
     getRandEven,
-    calcInitialGridDims,
+    calcMaximumGridDims,
 };

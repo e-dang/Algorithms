@@ -79,6 +79,10 @@ describe('GridControllerTest', () => {
             element.id = 'dimensionsInput';
             document.body.append(element);
             controller._handleGridInputError = jest.fn();
+            utils.calcMaximumGridDims = jest.fn(() => ({
+                maxRows: 10,
+                maxCols: 10,
+            }));
         });
 
         test('_handleUpdateGrid doesnt call grid.reset if nRows * nCols < 1', () => {
@@ -92,6 +96,24 @@ describe('GridControllerTest', () => {
 
         test('_handleUpdateGrid doesnt call grid.reset if nRows and nCols is negative', () => {
             controller._parseInput = jest.fn().mockReturnValueOnce([-2, -2]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nRows > maxRows calculated by utils', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([11, 9]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nCols > maxCols calculated by utils', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([9, 11]);
 
             controller._handleUpdateGrid();
 

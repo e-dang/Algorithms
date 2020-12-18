@@ -108,7 +108,8 @@ class GridController {
         this._callbackWrapper(() => {
             const element = document.getElementById('dimensionsInput');
             const [nRows, nCols] = this._parseInput(element);
-            if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
+            const {maxRows, maxCols} = utils.calcMaximumGridDims();
+            if (nRows > 0 && nCols > 0 && nRows * nCols > 1 && nRows <= maxRows && nCols <= maxCols) {
                 this.grid.reset(nRows, nCols);
                 element.value = '';
                 this._removeAlgorithmCompleteMessages();
