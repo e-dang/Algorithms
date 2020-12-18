@@ -31,14 +31,14 @@ class Grid {
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
                 }
-                node.addEventListener('mousemove', () => this._handleMouseMove(node));
-                node.addEventListener('click', () => this._handleClick(node));
+                node.addEventListener('mousemove', async () => this._handleMouseMove(node));
+                node.addEventListener('click', async () => this._handleClick(node));
                 this.nodes.push(node);
             }
         }
 
-        grid.addEventListener('mousedown', (event) => this._handleMouseDown(event));
-        grid.addEventListener('mouseup', () => this._handleMouseUp());
+        grid.addEventListener('mousedown', async (event) => this._handleMouseDown(event));
+        grid.addEventListener('mouseup', async () => this._handleMouseUp());
 
         this.gridWrapper.appendChild(grid);
     }
