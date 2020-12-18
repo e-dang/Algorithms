@@ -9,7 +9,7 @@ class RandomWeightMaze extends BaseGenerator {
 
         for (const node of this.grid.nodes) {
             if (Math.random() <= WEIGHT_NODE_PROB) {
-                await utils.sleep(10);
+                await utils.sleep(utils.FAST);
 
                 node.setAsWeightNode(MIN_WEIGHT + Math.round(Math.random() * diff));
             }

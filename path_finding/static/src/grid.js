@@ -46,7 +46,7 @@ class Grid {
     async drawPath() {
         let node = this.getEndNode().prev;
         while (node != null) {
-            await utils.sleep(10);
+            await utils.sleep(utils.MEDIUM);
             node.setAsPathNode();
             node = node.prev;
         }

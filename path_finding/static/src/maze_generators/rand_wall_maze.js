@@ -6,7 +6,7 @@ class RandomWallMaze extends BaseGenerator {
         const percentChance = 0.35;
         for (const node of this.grid.nodes) {
             if (Math.random() < percentChance) {
-                await utils.sleep(10);
+                await utils.sleep(utils.FAST);
                 node.setAsWallNode();
             }
         }

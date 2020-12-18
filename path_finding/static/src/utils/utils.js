@@ -1,3 +1,6 @@
+FAST = 1;
+MEDIUM = 10;
+
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -60,4 +63,6 @@ module.exports = {
     getRandOdd,
     getRandEven,
     calcMaximumGridDims,
+    FAST,
+    MEDIUM,
 };

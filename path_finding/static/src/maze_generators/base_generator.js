@@ -7,7 +7,7 @@ class BaseGenerator {
     }
 
     async connect(node1, node2) {
-        await utils.sleep(10);
+        await utils.sleep(utils.MEDIUM);
 
         node1.setAsEmptyNode();
         node2.setAsEmptyNode();

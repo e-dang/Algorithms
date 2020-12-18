@@ -70,7 +70,7 @@ class RecursiveDivision extends BaseGenerator {
     async _drawWallLine(getNode, begin, end, skipIdx = -1) {
         for (let i = begin; i <= end; i++) {
             if (i !== skipIdx) {
-                await utils.sleep(10);
+                await utils.sleep(utils.MEDIUM);
                 getNode(i).setAsWallNode();
             }
         }
@@ -79,7 +79,7 @@ class RecursiveDivision extends BaseGenerator {
     async _drawWeightLine(getNode, begin, end, skipIdx = -1) {
         for (let i = begin; i <= end; i++) {
             if (i !== skipIdx || Math.random() < 0.5) {
-                await utils.sleep(10);
+                await utils.sleep(utils.MEDIUM);
                 getNode(i).setAsWeightNode(this.grid.weight);
             }
         }
