@@ -26,10 +26,6 @@ jest.mock('../src/maze_generators/recursive_division');
 describe('GridControllerTest', () => {
     let nRows;
     let nCols;
-    let startRow;
-    let startCol;
-    let endRow;
-    let endCol;
     let alg;
     let slider;
     let toggle;
@@ -38,17 +34,13 @@ describe('GridControllerTest', () => {
     beforeEach(() => {
         nRows = 10;
         nCols = 14;
-        startRow = 1;
-        startCol = 1;
-        endRow = 1;
-        endCol = 1;
         alg = "Dijkstra's Algorithm";
         document.documentElement.innerHTML = html.toString();
         slider = new Slider('#weightSlider');
         toggle = $('#weightToggle').bootstrapToggle();
         Grid.mockReset();
         RecursiveDivision.mockReset();
-        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
+        controller = new GridController(nRows, nCols, alg, slider, toggle);
     });
 
     afterEach(() => {
@@ -56,7 +48,7 @@ describe('GridControllerTest', () => {
     });
 
     test('constructor initializes a new Grid with the passed in dimensions', () => {
-        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols, slider.getValue());
     });
 
     test('constructor sets alg parameter to alg property', () => {

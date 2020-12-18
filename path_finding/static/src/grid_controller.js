@@ -14,9 +14,10 @@ const RandomWallMaze = require('./maze_generators/rand_wall_maze');
 const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
 const utils = require('./utils/utils');
 const RecursiveDivision = require('./maze_generators/recursive_division');
+
 class GridController {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
-        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
+    constructor(nRows, nCols, alg, slider, toggle) {
+        this.grid = new Grid(nRows, nCols, slider.getValue());
         this.alg = alg;
         this.isAlgRunning = false;
         this.slider = slider;

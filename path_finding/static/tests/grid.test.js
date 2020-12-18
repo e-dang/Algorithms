@@ -6,38 +6,48 @@ jest.mock('../src/node');
 describe('TestGrid', () => {
     let nRows;
     let nCols;
-    let startRow;
-    let startCol;
-    let endRow;
-    let endCol;
     let weight;
     let grid;
 
     beforeEach(() => {
         nRows = 10;
         nCols = 20;
-        startRow = 1;
-        startCol = 1;
-        endRow = 8;
-        endCol = 15;
         weight = 20;
         const wrapper = document.createElement('table');
         wrapper.id = 'gridWrapper';
         document.body.append(wrapper);
-        grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, weight);
+        grid = new Grid(nRows, nCols, weight);
     });
 
     afterEach(() => {
         document.getElementsByTagName('html')[0].innerHTML = '';
     });
 
-    test('constructor sets nRows, nCols, startRow, startCol, endRow, endCol properties', () => {
+    test('constructor sets nRows and nCols properties', () => {
         expect(grid.nRows).toBe(nRows);
         expect(grid.nCols).toBe(nCols);
-        expect(grid.startRow).toBe(startRow);
-        expect(grid.startCol).toBe(startCol);
-        expect(grid.endRow).toBe(endRow);
-        expect(grid.endCol).toBe(endCol);
+    });
+
+    test('constructor calls _setStartNode with nRows and nCols params', () => {
+        const origFunc = Grid.prototype._setStartNode;
+        const mockFunc = jest.fn();
+        Grid.prototype._setStartNode = mockFunc;
+
+        grid = new Grid(nRows, nCols, weight);
+
+        Grid.prototype._setStartNode = origFunc;
+        expect(mockFunc).toHaveBeenCalledWith(nRows, nCols);
+    });
+
+    test('constructor calls _setEndNode with nRows and nCols params', () => {
+        const origFunc = Grid.prototype._setEndNode;
+        const mockFunc = jest.fn();
+        Grid.prototype._setEndNode = mockFunc;
+
+        grid = new Grid(nRows, nCols, weight);
+
+        Grid.prototype._setEndNode = origFunc;
+        expect(mockFunc).toHaveBeenCalledWith(nRows, nCols);
     });
 
     test('constructor sets weight property to weight parameter', () => {
@@ -133,12 +143,11 @@ describe('TestGrid', () => {
         node.row = 9;
         node.col = 9;
         node.isEndNode.mockReturnValueOnce(true);
-        grid.getStartNode = jest.fn().mockReturnValueOnce(new Node());
 
         grid.setAsStartNode(node);
 
-        expect(grid.startRow).toBe(startRow);
-        expect(grid.startCol).toBe(startCol);
+        expect(grid.startRow).not.toBe(node.row);
+        expect(grid.startCol).not.toBe(node.col);
     });
 
     test('setAsEndNode sets endRow and endCol', () => {
@@ -179,19 +188,38 @@ describe('TestGrid', () => {
         node.row = 1;
         node.col = 3;
         node.isStartNode.mockReturnValueOnce(true);
-        grid.getEndNode = jest.fn().mockReturnValueOnce(new Node());
 
         grid.setAsEndNode(node);
 
-        expect(grid.endRow).toBe(endRow);
-        expect(grid.endCol).toBe(endCol);
+        expect(grid.endRow).not.toBe(node.row);
+        expect(grid.endCol).not.toBe(node.col);
     });
 
     describe('test reset', () => {
         beforeEach(() => {
+            grid._setStartNode = jest.fn();
+            grid._setEndNode = jest.fn();
             grid.setDimensions = jest.fn();
             grid.clear = jest.fn();
             grid.draw = jest.fn();
+        });
+
+        test('reset calls _setStartNode with nRows and nCols params', () => {
+            const nRows = 20;
+            const nCols = 24;
+
+            grid.reset(nRows, nCols);
+
+            expect(grid._setStartNode).toHaveBeenCalledWith(nRows, nCols);
+        });
+
+        test('reset calls _setEndNode with nRows and nCols params', () => {
+            const nRows = 20;
+            const nCols = 24;
+
+            grid.reset(nRows, nCols);
+
+            expect(grid._setEndNode).toHaveBeenCalledWith(nRows, nCols);
         });
 
         test('reset calls setDimensions args', () => {
@@ -482,10 +510,10 @@ describe('TestGrid', () => {
 
     test('getStartNode returns node at start coordinates', () => {
         let node;
-        for (i = 0; i < nRows * nCols; i++) {
+        for (i = 0; i < grid.nRows * grid.nCols; i++) {
             const newNode = new Node();
             grid.nodes.push(newNode);
-            if (i == startRow * nCols + startCol) {
+            if (i == grid.startRow * grid.nCols + grid.startCol) {
                 node = newNode;
             }
         }
@@ -497,10 +525,10 @@ describe('TestGrid', () => {
 
     test('getStartNode returns node at end coordinates', () => {
         let node;
-        for (i = 0; i < nRows * nCols; i++) {
+        for (i = 0; i < grid.nRows * grid.nCols; i++) {
             const newNode = new Node();
             grid.nodes.push(newNode);
-            if (i == endRow * nCols + endCol) {
+            if (i == grid.endRow * grid.nCols + grid.endCol) {
                 node = newNode;
             }
         }
@@ -556,5 +584,25 @@ describe('TestGrid', () => {
         for (let i = 0; i < nRows; i++) {
             expect(grid.nodes[i].reset).toHaveBeenCalledTimes(1);
         }
+    });
+
+    test('_setStartNode sets startRow and startCol props', () => {
+        grid.startRow = undefined;
+        grid.startCol = undefined;
+
+        grid._setStartNode(4, 4);
+
+        expect(grid.startRow).toBeDefined();
+        expect(grid.startCol).toBeDefined();
+    });
+
+    test('_setEndNode sets endRow and endCol props', () => {
+        grid.endRow = undefined;
+        grid.endCol = undefined;
+
+        grid._setEndNode(4, 4);
+
+        expect(grid.endRow).toBeDefined();
+        expect(grid.endCol).toBeDefined();
     });
 });

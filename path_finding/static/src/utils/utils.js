@@ -14,6 +14,25 @@ function getRandEven(range) {
     return Math.floor(Math.random() * Math.floor(range / 2)) * 2;
 }
 
+function calcInitialGridDims() {
+    const nodeStyle = window.getComputedStyle(document.getElementsByClassName('node')[0]);
+    let nodeWidth = nodeStyle.getPropertyValue('width');
+    let nodeHeight = nodeStyle.getPropertyValue('height');
+    nodeWidth = parseInt(nodeWidth.substring(0, nodeWidth.length - 2));
+    nodeHeight = parseInt(nodeHeight.substring(0, nodeHeight.length - 2));
+
+    const containerStyle = window.getComputedStyle(document.getElementById('controlsContainer'));
+    let containerHeight = containerStyle.getPropertyValue('height');
+    containerHeight = parseInt(containerHeight.substring(0, containerHeight.length - 2));
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+
+    return {
+        rows: Math.floor((height - containerHeight) / nodeHeight) - 2,
+        cols: Math.floor(width / nodeWidth) - 2,
+    };
+}
+
 /*
 
 direction |  u  |  ul |  l  |  dl |  d  |  dr  |  r  |  ur |
@@ -40,4 +59,5 @@ module.exports = {
     diagonal_moves,
     getRandOdd,
     getRandEven,
+    calcInitialGridDims,
 };
