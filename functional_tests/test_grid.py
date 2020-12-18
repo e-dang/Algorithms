@@ -17,8 +17,8 @@ def calc_end_pos(num_rows, num_cols):
 GRID_PROPS = (10, 1, 8)
 WALL_NODES = (3, 8, 5)
 WEIGHT_NODES = (0, 9, 5)
-NUM_ROWS = 40
-NUM_COLS = 40
+NUM_ROWS = 20
+NUM_COLS = 20
 START_ROW, START_COL = calc_start_pos(NUM_ROWS, NUM_COLS)
 END_ROW, END_COL = calc_end_pos(NUM_ROWS, NUM_COLS)
 
@@ -408,13 +408,13 @@ class TestGrid:
         self.driver.get(url)
         page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
-        # The user notices a drop down menu to select algorithms to visualize and selects A* Search and
+        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search and
         # runs it
-        page.select_algorithm('A* Search')
+        page.select_algorithm('Breadth-First Search')
         page.click_run()
 
         # The user then tries to add wall nodes during the current run, but does not see them change
-        w_start_row, w_end_row, col = START_ROW + 5, START_ROW + 8, START_COL - 3
+        w_start_row, w_end_row, col = START_ROW + 5, START_ROW + 8, START_COL + 5
         page.click_node(w_start_row, col)
         assert not page.is_node_of_type(w_start_row, col, 'wall')
 
@@ -465,7 +465,7 @@ class TestGrid:
         # The user then runs the algorithm and waits for it to complete. They see that the heuristic has been used.
         page.click_run()
         page.wait_until_complete()
-        assert page.get_cost() == 62
+        assert page.get_cost() == 30
 
     @pytest.mark.parametrize('url, alg, n_type', [
         (None, 'Randomized DFS', 'wall'),
