@@ -27,12 +27,12 @@ class RecursiveDivision extends BaseGenerator {
         const height = maxRow - minRow;
         const width = maxCol - minCol;
         if (this._isNextWallHorizontal(width, height)) {
-            const row = minRow + utils.getRandEven(height);
+            const row = utils.getRandomFromRange(minRow, maxRow, 2);
             await this._drawRow(row, minCol - 1, maxCol + 1);
             await this._generateHelper(minRow, row - 2, minCol, maxCol);
             await this._generateHelper(row + 2, maxRow, minCol, maxCol);
         } else {
-            const col = minCol + utils.getRandEven(width);
+            const col = utils.getRandomFromRange(minCol, maxCol, 2);
             await this._drawCol(col, minRow - 1, maxRow + 1);
             await this._generateHelper(minRow, maxRow, minCol, col - 2);
             await this._generateHelper(minRow, maxRow, col + 2, maxCol);
@@ -58,12 +58,7 @@ class RecursiveDivision extends BaseGenerator {
     }
 
     async _divideChamber(getNode, begin, end) {
-        const nums = [];
-        for (let i = begin; i <= end; i += 2) {
-            nums.push(i);
-        }
-
-        const passageIdx = nums[Math.floor(Math.random() * nums.length)];
+        const passageIdx = utils.getRandomFromRange(begin, end, 2);
         await this.drawLine(getNode, begin, end, passageIdx);
     }
 

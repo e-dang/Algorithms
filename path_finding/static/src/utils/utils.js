@@ -17,6 +17,15 @@ function getRandEven(range) {
     return Math.floor(Math.random() * Math.floor(range / 2)) * 2;
 }
 
+function getRandomFromRange(start, end, inc = 1) {
+    const nums = [];
+    for (let i = start; i <= end; i += inc) {
+        nums.push(i);
+    }
+
+    return nums[Math.floor(Math.random() * nums.length)];
+}
+
 function calcMaximumGridDims() {
     const nodeStyle = window.getComputedStyle(document.getElementsByClassName('node')[0]);
     let nodeWidth = nodeStyle.getPropertyValue('width');
@@ -58,6 +67,7 @@ const diagonal_moves = {
 module.exports = {
     sleep,
     getRandom,
+    getRandomFromRange,
     manhattan_moves,
     diagonal_moves,
     getRandOdd,
