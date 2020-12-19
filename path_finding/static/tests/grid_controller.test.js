@@ -146,11 +146,11 @@ describe('GridControllerTest', () => {
 
     test('_handleUpdateGridOnKeyPress sets gridErrorMessage to hidden when a non-Enter key is pressed', () => {
         const element = document.getElementById('gridErrorMessage');
-        element.hidden = false;
+        element.classList.remove('hidden');
 
         controller._handleUpdateGridOnKeyPress(new Event('keypress'));
 
-        expect(element).not.toBeVisible();
+        expect(element).toHaveClass('hidden');
     });
 
     test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
@@ -270,29 +270,20 @@ describe('GridControllerTest', () => {
 
     test('_handleCompleteAlgorithm sets algComplete element to be visible when cost is not null', () => {
         element = document.getElementById('algComplete');
-        element.hidden = true;
+        element.classList.add('hidden');
 
         controller._handleCompleteAlgorithm(1);
 
-        expect(element).toBeVisible();
+        expect(element).not.toHaveClass('hidden');
     });
 
     test('_handleCompleteAlgorithm doesnt set algComplete element to be visible when cost is null', () => {
         element = document.getElementById('algComplete');
-        element.hidden = true;
+        element.classList.add('hidden');
 
         controller._handleCompleteAlgorithm(null);
 
-        expect(element).not.toBeVisible();
-    });
-
-    test('_handleCompleteAlgorithm sets cost element to visible when cost is not null', () => {
-        element = document.getElementById('cost');
-        element.hidden = true;
-
-        controller._handleCompleteAlgorithm(1);
-
-        expect(element).toBeVisible();
+        expect(element).toHaveClass('hidden');
     });
 
     test('_handleCompleteAlgorithm doesnt set cost element to visible when cost is null', () => {
@@ -344,11 +335,11 @@ describe('GridControllerTest', () => {
 
     test('_handleReset sets algComplete element to be invisible', () => {
         element = document.getElementById('algComplete');
-        element.hidden = false;
+        element.classList.remove('hidden');
 
         controller._handleReset();
 
-        expect(element).not.toBeVisible();
+        expect(element).toHaveClass('hidden');
     });
 
     test('_handleReset calls grid.draw()', () => {
@@ -393,20 +384,11 @@ describe('GridControllerTest', () => {
 
     test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
         const element = document.getElementById('algComplete');
-        element.hidden = false;
+        element.classList.remove('hidden');
 
         controller._removeAlgorithmCompleteMessages();
 
-        expect(element).not.toBeVisible();
-    });
-
-    test('_removeAlgorithmCompleteMessages sets cost element to hidden', () => {
-        const element = document.getElementById('cost');
-        element.hidden = false;
-
-        controller._removeAlgorithmCompleteMessages();
-
-        expect(element).not.toBeVisible();
+        expect(element).toHaveClass('hidden');
     });
 
     test('_callbackWrapper doesnt call function if isAlgRunning is true', () => {

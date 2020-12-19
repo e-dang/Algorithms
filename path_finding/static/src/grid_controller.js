@@ -120,7 +120,7 @@ class GridController {
 
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
-        document.getElementById('algorithmSelectErrorMessage').hidden = true;
+        document.getElementById('algorithmSelectErrorMessage').classList.add('hidden');
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
         this._toggleHeuristicSelect();
     }
@@ -133,7 +133,7 @@ class GridController {
     }
 
     _handleGridInputError() {
-        document.getElementById('gridErrorMessage').hidden = false;
+        document.getElementById('gridErrorMessage').classList.remove('hidden');
         document.getElementById('dimensionsInput').classList.add('is-invalid');
     }
 
@@ -142,7 +142,7 @@ class GridController {
             if (event.keyCode === 13) {
                 this._handleUpdateGrid();
             } else {
-                document.getElementById('gridErrorMessage').hidden = true;
+                document.getElementById('gridErrorMessage').classList.add('hidden');
                 document.getElementById('dimensionsInput').classList.remove('is-invalid');
             }
         });
@@ -180,9 +180,8 @@ class GridController {
         this._setIsAlgRunning(false);
         if (cost !== null) {
             this.grid.drawPath();
-            document.getElementById('algComplete').hidden = false;
+            document.getElementById('algComplete').classList.remove('hidden');
             const costElement = document.getElementById('cost');
-            costElement.hidden = false;
             costElement.textContent = cost;
         }
     }
@@ -236,8 +235,7 @@ class GridController {
     }
 
     _removeAlgorithmCompleteMessages() {
-        document.getElementById('algComplete').hidden = true;
-        document.getElementById('cost').hidden = true;
+        document.getElementById('algComplete').classList.add('hidden');
     }
 
     _callbackWrapper(callback) {

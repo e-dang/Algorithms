@@ -28,29 +28,34 @@
             </div>
 
             <div class="row">
-                <div class="col text-center">
-                    <label class="control-label" for="dimensionsInput">Dimensions</label>
-                    <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
-                        placeholder="e.g. 50,50">
-                    <small id="gridErrorMessage" class="text-danger text-left" hidden>Invalid input -
+                <div class="col">
+                    <div class="text-center">
+                        <label class="control-label" for="dimensionsInput">Dimensions</label>
+                        <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
+                            placeholder="e.g. 50,50">
+                    </div>
+                    <small id="gridErrorMessage" class="text-danger text-left hidden">Invalid
+                        input -
                         number of
                         cells must not exceed your screen size and must be
                         greater than 2.</small>
                 </div>
 
-                <div class="col text-center">
-                    <label class="control-label" for="algorithmSelect">Algorithm</label>
-                    <select id="algorithmSelect" class="selectpicker">
-                        <option selected value="null">Select One...</option>
-                        <option value="dfs">Depth-First Search</option>
-                        <option value="dfssp">Depth-First Search (Shortest Path)</option>
-                        <option value="bfs">Breadth-First Search</option>
-                        <option value="dijkstra">Dijkstra's Algorithm</option>
-                        <option value="a*">A* Search</option>
-                        <option value="greedy-bfs">Greedy Best-First Search</option>
-                        <option value="bidirectional">Bidirectional Search</option>
-                    </select>
-                    <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left" hidden>Please
+                <div class="col">
+                    <div class="text-center">
+                        <label class="control-label" for="algorithmSelect">Algorithm</label>
+                        <select id="algorithmSelect" class="selectpicker">
+                            <option selected value="null">Select One...</option>
+                            <option value="dfs">Depth-First Search</option>
+                            <option value="dfssp">Depth-First Search (Shortest Path)</option>
+                            <option value="bfs">Breadth-First Search</option>
+                            <option value="dijkstra">Dijkstra's Algorithm</option>
+                            <option value="a*">A* Search</option>
+                            <option value="greedy-bfs">Greedy Best-First Search</option>
+                            <option value="bidirectional">Bidirectional Search</option>
+                        </select>
+                    </div>
+                    <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left pl-3 hidden">Please
                         select an
                         algorithm.</small>
                 </div>
@@ -77,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="row  justify-content-around" style="padding-top: 30px;">
+            <div class="row  justify-content-around">
                 <div class="col-md-auto">
                     <div class="form-group text-center">
                         <label id="weightToggleLabel">Toggle Weight Node
@@ -110,7 +115,7 @@
 
             <div class="row justify-content-center">
                 <div class="col">
-                    <p id='algComplete' class="h3 text-success text-center" hidden>Complete!<br>Path Cost = <span
+                    <p id='algComplete' class="h6 text-success text-center hidden">Complete!<br>Path Cost = <span
                             id="cost"></span></p>
                 </div>
             </div>

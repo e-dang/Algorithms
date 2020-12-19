@@ -9,7 +9,7 @@ class BaseAlgorithm {
     }
 
     async run(callback) {
-        document.getElementById('algorithmSelectErrorMessage').hidden = false;
+        document.getElementById('algorithmSelectErrorMessage').classList.remove('hidden');
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'add');
         callback(null);
     }
