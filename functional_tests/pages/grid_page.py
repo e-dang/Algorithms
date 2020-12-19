@@ -40,10 +40,10 @@ class GridPage(BasePage):
             self._calculate_grid_dimensions()
 
     def has_correct_title(self):
-        return 'Path Finding Algorithms' in self.driver.title
+        return 'Path Finding Algorithm Visualizer' in self.driver.title
 
     def has_correct_header(self):
-        return 'Path Finding Algorithms' in self.driver.find_element_by_tag_name('h1').text
+        return 'Path Finding Algorithm Visualizer' in self.driver.find_element_by_tag_name('h1').text
 
     def has_node_of_type(self, n_type):
         return len(self._get_grid().find_elements_by_class_name(f'node.{n_type}')) != 0
