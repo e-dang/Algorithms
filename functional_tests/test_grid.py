@@ -458,7 +458,7 @@ class TestGrid:
         page.select_maze_generation('Recursive Division (Walls)')
 
         # The user then tries to click on some nodes, but doesnt seem them change
-        w_start_row, w_end_row, col = START_ROW + 5, START_ROW + 8, START_COL + 5
+        w_start_row, w_end_row, col = START_ROW + 2, START_ROW + 3, START_COL + 5
         page.click_node(w_start_row, col)
         assert not page.is_node_of_type(w_start_row, col, ['wall', 'weight'])
 
