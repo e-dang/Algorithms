@@ -26,22 +26,27 @@ function getRandomFromRange(start, end, inc = 1) {
     return nums[Math.floor(Math.random() * nums.length)];
 }
 
-function calcMaximumGridDims() {
-    const nodeStyle = window.getComputedStyle(document.getElementsByClassName('node')[0]);
-    let nodeWidth = nodeStyle.getPropertyValue('width');
-    let nodeHeight = nodeStyle.getPropertyValue('height');
-    nodeWidth = parseInt(nodeWidth.substring(0, nodeWidth.length - 2));
-    nodeHeight = parseInt(nodeHeight.substring(0, nodeHeight.length - 2));
+function getDimensions(element) {
+    const nodeStyle = window.getComputedStyle(element);
+    let width = nodeStyle.getPropertyValue('width');
+    let height = nodeStyle.getPropertyValue('height');
 
-    const containerStyle = window.getComputedStyle(document.getElementById('controlsContainer'));
-    let containerHeight = containerStyle.getPropertyValue('height');
-    containerHeight = parseInt(containerHeight.substring(0, containerHeight.length - 2));
+    return {
+        width: parseInt(width.substring(0, width.length - 2)),
+        height: parseInt(height.substring(0, height.length - 2)),
+    };
+}
+
+function calcMaximumGridDims() {
+    const nodeDims = getDimensions(document.getElementsByClassName('node')[0]);
+    const containerDims = getDimensions(document.getElementById('controlsContainer'));
     const width = document.documentElement.clientWidth;
     const height = document.documentElement.clientHeight;
 
+    // minus 2 for margins
     return {
-        maxRows: Math.floor((height - containerHeight) / nodeHeight) - 2,
-        maxCols: Math.floor(width / nodeWidth) - 2,
+        maxRows: Math.floor((height - containerDims.height) / nodeDims.height) - 2,
+        maxCols: Math.floor(width / nodeDims.width) - 2,
     };
 }
 
