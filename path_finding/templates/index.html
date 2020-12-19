@@ -18,7 +18,7 @@
 
 <body id='body'>
     <div id="controlsContainer" class="container">
-        <div class="jumbotron">
+        <div class="jumbotron reduced-jumbotron">
             <div class="row">
                 <div class="col">
                     <div class="text-center">
@@ -112,16 +112,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="row justify-content-center">
-                <div class="col">
-                    <p id='algComplete' class="h6 text-success text-center hidden">Complete!<br>Path Cost = <span
-                            id="cost"></span></p>
-                </div>
-            </div>
         </div>
 
-        <div class="row justify-content-center mb-5">
+        <div class="row justify-content-center">
             <div class="col-auto">
                 <div class="row justify-content-center">
                     <div class="col">
@@ -210,7 +203,45 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <div id="algInfoContainer" class="container-fluid">
+        <div class="row justify-content-center mt-3">
+            <div class="col text-center info-section">
+                <p class="lead" id="dijkstraInfo" hidden><b>Dijkstra's Algorithm</b> is weighted and guarantees the
+                    shortest path.</p>
+                <p class="lead" id="bfsInfo" hidden><b>Breadth-First Search</b> is unweighted and guarantees the
+                    shortest path.</p>
+                <p class="lead" id="dfsInfo" hidden><b>Depth-First Search</b> is unweighted and does not guarantee the
+                    shortest path.
+                </p>
+                <p class="lead" id="dfsspInfo" hidden><b>Depth-First Search (Shortest Path)</b> is unweighted and will
+                    find the shortest
+                    path by exploring all possible paths. This algorithm can run <i>extremely</i> long if the
+                    grid
+                    is large.</p>
+                <p class="lead" id="a*Info" hidden><b>A* Search</b> is weighted and guarantees the shortest path as
+                    long as the
+                    heuristic
+                    does not over estimate the true cost to the end node. This is why Manhattan Distance cannot be
+                    used
+                    as a heuristic when diagonal moves are enabled.</p>
+                <p class="lead" id="greedy-bfsInfo" hidden><b>Greedy Best-First Search</b> is unweighted and does not
+                    guarantee the
+                    shortest
+                    path.</p>
+                <p class="lead" id="bidirectionalInfo" hidden><b>Bidirectional Search</b> uses Breadth-First Search and
+                    thus is
+                    unweighted
+                    and guarantees the shortest path.</p>
+                <div class="line-break"></div>
+                <p id='algComplete' class="h4 text-success" hidden>Complete!<br>Path Cost = <span id="cost"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="buttonContainer" class="container">
         <div class="row justify-content-center">
             <div class="col-3">
                 <button class="btn btn-primary btn-block" id="runButton">Run</button>
@@ -223,9 +254,9 @@
             </div>
         </div>
 
-        <hr>
     </div>
 
+    <hr>
 
     <div class="container">
         <div class="row justify-content-center">

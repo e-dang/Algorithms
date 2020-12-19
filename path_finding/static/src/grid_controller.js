@@ -120,6 +120,7 @@ class GridController {
 
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
+        this._displayAlgInfo();
         document.getElementById('algorithmSelectErrorMessage').classList.add('hidden');
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
         this._toggleHeuristicSelect();
@@ -180,7 +181,7 @@ class GridController {
         this._setIsAlgRunning(false);
         if (cost !== null) {
             this.grid.drawPath();
-            document.getElementById('algComplete').classList.remove('hidden');
+            document.getElementById('algComplete').hidden = false;
             const costElement = document.getElementById('cost');
             costElement.textContent = cost;
         }
@@ -235,7 +236,7 @@ class GridController {
     }
 
     _removeAlgorithmCompleteMessages() {
-        document.getElementById('algComplete').classList.add('hidden');
+        document.getElementById('algComplete').hidden = true;
     }
 
     _callbackWrapper(callback) {
@@ -279,6 +280,16 @@ class GridController {
     _setIsAlgRunning(state) {
         this.isAlgRunning = state;
         this.grid.isAlgRunning = state;
+    }
+
+    _displayAlgInfo() {
+        document.getElementById('dijkstraInfo').hidden = this.alg !== 'dijkstra';
+        document.getElementById('bfsInfo').hidden = this.alg !== 'bfs';
+        document.getElementById('dfsInfo').hidden = this.alg !== 'dfs';
+        document.getElementById('dfsspInfo').hidden = this.alg !== 'dfssp';
+        document.getElementById('a*Info').hidden = this.alg !== 'a*';
+        document.getElementById('greedy-bfsInfo').hidden = this.alg !== 'greedy-bfs';
+        document.getElementById('bidirectionalInfo').hidden = this.alg !== 'bidirectional';
     }
 }
 

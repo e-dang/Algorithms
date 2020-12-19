@@ -39,13 +39,16 @@ function getDimensions(element) {
 
 function calcMaximumGridDims() {
     const nodeDims = getDimensions(document.getElementsByClassName('node')[0]);
-    const containerDims = getDimensions(document.getElementById('controlsContainer'));
+    const controlDims = getDimensions(document.getElementById('controlsContainer'));
+    const infoDims = getDimensions(document.getElementById('algInfoContainer'));
+    const buttonDims = getDimensions(document.getElementById('buttonContainer'));
+    const totalStaticHeight = controlDims.height + infoDims.height + buttonDims.height;
     const width = document.documentElement.clientWidth;
     const height = document.documentElement.clientHeight;
 
-    // minus 2 for margins
+    // minus integer for margins
     return {
-        maxRows: Math.floor((height - containerDims.height) / nodeDims.height) - 2,
+        maxRows: Math.floor((height - totalStaticHeight) / nodeDims.height) - 3,
         maxCols: Math.floor(width / nodeDims.width) - 2,
     };
 }

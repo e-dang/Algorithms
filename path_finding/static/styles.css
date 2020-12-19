@@ -243,3 +243,19 @@
 .hidden {
     visibility: hidden;
 }
+
+.reduced-jumbotron {
+    padding-bottom: 2rem;
+}
+
+.info-section {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 110px;
+    justify-content: center;
+    align-items: center;
+}
+
+.line-break {
+    width: 100%;
+}
