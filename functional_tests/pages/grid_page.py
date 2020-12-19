@@ -160,6 +160,18 @@ class GridPage(BasePage):
         action.click_and_hold(element).move_by_offset(-210, 0).release().perform()
         action.click_and_hold(element).move_by_offset(value * 9.6, 0).release().perform()
 
+    def can_see_alg_info(self, algorithm):
+        mapping = {
+            "Dijkstra's Algorithm": 'dijkstraInfo',
+            'Depth-First Search': 'dfsInfo',
+            'Depth-First Search (Shortest Path)': 'dfsspInfo',
+            'Breadth-First Search': 'bfsInfo',
+            'A* Search': 'a*Info',
+            'Greedy Best-First Search': 'greedy-bfsInfo',
+            'Bidirectional Search': 'bidirectionalInfo'
+        }
+        return self.driver.find_element_by_id(mapping[algorithm]).is_displayed()
+
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')
 

@@ -53,6 +53,9 @@ class TestGrid:
         # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
         page.select_algorithm(algorithm)
 
+        # The user then sees information about the algorithm appear
+        assert page.can_see_alg_info(algorithm)
+
         # The user clicks and drags on some empty nodes and converts them to wall nodes
         w_start_row, w_end_row, col = wall_nodes
         page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
