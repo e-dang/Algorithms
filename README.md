@@ -1,4 +1,4 @@
-# Path Finding Algorithm Visualizer
+# Path Finding Algorithm Visualizer [![Actions Status](https://github.com/e-dang/Path-Finding-Algorithm-Visualizer/workflows/integrate/badge.svg)](https://github.com/e-dang/Path-Finding-Algorithm-Visualizer/actions)
 
 ## Description
 
