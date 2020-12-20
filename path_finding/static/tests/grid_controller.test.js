@@ -10,7 +10,6 @@ const GreedyBestFirstSearch = require('../src/algorithms/greedy-bfs.js');
 const BidirectionalSearch = require('../src/algorithms/bidirectional');
 const fs = require('fs');
 const path = require('path');
-const html = fs.readFileSync(path.resolve(__dirname, '../../templates/path_finding.html'), 'utf8');
 const heuristics = require('../src/utils/heuristics');
 const RandomizedDFS = require('../src/maze_generators/rand_dfs');
 const RandomizedPrims = require('../src/maze_generators/prim');
@@ -20,35 +19,26 @@ const RandomWeightMaze = require('../src/maze_generators/rand_weight_maze');
 const utils = require('../src/utils/utils');
 const RecursiveDivision = require('../src/maze_generators/recursive_division');
 
+const html = fs.readFileSync(path.resolve(__dirname, '../../templates/index.html'), 'utf8');
 jest.mock('../src/grid');
 jest.mock('../src/maze_generators/recursive_division');
 
 describe('GridControllerTest', () => {
     let nRows;
     let nCols;
-    let startRow;
-    let startCol;
-    let endRow;
-    let endCol;
     let alg;
     let slider;
-    let toggle;
     let controller;
 
     beforeEach(() => {
         nRows = 10;
         nCols = 14;
-        startRow = 1;
-        startCol = 1;
-        endRow = 1;
-        endCol = 1;
         alg = "Dijkstra's Algorithm";
         document.documentElement.innerHTML = html.toString();
         slider = new Slider('#weightSlider');
-        toggle = $('#weightToggle').bootstrapToggle();
         Grid.mockReset();
         RecursiveDivision.mockReset();
-        controller = new GridController(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle);
+        controller = new GridController(nRows, nCols, alg, slider);
     });
 
     afterEach(() => {
@@ -56,7 +46,7 @@ describe('GridControllerTest', () => {
     });
 
     test('constructor initializes a new Grid with the passed in dimensions', () => {
-        expect(Grid).toHaveBeenCalledWith(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
+        expect(Grid).toHaveBeenCalledWith(nRows, nCols, slider.getValue());
     });
 
     test('constructor sets alg parameter to alg property', () => {
@@ -65,10 +55,6 @@ describe('GridControllerTest', () => {
 
     test('constructor sets slider property to slider parameter', () => {
         expect(controller.slider).toBe(slider);
-    });
-
-    test('constructor sets toggle property to toggle parameter', () => {
-        expect(controller.toggle).toBe(toggle);
     });
 
     test('_parseInput splits string at comma and returns two ints', () => {
@@ -87,6 +73,10 @@ describe('GridControllerTest', () => {
             element.id = 'dimensionsInput';
             document.body.append(element);
             controller._handleGridInputError = jest.fn();
+            utils.calcMaximumGridDims = jest.fn(() => ({
+                maxRows: 10,
+                maxCols: 10,
+            }));
         });
 
         test('_handleUpdateGrid doesnt call grid.reset if nRows * nCols < 1', () => {
@@ -100,6 +90,24 @@ describe('GridControllerTest', () => {
 
         test('_handleUpdateGrid doesnt call grid.reset if nRows and nCols is negative', () => {
             controller._parseInput = jest.fn().mockReturnValueOnce([-2, -2]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nRows > maxRows calculated by utils', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([11, 9]);
+
+            controller._handleUpdateGrid();
+
+            expect(controller.grid.reset).not.toHaveBeenCalled();
+            expect(controller._handleGridInputError).toHaveBeenCalledTimes(1);
+        });
+
+        test('_handleUpdateGrid doesnt call grid.reset if nCols > maxCols calculated by utils', () => {
+            controller._parseInput = jest.fn().mockReturnValueOnce([9, 11]);
 
             controller._handleUpdateGrid();
 
@@ -138,11 +146,11 @@ describe('GridControllerTest', () => {
 
     test('_handleUpdateGridOnKeyPress sets gridErrorMessage to hidden when a non-Enter key is pressed', () => {
         const element = document.getElementById('gridErrorMessage');
-        element.hidden = false;
+        element.classList.remove('hidden');
 
         controller._handleUpdateGridOnKeyPress(new Event('keypress'));
 
-        expect(element).not.toBeVisible();
+        expect(element).toHaveClass('hidden');
     });
 
     test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
@@ -278,15 +286,6 @@ describe('GridControllerTest', () => {
         expect(element).not.toBeVisible();
     });
 
-    test('_handleCompleteAlgorithm sets cost element to visible when cost is not null', () => {
-        element = document.getElementById('cost');
-        element.hidden = true;
-
-        controller._handleCompleteAlgorithm(1);
-
-        expect(element).toBeVisible();
-    });
-
     test('_handleCompleteAlgorithm doesnt set cost element to visible when cost is null', () => {
         element = document.getElementById('cost');
         element.hidden = true;
@@ -385,15 +384,6 @@ describe('GridControllerTest', () => {
 
     test('_removeAlgorithmCompleteMessages sets algComplete element to hidden', () => {
         const element = document.getElementById('algComplete');
-        element.hidden = false;
-
-        controller._removeAlgorithmCompleteMessages();
-
-        expect(element).not.toBeVisible();
-    });
-
-    test('_removeAlgorithmCompleteMessages sets cost element to hidden', () => {
-        const element = document.getElementById('cost');
         element.hidden = false;
 
         controller._removeAlgorithmCompleteMessages();
@@ -629,25 +619,31 @@ describe('GridControllerTest', () => {
         controller._handleWeightToggle = jest.fn();
         controller.addWeightToggleEventListener();
 
-        controller.toggle.bootstrapToggle('on');
+        document.getElementById('weightToggle').click();
 
         expect(controller._handleWeightToggle).toHaveBeenCalledTimes(1);
     });
 
     test('_handleWeightToggle sets isWeightToggleOn on grid to true when toggle is checked', () => {
-        controller.toggle.bootstrapToggle('on');
+        const element = document.getElementById('weightToggle');
+        element.checked = true;
         controller.grid.isWeightToggleOn = false;
 
-        controller._handleWeightToggle();
+        controller._handleWeightToggle({
+            target: element,
+        });
 
         expect(controller.grid.isWeightToggleOn).toBe(true);
     });
 
     test('_handleWeightToggle sets isWeightToggleOn on grid to false when toggle is not checked', () => {
-        controller.toggle.bootstrapToggle('off');
+        const element = document.getElementById('weightToggle');
+        element.checked = false;
         controller.grid.isWeightToggleOn = true;
 
-        controller._handleWeightToggle();
+        controller._handleWeightToggle({
+            target: element,
+        });
 
         expect(controller.grid.isWeightToggleOn).toBe(false);
     });

@@ -45,7 +45,7 @@ jobs:
         run: make test-unit
 
       - name: Functional tests
-        run: pytest --headless functional_tests
+        run: make test-ft
 
       - name: Create ssh key file from secrets
         run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_KEY_DO }}" >> ~/.ssh/id_rsa_do && chmod 0600 ~/.ssh/id_rsa_do
@@ -58,7 +58,9 @@ jobs:
         run: make deploy-staging ARGS="version=${BRANCH_NAME}"
 
       - name: Test against staging server
-        run: STAGING_SERVER=staging.dangdelicious.net pytest --headless functional_tests
+        run: make test-ft-staging
+        env:
+          STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
 
       - name: Deploy to production server
         run: make deploy-prod

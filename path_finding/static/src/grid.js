@@ -1,13 +1,11 @@
 const Node = require('./node').Node;
 const utils = require('./utils/utils');
 class Grid {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol, weight) {
+    constructor(nRows, nCols, weight) {
         this.nRows = nRows;
         this.nCols = nCols;
-        this.startRow = startRow;
-        this.startCol = startCol;
-        this.endRow = endRow;
-        this.endCol = endCol;
+        this._setStartNode(nRows, nCols);
+        this._setEndNode(nRows, nCols);
         this.weight = weight;
         this.isMouseDown = false;
         this.isAlgRunning = false;
@@ -33,14 +31,14 @@ class Grid {
                 } else if (row == this.endRow && col == this.endCol) {
                     node.setAsEndNode();
                 }
-                node.addEventListener('mousemove', () => this._handleMouseMove(node));
-                node.addEventListener('click', () => this._handleClick(node));
+                node.addEventListener('mousemove', async () => this._handleMouseMove(node));
+                node.addEventListener('click', async () => this._handleClick(node));
                 this.nodes.push(node);
             }
         }
 
-        grid.addEventListener('mousedown', (event) => this._handleMouseDown(event));
-        grid.addEventListener('mouseup', () => this._handleMouseUp());
+        grid.addEventListener('mousedown', async (event) => this._handleMouseDown(event));
+        grid.addEventListener('mouseup', async () => this._handleMouseUp());
 
         this.gridWrapper.appendChild(grid);
     }
@@ -48,17 +46,15 @@ class Grid {
     async drawPath() {
         let node = this.getEndNode().prev;
         while (node != null) {
-            await utils.sleep(10);
+            await utils.sleep(utils.MEDIUM);
             node.setAsPathNode();
             node = node.prev;
         }
     }
 
     reset(nRows, nCols) {
-        this.startRow = Math.floor(nRows * 0.1);
-        this.startCol = Math.floor(nCols * 0.1);
-        this.endRow = Math.ceil(nRows * 0.9) - 1;
-        this.endCol = Math.ceil(nCols * 0.9) - 1;
+        this._setStartNode(nRows, nCols);
+        this._setEndNode(nRows, nCols);
         this.setDimensions(nRows, nCols);
         this.clear();
         this.draw();
@@ -151,6 +147,16 @@ class Grid {
 
     async _handleMouseUp() {
         this.isMouseDown = false;
+    }
+
+    _setStartNode(nRows, nCols) {
+        this.startRow = Math.floor(nRows * 0.1);
+        this.startCol = Math.floor(nCols * 0.1);
+    }
+
+    _setEndNode(nRows, nCols) {
+        this.endRow = Math.ceil(nRows * 0.9) - 1;
+        this.endCol = Math.ceil(nCols * 0.9) - 1;
     }
 }
 

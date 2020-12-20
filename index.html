@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Path Finding Algorithms</title>
+    <title>Path Finding Algorithm Visualizer</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet"
@@ -13,37 +13,37 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css"
         integrity="sha512-3q8fi8M0VS+X/3n64Ndpp6Bit7oXSiyCnzmlx6IDBLGlY5euFySyJ46RUlqIVs0DPCGOypqP8IRk/EyPvU28mQ=="
         crossorigin="anonymous" />
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body id='body'>
-    <div class="container">
-        <div class="jumbotron">
+    <div id="controlsContainer" class="container">
+        <div class="jumbotron reduced-jumbotron">
             <div class="row">
                 <div class="col">
                     <div class="text-center">
-                        <h1>Path Finding Algorithms</h1>
+                        <h1>Path Finding Algorithm Visualizer</h1>
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Dimensions</label>
+                    <div class="text-center">
+                        <label class="control-label" for="dimensionsInput">Dimensions</label>
                         <input id="dimensionsInput" class="form-control" type="text" style="width: 220px;"
                             placeholder="e.g. 50,50">
-                        <small id="gridErrorMessage" class="text-danger text-left" hidden>Invalid input -
-                            number of
-                            cells must be
-                            greater than 2.</small>
                     </div>
+                    <small id="gridErrorMessage" class="text-danger text-left hidden">Invalid
+                        input -
+                        number of
+                        cells must not exceed your screen size and must be
+                        greater than 2.</small>
                 </div>
 
                 <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Algorithm</label>
+                    <div class="text-center">
+                        <label class="control-label" for="algorithmSelect">Algorithm</label>
                         <select id="algorithmSelect" class="selectpicker">
                             <option selected value="null">Select One...</option>
                             <option value="dfs">Depth-First Search</option>
@@ -54,53 +54,67 @@
                             <option value="greedy-bfs">Greedy Best-First Search</option>
                             <option value="bidirectional">Bidirectional Search</option>
                         </select>
-                        <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left" hidden>Please
-                            select an
-                            algorithm.</small>
                     </div>
+                    <small id="algorithmSelectErrorMessage" class="form-text text-danger text-left pl-3 hidden">Please
+                        select an
+                        algorithm.</small>
                 </div>
 
-                <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Heuristic</label>
-                        <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
-                            <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
-                            <option id="l2Norm" value="l2Norm">Euclidean Distance</option>
-                        </select>
-                    </div>
+                <div class="col text-center">
+                    <label class="control-label" for="heuristicSelect">Heuristic</label>
+                    <select id="heuristicSelect" class="selectpicker" disabled data-hide-disabled="true">
+                        <option selected id="l1Norm" value="l1Norm">Manhattan Distance</option>
+                        <option id="l2Norm" value="l2Norm">Euclidean Distance</option>
+                    </select>
                 </div>
 
-                <div class="col">
-                    <div class="form-row justify-content-center">
-                        <label class="control-label">Maze Generator</label>
-                        <select id="mazeGenerationSelect" class="selectpicker">
-                            <option selected value="null">Select One...</option>
-                            <option value="rand-dfs">Randomized DFS</option>
-                            <option value="prims">Randomized Prim's Algorithm</option>
-                            <option value="random-walls">Random Walls</option>
-                            <option value="random-weights">Random Weights</option>
-                            <option value="recursive-walls">Recursive Division (Walls)</option>
-                            <option value="recursive-weights">Recursive Division (Weights)</option>
-                        </select>
-                    </div>
+                <div class="col text-center">
+                    <label class="control-label" for="mazeGenerationSelect">Maze Generator</label>
+                    <select id="mazeGenerationSelect" class="selectpicker">
+                        <option selected value="null">Select One...</option>
+                        <option value="rand-dfs">Randomized DFS</option>
+                        <option value="prims">Randomized Prim's Algorithm</option>
+                        <option value="random-walls">Random Walls</option>
+                        <option value="random-weights">Random Weights</option>
+                        <option value="recursive-walls">Recursive Division (Walls)</option>
+                        <option value="recursive-weights">Recursive Division (Weights)</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="row align-items-center justify-content-center" style="padding-top: 20px;">
-                <div class="col">
-                    <input id="weightSlider" type="text" />
+            <div class="row  justify-content-around">
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label id="weightToggleLabel">Toggle Weight Node
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="weightToggle">
+                                <label id="innerToggleLabel" class="custom-control-label" for="weightToggle"></label>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                <div class="col">
-                    <input id="weightToggle" type="checkbox" data-toggle="toggle">
+
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label id="sliderLabel" for="innerWeightSlider">Adjust Node Weight</label></br>
+                        <input id="weightSlider" data-slider-id="innerWeightSlider" type="text" labelledby="sliderLabel"
+                            data-slider-handle="round" />
+                    </div>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input id="diagMovesToggle" class="form-check-input" type="checkbox" value="true">
-                    <label class="form-check-label" for="diagMovesToggle">Enable Diagonal Moves</label>
+
+                <div class="col-md-auto">
+                    <div class="form-group text-center">
+                        <label class="form-check-label" for="diagMovesToggle">Enable Diagonal
+                            Moves<br>
+                            <input id="diagMovesToggle" class="form-check-input big-checkbox" type="checkbox"
+                                value="true">
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-center mb-5">
+        <div class="row justify-content-center">
             <div class="col-auto">
                 <div class="row justify-content-center">
                     <div class="col">
@@ -189,7 +203,45 @@
                 </div>
             </div>
         </div>
+    </div>
 
+    <div id="algInfoContainer" class="container-fluid">
+        <div class="row justify-content-center mt-3">
+            <div class="col text-center info-section">
+                <p class="lead" id="dijkstraInfo" hidden><b>Dijkstra's Algorithm</b> is weighted and guarantees the
+                    shortest path.</p>
+                <p class="lead" id="bfsInfo" hidden><b>Breadth-First Search</b> is unweighted and guarantees the
+                    shortest path.</p>
+                <p class="lead" id="dfsInfo" hidden><b>Depth-First Search</b> is unweighted and does not guarantee the
+                    shortest path.
+                </p>
+                <p class="lead" id="dfsspInfo" hidden><b>Depth-First Search (Shortest Path)</b> is unweighted and will
+                    find the shortest
+                    path by exploring all possible paths. This algorithm can run <i>extremely</i> long if the
+                    grid
+                    is large.</p>
+                <p class="lead" id="a*Info" hidden><b>A* Search</b> is weighted and guarantees the shortest path as
+                    long as the
+                    heuristic
+                    does not over estimate the true cost to the end node. This is why Manhattan Distance cannot be
+                    used
+                    as a heuristic when diagonal moves are enabled.</p>
+                <p class="lead" id="greedy-bfsInfo" hidden><b>Greedy Best-First Search</b> is unweighted and does not
+                    guarantee the
+                    shortest
+                    path.</p>
+                <p class="lead" id="bidirectionalInfo" hidden><b>Bidirectional Search</b> uses Breadth-First Search and
+                    thus is
+                    unweighted
+                    and guarantees the shortest path.</p>
+                <div class="line-break"></div>
+                <p id='algComplete' class="h4 text-success" hidden>Complete!<br>Path Cost = <span id="cost"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="buttonContainer" class="container">
         <div class="row justify-content-center">
             <div class="col-3">
                 <button class="btn btn-primary btn-block" id="runButton">Run</button>
@@ -202,12 +254,6 @@
             </div>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col">
-                <p id='algComplete' class="h3 text-success text-center" hidden>Complete! Path Cost = <span
-                        id="cost"></span></p>
-            </div>
-        </div>
     </div>
 
     <hr>
@@ -232,8 +278,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"
     integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA=="
     crossorigin="anonymous"></script>
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<script src="/static/dist/bundle.js" rows={{ num_rows }} cols={{ num_cols }} startRow={{ start_row }}
-    startCol={{start_col}} endRow={{ end_row }} endCol={{ end_col }}></script>
+<script src="static/dist/bundle.js"></script>
 
 </html>

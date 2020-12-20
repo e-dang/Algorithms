@@ -1,6 +1,10 @@
 const MAX_WEIGHT = 20;
 const MIN_WEIGHT = 2;
 const EMPTY_WEIGHT = 1;
+
+// Used in equation to calculate opacity based on weight
+const A = 5 / 9;
+const B = 7 / 36;
 class Node {
     constructor(row, col, idx, gridRow) {
         this.row = row;
@@ -75,7 +79,7 @@ class Node {
     setAsWeightNode(weight, animation = true) {
         if (!this.isStartNode() && !this.isEndNode() && weight <= MAX_WEIGHT && weight >= MIN_WEIGHT) {
             this.weight = weight;
-            this.element.style.opacity = weight / MAX_WEIGHT;
+            this.element.style.opacity = this._calcOpacity();
             if (animation) {
                 this._setNodeType(['animatedWeight', 'weight']);
             } else {
@@ -93,6 +97,9 @@ class Node {
 
     setAsVisitingNode() {
         if (!this.isStartNode() && !this.isEndNode()) {
+            if (this.isWeightNode()) {
+                this.element.style.opacity = this._calcInvertedOpacity();
+            }
             this._setNodeType('visiting');
         }
     }
@@ -130,6 +137,14 @@ class Node {
         } else {
             this.element.classList.add('node', type);
         }
+    }
+
+    _calcOpacity() {
+        return (A * this.weight) / MAX_WEIGHT + B;
+    }
+
+    _calcInvertedOpacity() {
+        return (-A * this.weight) / MAX_WEIGHT + (1 - B);
     }
 }
 

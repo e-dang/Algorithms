@@ -1,14 +1,26 @@
 import os
+from math import ceil
 
 import pytest
-from path_finding.views import DEFAULT_GRID_PARAMS as grid_params
-from selenium.common.exceptions import NoSuchElementException
 
-from .pages.grid_page import GridPage
+from .pages.grid_page import GridPage, make_form_input
+
+
+def calc_start_pos(num_rows, num_cols):
+    return int(num_rows * 0.1), int(num_cols * 0.1)
+
+
+def calc_end_pos(num_rows, num_cols):
+    return ceil(num_rows * 0.9) - 1, ceil(num_cols * 0.9) - 1
+
 
 GRID_PROPS = (10, 1, 8)
 WALL_NODES = (3, 8, 5)
 WEIGHT_NODES = (0, 9, 5)
+NUM_ROWS = 20
+NUM_COLS = 20
+START_ROW, START_COL = calc_start_pos(NUM_ROWS, NUM_COLS)
+END_ROW, END_COL = calc_end_pos(NUM_ROWS, NUM_COLS)
 
 
 @pytest.mark.functional
@@ -18,9 +30,9 @@ class TestGrid:
     def url(self, live_server):
         staging_server = os.environ.get('STAGING_SERVER')
         if staging_server:
-            return 'http://' + staging_server + '/path-finding/'
+            return 'http://' + staging_server + '/'
         else:
-            return live_server.url + '/path-finding/'
+            return live_server.url + '/'
 
     def assert_line_of_nodes_are_of_type(self, page, start, end, const, n_type, vertical=True):
         for i in range(start, end + 1):
@@ -35,11 +47,14 @@ class TestGrid:
     def run_algorithm_test_case(self, page, algorithm, grid_props, wall_nodes, cost):
         # Resize the grid to something small so the test runs faster
         dims, start, end = grid_props  # start and end are known from scaling calculation in js
-        page.dims_input = self.make_form_input(dims, dims)
+        page.dims_input = make_form_input(dims, dims)
         page.submit_grid_dims()
 
         # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
         page.select_algorithm(algorithm)
+
+        # The user then sees information about the algorithm appear
+        assert page.can_see_alg_info(algorithm)
 
         # The user clicks and drags on some empty nodes and converts them to wall nodes
         w_start_row, w_end_row, col = wall_nodes
@@ -83,15 +98,14 @@ class TestGrid:
         assert page.has_correct_header()
 
         # A grid of squares is visible on the page, with start and end nodes
-        assert page.grid_has_dimensions(grid_params['num_rows'], grid_params['num_cols'])
         assert page.nodes_are_square()
-        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
-        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
+        assert page.has_node_of_type('start')
+        assert page.has_node_of_type('end')
 
         # The user also notices a form that enables the grid dimensions to be customized.
         # The user enters a new grid size and submits the form.
         rows, cols = 10, 11
-        page.dims_input = self.make_form_input(rows, cols)
+        page.dims_input = make_form_input(rows, cols)
         page.submit_grid_dims()
 
         # A new grid appears with the correct dimensions
@@ -102,7 +116,7 @@ class TestGrid:
 
         # The user then tries to input negative numbers for the dimensions
         invalid_rows, invalid_cols = -1, -1
-        page.dims_input = self.make_form_input(invalid_rows, invalid_cols)
+        page.dims_input = make_form_input(invalid_rows, invalid_cols)
         page.submit_grid_dims()
 
         # The user sees an error message about invalid input
@@ -112,43 +126,48 @@ class TestGrid:
         page.dims_input = '1'
         assert not page.is_grid_input_error_visible()
 
+        # The user then tries to enter really large numbers into grid dims, and also sees an error
+        page.dims_input = make_form_input(100, 100)
+        page.submit_grid_dims()
+        assert page.is_grid_input_error_visible()
+
     def test_user_can_click_and_drag_start_and_end_nodes_to_reposition(self, url):
         # The user goes to the website
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         # The user clicks and drags the start node to a new position and sees the start node move with the mouse
-        start_begin_row, start_finish_row = grid_params['start_row'], grid_params['start_row'] + 5
-        page.click_and_hold_nodes(start_begin_row, grid_params['start_col'], start_finish_row, grid_params['start_col'])
+        start_begin_row, start_finish_row = START_ROW, START_ROW + 5
+        page.click_and_hold_nodes(start_begin_row, START_COL, start_finish_row, START_COL)
         self.assert_line_of_nodes_are_of_type(
-            page, start_begin_row, start_finish_row - 1, grid_params['start_col'], 'empty')
-        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
+            page, start_begin_row, start_finish_row - 1, START_COL, 'empty')
+        assert page.is_node_of_type(start_finish_row, START_COL, 'start')
 
         # The user then clicks the old start node position and sees it turn into a wall node
-        page.click_node(grid_params['start_row'], grid_params['start_col'])
-        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'wall')
+        page.click_node(START_ROW, START_COL)
+        assert page.is_node_of_type(START_ROW, START_COL, 'wall')
 
         # The user then clicks the new start node, but it remains a start node
-        page.click_node(start_finish_row, grid_params['start_col'])
-        assert page.is_node_of_type(start_finish_row, grid_params['start_col'], 'start')
+        page.click_node(start_finish_row, START_COL)
+        assert page.is_node_of_type(start_finish_row, START_COL, 'start')
 
         # The user clicks and drags the end node to a new position and sees the start node move with the mouse
-        end_begin_row, end_finish_row = grid_params['end_row'], grid_params['end_row'] - 5
-        page.click_and_hold_nodes(end_begin_row, grid_params['end_col'], end_finish_row, grid_params['end_col'])
-        self.assert_line_of_nodes_are_of_type(page, end_begin_row, end_finish_row + 1, grid_params['end_col'], 'empty')
-        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+        end_begin_row, end_finish_row = END_ROW, END_ROW - 5
+        page.click_and_hold_nodes(end_begin_row, END_COL, end_finish_row, END_COL)
+        self.assert_line_of_nodes_are_of_type(page, end_begin_row, end_finish_row + 1, END_COL, 'empty')
+        assert page.is_node_of_type(end_finish_row, END_COL, 'end')
 
         # The user then clicks the old end node position and sees it turn into a wall node
-        page.click_node(grid_params['end_row'], grid_params['end_col'])
-        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'wall')
+        page.click_node(END_ROW, END_COL)
+        assert page.is_node_of_type(END_ROW, END_COL, 'wall')
 
         # The user then clicks the new end node, but it remains an end node
-        page.click_node(end_finish_row, grid_params['end_col'])
-        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+        page.click_node(end_finish_row, END_COL)
+        assert page.is_node_of_type(end_finish_row, END_COL, 'end')
 
         # The user then drags the start node onto the end node but doesnt see the end node change
-        page.click_and_hold_nodes(start_finish_row, grid_params['start_col'], end_finish_row, grid_params['end_col'])
-        assert page.is_node_of_type(end_finish_row, grid_params['end_col'], 'end')
+        page.click_and_hold_nodes(start_finish_row, START_COL, end_finish_row, END_COL)
+        assert page.is_node_of_type(end_finish_row, END_COL, 'end')
 
     @pytest.mark.parametrize('url, n_type', [
         (None, 'wall'),
@@ -159,7 +178,7 @@ class TestGrid:
     def test_user_can_change_node_types_between_wall_or_weight_and_empty(self, url, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         # If n_type is weight, then toggle to weight node
         if n_type == 'weight':
@@ -177,7 +196,7 @@ class TestGrid:
 
         # The user then clicks and holds down on an empty node in the grid and drags their mouse across multiple
         # nodes which causes each node to turn to n_type
-        start_row, end_row, col = 0, 10, 10
+        start_row, end_row, col = 0, 5, 10
         for i in range(start_row, end_row + 1):
             assert page.is_node_of_type(i, col, 'empty')
         page.click_and_hold_nodes(start_row, col, end_row, col)
@@ -191,12 +210,12 @@ class TestGrid:
             assert page.is_node_of_type(i, col, 'empty')
 
         # The user then clicks the start node and sees that it does not change
-        page.click_node(grid_params['start_row'], grid_params['start_col'])
-        assert page.is_node_of_type(grid_params['start_row'], grid_params['start_col'], 'start')
+        page.click_node(START_ROW, START_COL)
+        assert page.is_node_of_type(START_ROW, START_COL, 'start')
 
         # The user then clicks the end node and sees that it does not change
-        page.click_node(grid_params['end_row'], grid_params['end_col'])
-        assert page.is_node_of_type(grid_params['end_row'], grid_params['end_col'], 'end')
+        page.click_node(END_ROW, END_COL)
+        assert page.is_node_of_type(END_ROW, END_COL, 'end')
 
     @pytest.mark.parametrize('url, from_n_type, to_n_type', [
         (None, 'wall', 'weight'),
@@ -207,7 +226,7 @@ class TestGrid:
     def test_user_can_directly_interchange_wall_and_weight_nodes(self, url, from_n_type, to_n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         if from_n_type == 'weight':
             assert from_n_type == page.click_weight_node_toggle()
@@ -240,7 +259,7 @@ class TestGrid:
     def test_user_cant_run_algorithm_when_none_are_selected(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         # The user immediately presses run but an error shows up telling the user to select an algorithm
         page.click_run()
@@ -253,8 +272,8 @@ class TestGrid:
 
         # The user then presses run and the algorithm begins to run
         page.click_run()
-        page.wait_for_node_to_be_of_type(grid_params['start_row'] + 1,
-                                         grid_params['start_col'], ['visited', 'visiting'], timeout=5)
+        page.wait_for_node_to_be_of_type(START_ROW + 1,
+                                         START_COL, ['visited', 'visiting'], timeout=5)
 
     @pytest.mark.parametrize('url, algorithm, grid_props, wall_nodes, cost', [
         (None, "Dijkstra's Algorithm", GRID_PROPS, WALL_NODES, 14),
@@ -332,7 +351,7 @@ class TestGrid:
 
         # Resize the grid to something small so the test runs faster
         dims, start, end = GRID_PROPS  # start and end are known from scaling calculation in js
-        page.dims_input = self.make_form_input(dims, dims)
+        page.dims_input = make_form_input(dims, dims)
         page.submit_grid_dims()
 
         # The user notices a drop down menu to select algorithms to visualize and selects an algorithm
@@ -370,11 +389,11 @@ class TestGrid:
 
         # Resize the grid to something small so the test runs faster
         dims, *_ = GRID_PROPS  # start and end are known from scaling calculation in js
-        page.dims_input = self.make_form_input(dims, dims)
+        page.dims_input = make_form_input(dims, dims)
         page.submit_grid_dims()
 
-        # The user notices a drop down menu to select algorithms to visualize and selects Greedy Best-First Search
-        page.select_algorithm('Greedy Best-First Search')
+        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search
+        page.select_algorithm('Breadth-First Search')
 
         # The user clicks and drags on some empty nodes and converts them to n_type
         if n_type == 'weight':
@@ -395,15 +414,15 @@ class TestGrid:
     def test_user_cannot_update_grid_or_reset_while_algorithm_is_running(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
-        # The user notices a drop down menu to select algorithms to visualize and selects A* Search and
+        # The user notices a drop down menu to select algorithms to visualize and selects Breadth-First Search and
         # runs it
-        page.select_algorithm('A* Search')
+        page.select_algorithm('Breadth-First Search')
         page.click_run()
 
         # The user then tries to add wall nodes during the current run, but does not see them change
-        w_start_row, w_end_row, col = 35, 36, 35
+        w_start_row, w_end_row, col = START_ROW + 5, START_ROW + 8, START_COL + 5
         page.click_node(w_start_row, col)
         assert not page.is_node_of_type(w_start_row, col, 'wall')
 
@@ -412,33 +431,64 @@ class TestGrid:
 
         # The user then tries to click the reset buttons, but the algorithm continues to run
         page.click_reset()
-        start_row, start_col = grid_params['start_row'], grid_params['start_col']
-        end_row, end_col = grid_params['end_row'], grid_params['end_col']
-        page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, ['visited', 'visiting'], timeout=5)
+        page.wait_for_node_to_be_of_type(START_ROW + 1,
+                                         START_COL, ['visited', 'visiting'], timeout=5)
 
         page.click_reset_path()
-        page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, ['visited', 'visiting'], timeout=5)
+        page.wait_for_node_to_be_of_type(START_ROW + 1,
+                                         START_COL, ['visited', 'visiting'], timeout=5)
 
         # The user then tries to enter new grid dimensions, but again the algorithm continues to run
         dims = 10
-        page.dims_input = self.make_form_input(dims, dims)
+        page.dims_input = make_form_input(dims, dims)
         assert not page.grid_has_dimensions(dims, dims)
-        page.wait_for_node_to_be_of_type(start_row + 1,
-                                         start_col, ['visited', 'visiting'], timeout=5)
+        page.wait_for_node_to_be_of_type(START_ROW + 1,
+                                         START_COL, ['visited', 'visiting'], timeout=5)
 
         # The algorithm then completes normally and the user sees a path
         page.wait_until_complete()
         movements = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-        assert any(page.is_node_of_type(start_row + dr, start_col + dc, 'path') for dr, dc in movements)
-        assert any(page.is_node_of_type(end_row + dr, end_col + dc, 'path') for dr, dc in movements)
+        assert any(page.is_node_of_type(START_ROW + dr, START_COL + dc, 'path') for dr, dc in movements)
+        assert any(page.is_node_of_type(END_ROW + dr, END_COL + dc, 'path') for dr, dc in movements)
         assert page.get_cost()
+
+    def test_user_cannot_update_grid_or_reset_while_maze_generation_is_running(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
+
+        # The user selects a maze generation algorithm
+        page.select_maze_generation('Recursive Division (Walls)')
+
+        # The user then tries to click on some nodes, but doesnt seem them change
+        w_start_row, w_end_row, col = END_ROW - 2, END_ROW - 3, END_COL - 1
+        page.click_node(w_start_row, col)
+        assert not page.is_node_of_type(w_start_row, col, ['wall', 'weight'])
+
+        page.click_and_hold_nodes(w_start_row, col, w_end_row, col)
+        self.assert_line_of_nodes_are_of_type(page, w_start_row, w_end_row, col, 'empty')
+
+        # The user then tries to click the reset buttons, but there are still wall nodes where the user did not click
+        page.click_reset()
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
+
+        page.click_reset_path()
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
+
+        # The user then tries to click the run button, but it does nothing as well
+        page.click_run()
+        assert not page.is_node_of_type(START_ROW + 1, START_COL, ['visited', 'visiting'])
+
+        # The user then tries to enter new grid dimensions, but again the maze generation continues to run
+        dims = 10
+        page.dims_input = make_form_input(dims, dims)
+        assert not page.grid_has_dimensions(dims, dims)
+        page.wait_for_node_to_be_of_type(0, 0, ['wall', 'weight'], timeout=5)
 
     def test_user_can_select_heuristic_function(self, url):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         # The user notices a drop down menue to select an algorithm and selects Breadth-First Search
         page.select_algorithm('Breadth-First Search')
@@ -456,7 +506,7 @@ class TestGrid:
         # The user then runs the algorithm and waits for it to complete. They see that the heuristic has been used.
         page.click_run()
         page.wait_until_complete()
-        assert page.get_cost() == 64
+        assert page.get_cost() == 30
 
     @pytest.mark.parametrize('url, alg, n_type', [
         (None, 'Randomized DFS', 'wall'),
@@ -471,15 +521,15 @@ class TestGrid:
     def test_user_can_generate_maze(self, url, alg, n_type):
         # The user goes to the website and sees a grid
         self.driver.get(url)
-        page = GridPage(self.driver, grid_params['num_rows'], grid_params['num_cols'])
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
 
         # The user notices a drop down menu to generate mazes and selects Randomized DFS
         page.select_maze_generation(alg)
 
         # The user sees a maze being generated
         obstacles_have_been_generated = False
-        for i in range(grid_params['num_rows']):
-            for j in range(grid_params['num_cols']):
+        for i in range(NUM_ROWS):
+            for j in range(NUM_COLS):
                 if page.is_node_of_type(i, j, n_type):
                     obstacles_have_been_generated = True
                     break
@@ -489,3 +539,23 @@ class TestGrid:
             break
 
         assert obstacles_have_been_generated
+
+    def test_user_can_change_node_weights(self, url):
+        # The user goes to the website and sees a grid
+        self.driver.get(url)
+        page = GridPage(self.driver, NUM_ROWS, NUM_COLS)
+
+        # The user toggles weight nodes, clicks on a node, and notices the opacity of the weight node
+        row, col = START_ROW + 1, START_COL
+        assert 'weight' == page.click_weight_node_toggle()
+        page.click_node(row, col)
+        opacity = page.get_node(row, col).value_of_css_property('opacity')
+
+        # The user notices a slider to adjust the weights
+        page.change_node_weights(10)
+
+        # The user then clicks on another node and notices its opacity is now different than the other node's
+        new_row, new_col = row + 1, col
+        page.click_node(new_row, new_col)
+        new_opacity = page.get_node(new_row, new_col).value_of_css_property('opacity')
+        assert new_opacity != opacity

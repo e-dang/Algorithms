@@ -14,13 +14,13 @@ const RandomWallMaze = require('./maze_generators/rand_wall_maze');
 const RandomWeightMaze = require('./maze_generators/rand_weight_maze');
 const utils = require('./utils/utils');
 const RecursiveDivision = require('./maze_generators/recursive_division');
+
 class GridController {
-    constructor(nRows, nCols, startRow, startCol, endRow, endCol, alg, slider, toggle) {
-        this.grid = new Grid(nRows, nCols, startRow, startCol, endRow, endCol, slider.getValue());
+    constructor(nRows, nCols, alg, slider) {
+        this.grid = new Grid(nRows, nCols, slider.getValue());
         this.alg = alg;
         this.isAlgRunning = false;
         this.slider = slider;
-        this.toggle = toggle;
         this.moves = utils.manhattan_moves;
         this._handleUpdateHeuristic();
         this.grid.draw();
@@ -90,7 +90,7 @@ class GridController {
     }
 
     addWeightToggleEventListener() {
-        this.toggle.on('change', () => this._handleWeightToggle());
+        document.getElementById('weightToggle').addEventListener('change', (event) => this._handleWeightToggle(event));
 
         return this;
     }
@@ -107,7 +107,8 @@ class GridController {
         this._callbackWrapper(() => {
             const element = document.getElementById('dimensionsInput');
             const [nRows, nCols] = this._parseInput(element);
-            if (nRows > 0 && nCols > 0 && nRows * nCols > 1) {
+            const {maxRows, maxCols} = utils.calcMaximumGridDims();
+            if (nRows > 0 && nCols > 0 && nRows * nCols > 1 && nRows <= maxRows && nCols <= maxCols) {
                 this.grid.reset(nRows, nCols);
                 element.value = '';
                 this._removeAlgorithmCompleteMessages();
@@ -119,21 +120,21 @@ class GridController {
 
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
-        document.getElementById('algorithmSelectErrorMessage').hidden = true;
+        this._displayAlgInfo();
+        document.getElementById('algorithmSelectErrorMessage').classList.add('hidden');
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
         this._toggleHeuristicSelect();
     }
 
     _handleRunAlgorithm() {
         this._callbackWrapper(() => {
-            this.isAlgRunning = true;
-            this.grid.isAlgRunning = true;
+            this._setIsAlgRunning(true);
             this._algorithmFromString().run((cost) => this._handleCompleteAlgorithm(cost));
         });
     }
 
     _handleGridInputError() {
-        document.getElementById('gridErrorMessage').hidden = false;
+        document.getElementById('gridErrorMessage').classList.remove('hidden');
         document.getElementById('dimensionsInput').classList.add('is-invalid');
     }
 
@@ -142,7 +143,7 @@ class GridController {
             if (event.keyCode === 13) {
                 this._handleUpdateGrid();
             } else {
-                document.getElementById('gridErrorMessage').hidden = true;
+                document.getElementById('gridErrorMessage').classList.add('hidden');
                 document.getElementById('dimensionsInput').classList.remove('is-invalid');
             }
         });
@@ -177,13 +178,11 @@ class GridController {
     }
 
     _handleCompleteAlgorithm(cost) {
-        this.isAlgRunning = false;
-        this.grid.isAlgRunning = false;
+        this._setIsAlgRunning(false);
         if (cost !== null) {
             this.grid.drawPath();
             document.getElementById('algComplete').hidden = false;
             const costElement = document.getElementById('cost');
-            costElement.hidden = false;
             costElement.textContent = cost;
         }
     }
@@ -203,19 +202,21 @@ class GridController {
         });
     }
 
-    _handleMazeGeneration() {
-        this._handleResetPath();
+    async _handleMazeGeneration() {
+        this._handleReset();
+        this._setIsAlgRunning(true);
         const element = document.getElementById('mazeGenerationSelect');
-        this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
+        await this._mazeGeneratorFromString(document.getElementById('mazeGenerationSelect').value).generate();
         element.options[0].selected = true;
+        this._setIsAlgRunning(false);
     }
 
     _handleUpdateWeight(weight) {
         this.grid.weight = weight;
     }
 
-    _handleWeightToggle() {
-        this.grid.isWeightToggleOn = this.toggle.prop('checked');
+    _handleWeightToggle(event) {
+        this.grid.isWeightToggleOn = event.target.checked;
     }
 
     _handleDiagonalMovesToggle(event) {
@@ -236,7 +237,6 @@ class GridController {
 
     _removeAlgorithmCompleteMessages() {
         document.getElementById('algComplete').hidden = true;
-        document.getElementById('cost').hidden = true;
     }
 
     _callbackWrapper(callback) {
@@ -275,6 +275,21 @@ class GridController {
         } else if (generatorStr === 'recursive-weights') {
             return new RecursiveDivision(this.grid, false);
         }
+    }
+
+    _setIsAlgRunning(state) {
+        this.isAlgRunning = state;
+        this.grid.isAlgRunning = state;
+    }
+
+    _displayAlgInfo() {
+        document.getElementById('dijkstraInfo').hidden = this.alg !== 'dijkstra';
+        document.getElementById('bfsInfo').hidden = this.alg !== 'bfs';
+        document.getElementById('dfsInfo').hidden = this.alg !== 'dfs';
+        document.getElementById('dfsspInfo').hidden = this.alg !== 'dfssp';
+        document.getElementById('a*Info').hidden = this.alg !== 'a*';
+        document.getElementById('greedy-bfsInfo').hidden = this.alg !== 'greedy-bfs';
+        document.getElementById('bidirectionalInfo').hidden = this.alg !== 'bidirectional';
     }
 }
 

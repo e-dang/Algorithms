@@ -4,9 +4,13 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 
 from .base import TIMEOUT, BaseInputElement, BasePage
+
+
+def make_form_input(row, col):
+    return f'{row},{col}'
 
 
 class DimensionsInputElement(BaseInputElement):
@@ -28,17 +32,24 @@ class GridPage(BasePage):
 
     def __init__(self, driver, num_rows=None, num_cols=None):
         super().__init__(driver)
-        self.num_rows = num_rows
-        self.num_cols = num_cols
+        self.num_rows = None
+        self.num_cols = None
+        if num_rows and num_cols:
+            self.dims_input = make_form_input(num_rows, num_cols)
+            self.submit_grid_dims()
+            self._calculate_grid_dimensions()
 
     def has_correct_title(self):
-        return 'Path Finding Algorithms' in self.driver.title
+        return 'Path Finding Algorithm Visualizer' in self.driver.title
 
     def has_correct_header(self):
-        return 'Path Finding Algorithms' in self.driver.find_element_by_tag_name('h1').text
+        return 'Path Finding Algorithm Visualizer' in self.driver.find_element_by_tag_name('h1').text
 
     def has_node_of_type(self, n_type):
         return len(self._get_grid().find_elements_by_class_name(f'node.{n_type}')) != 0
+
+    def get_node(self, row, col):
+        return self._get_grid().find_element_by_id(self._make_node_id(row, col))
 
     def is_grid_input_error_visible(self):
         return self.driver.find_element_by_id('gridErrorMessage').is_displayed()
@@ -78,9 +89,8 @@ class GridPage(BasePage):
         element.click()
 
     def click_weight_node_toggle(self):
-        element = self.driver.find_elements_by_class_name('toggle')[0]
-        element.click()
-        return 'wall' if 'off' in element.get_attribute('class') else 'weight'
+        self.driver.find_element_by_id('weightToggleLabel').click()
+        return 'weight' if self.driver.find_element_by_id('weightToggle').get_attribute('checked') == 'true' else 'wall'
 
     def click_and_hold_nodes(self, start_row, start_col, end_row, end_col):
         grid = self._get_grid()
@@ -143,6 +153,24 @@ class GridPage(BasePage):
         element = self.driver.find_element_by_id('diagMovesToggle')
         element.click()
         return element.get_attribute('checked')
+
+    def change_node_weights(self, value):
+        element = self.driver.find_elements_by_class_name('slider-handle')[0]
+        action = ActionChains(self.driver)
+        action.click_and_hold(element).move_by_offset(-210, 0).release().perform()
+        action.click_and_hold(element).move_by_offset(value * 9.6, 0).release().perform()
+
+    def can_see_alg_info(self, algorithm):
+        mapping = {
+            "Dijkstra's Algorithm": 'dijkstraInfo',
+            'Depth-First Search': 'dfsInfo',
+            'Depth-First Search (Shortest Path)': 'dfsspInfo',
+            'Breadth-First Search': 'bfsInfo',
+            'A* Search': 'a*Info',
+            'Greedy Best-First Search': 'greedy-bfsInfo',
+            'Bidirectional Search': 'bidirectionalInfo'
+        }
+        return self.driver.find_element_by_id(mapping[algorithm]).is_displayed()
 
     def _get_grid(self):
         return self.driver.find_element_by_id('grid')

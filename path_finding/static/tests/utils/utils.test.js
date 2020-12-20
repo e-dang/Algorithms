@@ -1,10 +1,7 @@
 const utils = require('../../src/utils/utils');
 
 describe('TestUtils', () => {
-    // let mockRandom;
-
     beforeEach(() => {
-        // mockRandom
         Math.random = jest.fn().mockReturnValueOnce(0.6);
     });
 
