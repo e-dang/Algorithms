@@ -2,7 +2,7 @@
 
 ## Description
 
-I created this project to gain more experience working with Javascript, HTML, and CSS, as well as building a CI/CD pipeline using Terraform, Ansible, and GitHub Actions. The servers used in the CI/CD pipeline were only used during development of this project and not for permanent hosting due to cost. Instead, I am using GitHub Pages to host the web page, which you can visit at [https://e-dang.github.io/Path-Finding-Algorithm-Visualizer](https://e-dang.github.io/Path-Finding-Algorithm-Visualizer/).
+I created this project to gain more experience working with Javascript, HTML, and CSS, as well as building a CI/CD pipeline using Terraform, Ansible, and GitHub Actions. The servers used in the CI/CD pipeline were only used during development of this project and not for permanent hosting due to cost. Instead, I am using GitHub Pages to host the web page, which you can visit at [https://e-dang.github.io/Path-Finding-Algorithm-Visualizer](https://e-dang.github.io/Path-Finding-Algorithm-Visualizer/) (tested on FireFox).
 
 
 ## Algorithms
