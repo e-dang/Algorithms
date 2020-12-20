@@ -196,7 +196,7 @@ class TestGrid:
 
         # The user then clicks and holds down on an empty node in the grid and drags their mouse across multiple
         # nodes which causes each node to turn to n_type
-        start_row, end_row, col = 0, 10, 10
+        start_row, end_row, col = 0, 5, 10
         for i in range(start_row, end_row + 1):
             assert page.is_node_of_type(i, col, 'empty')
         page.click_and_hold_nodes(start_row, col, end_row, col)
