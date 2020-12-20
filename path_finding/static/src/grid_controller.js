@@ -121,7 +121,7 @@ class GridController {
     _handleUpdateAlgorithm() {
         this.alg = document.getElementById('algorithmSelect').value;
         this._displayAlgInfo();
-        document.getElementById('algorithmSelectErrorMessage').classList.add('hidden');
+        document.getElementById('algorithmSelectErrorMessage').hidden = true;
         $('#algorithmSelect').selectpicker('setStyle', 'btn-outline-danger', 'remove');
         this._toggleHeuristicSelect();
     }
@@ -134,7 +134,7 @@ class GridController {
     }
 
     _handleGridInputError() {
-        document.getElementById('gridErrorMessage').classList.remove('hidden');
+        document.getElementById('gridErrorMessage').hidden = false;
         document.getElementById('dimensionsInput').classList.add('is-invalid');
     }
 
@@ -143,7 +143,7 @@ class GridController {
             if (event.keyCode === 13) {
                 this._handleUpdateGrid();
             } else {
-                document.getElementById('gridErrorMessage').classList.add('hidden');
+                document.getElementById('gridErrorMessage').hidden = true;
                 document.getElementById('dimensionsInput').classList.remove('is-invalid');
             }
         });

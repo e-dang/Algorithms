@@ -146,11 +146,11 @@ describe('GridControllerTest', () => {
 
     test('_handleUpdateGridOnKeyPress sets gridErrorMessage to hidden when a non-Enter key is pressed', () => {
         const element = document.getElementById('gridErrorMessage');
-        element.classList.remove('hidden');
+        element.hidden = false;
 
         controller._handleUpdateGridOnKeyPress(new Event('keypress'));
 
-        expect(element).toHaveClass('hidden');
+        expect(element).not.toBeVisible();
     });
 
     test('_algorithmFromString returns Dijkstra when "dijkstra" is the alg property', () => {
