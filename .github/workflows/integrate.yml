@@ -59,6 +59,8 @@ jobs:
 
       - name: Test against staging server
         run: make test-ft-staging
+        env:
+          STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
 
       - name: Deploy to production server
         run: make deploy-prod
