@@ -13,6 +13,11 @@ install:
 build:
 	cd $(STATIC_DIR) && yarn build
 
+build-github-pages: build
+	cd $(PROJECT_DIR) && \
+	python3 manage.py collectstatic -i package.json -i yarn.lock -i node_modules -i src -i tests --no-input && \
+	cp path_finding/templates/index.html ./index.html
+
 test-js:
 	cd $(STATIC_DIR)/tests && yarn test
 
