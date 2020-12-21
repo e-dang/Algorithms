@@ -9,6 +9,7 @@ I created this project to gain more experience working with Javascript, HTML, an
 
 - Depth-First Search
 - Breadth-First Search
+- Dijkstra's Algorithm
 - Greedy Best-First Search
 - A* Search
 - Bidirectional Search
